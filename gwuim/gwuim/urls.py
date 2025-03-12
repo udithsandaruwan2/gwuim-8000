@@ -8,6 +8,7 @@ urlpatterns = [
 
     # Add the new app to the list of installed apps
     path('', include('users.urls')),
+    path('', include('departments.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
