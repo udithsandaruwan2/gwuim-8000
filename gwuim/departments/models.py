@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Department(models.Model):
     code = models.CharField(max_length=10, unique=True, null=True, blank=True)
     name = models.CharField(max_length=255)
@@ -24,3 +23,4 @@ class Department(models.Model):
 Department Addition Attributes
 - head = models.OneToOneField(Employee, on_delete=models.SET_NULL, null=True, blank=True)
 """
+
