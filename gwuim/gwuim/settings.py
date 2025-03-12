@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # Add the new app to the list of installed apps
     'users.apps.UsersConfig',
     'departments.apps.DepartmentsConfig',
+    'employees.apps.EmployeesConfig',
 ]
 
 MIDDLEWARE = [
