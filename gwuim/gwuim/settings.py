@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'departments.apps.DepartmentsConfig',
     'employees.apps.EmployeesConfig',
-    'leave.apps.LeaveConfig',
+    'leave_management.apps.LeaveManagementConfig',
+    'audit_logs.apps.AuditLogsConfig',
 ]
 
 MIDDLEWARE = [
