@@ -1,5 +1,7 @@
 from django.db import models
 from departments.models import Department
+from users.models import Profile
+
 class Employee(models.Model):
     #Choices
     GENDER_CHOICES = [
@@ -27,3 +29,65 @@ class Employee(models.Model):
     
     def __str__(self):
         return f"{self.full_name} ({self.employee_code})"
+
+class LeaveType(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
+    # Common fields
+    uid = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+    
+class LeaveRequest(models.Model):
+    #Choices
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied'),
+    ]
+    REQUEST_TYPE_CHOICES = [
+        ('half', 'Half Day'),
+        ('full', 'Full Day'),
+    ]
+    
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    request_type = models.CharField(max_length=10, choices=REQUEST_TYPE_CHOICES, default='full')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    reason = models.TextField(null=True, blank=True)
+    systemized_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
+    # Common fields
+    uid = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.employee.full_name} - {self.leave_type.name} ({self.status})"
+    
+    @property
+    def total_days(self):
+        """Calculate the total number of leave days."""
+        if self.start_date and self.end_date:
+            days = (self.end_date - self.start_date).days + 1
+            if self.request_type == 'half':
+                return days - 0.5
+            return days
+        return 0 
+
+class LeaveAdjustment(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    leave_request = models.ForeignKey(LeaveRequest, on_delete=models.CASCADE)
+    adjustment_amount = models.IntegerField()
+    reason = models.TextField()
+    # Common fields
+    uid = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Adjustment for {self.employee.full_name}"
