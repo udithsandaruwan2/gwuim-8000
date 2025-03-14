@@ -18,8 +18,7 @@ class Profile(models.Model):
     username = models.CharField(max_length=20, unique=True)
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     email = models.EmailField()
-    role = models.ForeignKey(UserRole, on_delete=models.CASCADE)
-
+    role = models.ForeignKey(UserRole, on_delete=models.CASCADE, null=True, blank=True)
     # Common fields
     uid = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -29,7 +28,3 @@ class Profile(models.Model):
         return f"{self.full_name}"
 
 
-"""
-Profile Addition Attributes
-- department = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)
-"""
