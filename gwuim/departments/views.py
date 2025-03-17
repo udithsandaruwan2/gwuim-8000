@@ -3,7 +3,9 @@ from django.shortcuts import render, redirect
 from .models import Faculty, Department
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='login')
 def departments(request):
     page = 'departments'
     page_title = 'Departments'
@@ -64,6 +66,7 @@ def departments(request):
     }
     return render(request, 'departments/departments.html', context)
 
+@login_required(login_url='login')
 @csrf_exempt  # Use this only if necessary
 def update_departments(request):
     if request.method == 'POST':
@@ -91,6 +94,7 @@ def update_departments(request):
         return JsonResponse({'success': False, 'message': 'Invalid action.'})
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
+@login_required(login_url='login')
 def deleteConfirmation(request):
     page = 'delete_confirmation'
     page_title = 'Delete Confirmation'

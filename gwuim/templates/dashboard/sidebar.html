@@ -105,6 +105,31 @@
                 
                 {% endif %}
                 
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Employee Management</span>
+                </li>
+                
+                {% if page == 'employees' %}
+                <li class="sidebar-item  active selected ">
+                    <a class="sidebar-link" href="{% url 'employees' %}" aria-expanded="false" style="background-color: #932626;">
+                        <span>
+                            <i class="ti ti-layout-dashboard"></i>
+                        </span>
+                        <span class="hide-menu">Employees</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="{% url 'employees' %}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-article"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">Employees</span>
+                    </a>
+                </li>
+                
+                {% endif %}
 
             </ul>
         </nav>
