@@ -6,7 +6,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="facultyForm">
+                <form id="facultyForm" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="action" value="addFaculty" hidden>
                     <div class="mb-3">
                         <label for="facultyCode" class="form-label">Faculty Code</label>
                         <input type="text" class="form-control" id="facultyCode" name="facultyCode">

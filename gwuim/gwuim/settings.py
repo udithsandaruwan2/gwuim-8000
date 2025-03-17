@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'employees.apps.EmployeesConfig',
     'leave_management.apps.LeaveManagementConfig',
     'audit_logs.apps.AuditLogsConfig',
+
+    #Third party apps
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

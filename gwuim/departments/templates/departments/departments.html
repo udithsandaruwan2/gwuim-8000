@@ -1,6 +1,8 @@
 {% extends 'dashboard/main.html' %}
 
 {% load static %}
+{% load widget_tweaks %}
+{% load custom_filters %} <!-- Load the custom filters -->
 
 {% block content %}
 
@@ -14,17 +16,20 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="row mb-4">
-                    <div class="col-md-8">
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
                         <h5 class="fw-semibold">Faculties and Departments</h5>
                     </div>
-                    <div class="col-md-2 text-end">
+                    <div class="col-md-6 d-flex justify-content-end gap-2">
                         <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addFacultyModal">
-                            <i class="fas fa-edit"></i> New Faculty</button>
-                    </div>
-                    <div class="col-md-2 text-end">
+                            <i class="fas fa-plus"></i> New Faculty
+                        </button>
                         <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
-                            <i class="fas fa-edit"></i> New Department</button>
+                            <i class="fas fa-plus"></i> New Department
+                        </button>
+                        <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal">
+                            <i class="fas fa-trash"></i> Delete Faculty
+                        </button>
                     </div>
                 </div>
 
@@ -50,69 +55,59 @@
 
                     .toggle-content.show {
                         max-height: 500px;
-                        /* Adjust based on content size */
                     }
+
                     .edit-btn {
-        transition: opacity 0.5s ease-in-out;
-    }
+                        transition: opacity 0.5s ease-in-out;
+                    }
                 </style>
 
-                <!-- Sample Faculties -->
+                {% for faculty in faculties %}
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6">
-                                <h5 class="card-title">Faculty of Engineering</h5>
+                                <h5 class="card-title">{{ faculty.name }}</h5>
                             </div>
                             <div class="col-md-6 text-end">
-                                <button class="btn toggle-btn edit-btn" id="edit-dept-1" data-faculty="Faculty of Engineering" style="opacity: 0;">
-                                    <i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn toggle-btn edit-btn" id="edit-{{ faculty.uid }}"
+                                    data-faculty="{{ faculty.uid }}" style="opacity: 0;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
                             </div>
                         </div>
 
-                        <button class="btn toggle-btn" data-target="dept-1">Toggle Departments</button>
-                        <ul class="list-group mt-3 toggle-content" id="dept-1" >
-
-                            <li class="list-group-item">Computer Science</li>
-                            <li class="list-group-item">Mechanical Engineering</li>
-                            <li class="list-group-item">Electrical Engineering</li>
-
-
+                        <button class="btn toggle-btn" id="toggle-{{ faculty.uid }}"
+                            data-target="dept-{{ faculty.uid }}">Toggle Departments</button>
+                        <ul class="list-group mt-3 toggle-content" id="dept-{{ faculty.uid }}">
+                            {% if faculty_departments|get_item:faculty.uid %}
+                            {% for department in faculty_departments|get_item:faculty.uid %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                data-department-uid="{{ department.uid }}">
+                                {{ department.name }}
+                                <a href="{% url 'delete_confirmation' %}" class="btn toggle-btn delete-btn"
+                                    data-faculty="{{ faculty.uid }}" style="opacity: 1;">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </li>
+                            {% endfor %}
+                            {% else %}
+                            <li class="list-group-item">Departments have not been listed yet.</li>
+                            {% endif %}
                         </ul>
+
                     </div>
                 </div>
+                {% endfor %}
 
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Faculty of Science</h5>
-                        <button class="btn toggle-btn" data-target="dept-2">Toggle Departments</button>
-                        <ul class="list-group mt-3 toggle-content" id="dept-2">
-                            <li class="list-group-item">Physics</li>
-                            <li class="list-group-item">Chemistry</li>
-                            <li class="list-group-item">Biology</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Faculty of Business</h5>
-                        <button class="btn toggle-btn" data-target="dept-3">Toggle Departments</button>
-                        <ul class="list-group mt-3 toggle-content" id="dept-3">
-                            <li class="list-group-item">Finance</li>
-                            <li class="list-group-item">Marketing</li>
-                            <li class="list-group-item">Human Resource Management</li>
-                        </ul>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
     {% include 'dashboard/footer.html' %}
-    {% include 'departments/faculty-modal.html' %}
-    {% include 'departments/department-modal.html' %}
-    <!-- Placeholder for AJAX-loaded content -->
+    {% include 'departments/faculty-add-model.html' %}
+    {% include 'departments/department-add-model.html' %}
+    {% include 'departments/faculty-delete-model.html' %}
     <div id="data-container"></div>
 </div>
 
@@ -124,7 +119,7 @@
                 if (!targetId) return;
 
                 let target = document.getElementById(targetId);
-                let editButton = document.getElementById("edit-" + targetId);
+                let editButton = document.getElementById("edit-" + targetId.replace('dept-', ''));
 
                 if (!target) return;
 
@@ -146,7 +141,7 @@
         document.querySelectorAll(".edit-btn").forEach(button => {
             button.addEventListener("click", function () {
                 let facultyName = this.getAttribute("data-faculty");
-                let targetId = this.id.replace("edit-", "");
+                let targetId = this.id.replace("edit-", "dept-");
                 let target = document.getElementById(targetId);
 
                 if (!target) return;
@@ -156,13 +151,16 @@
 
                 let inputFields = "";
                 listItems.forEach(li => {
-                    inputFields += `<input type="text" class="form-control mt-2 dept-input" value="${li.textContent}">`;
+                    let text = li.childNodes[0].textContent.trim();
+                    inputFields += `<input type="text" class="form-control mt-2 dept-input" value="${text}" data-department-uid="${li.getAttribute('data-department-uid')}">`;
                 });
 
                 target.innerHTML = `${inputFields}
-                <button class="btn toggle-btn mt-2 save-btn  ">Save Changes</button>`;
+                <button class="btn toggle-btn mt-2 save-btn">Save Changes</button>`;
 
-                // Add event listener for save button
+                let deleteButtons = target.querySelectorAll(".delete-btn");
+                deleteButtons.forEach(btn => btn.style.display = "none");
+
                 target.querySelector(".save-btn").addEventListener("click", function () {
                     saveChanges(targetId, facultyName);
                 });
@@ -170,7 +168,6 @@
         });
     });
 
-    // Function to save changes
     function saveChanges(targetId, facultyName) {
         let target = document.getElementById(targetId);
         if (!target) return;
@@ -179,15 +176,38 @@
         let updatedDepartments = [];
 
         inputs.forEach(input => {
-            updatedDepartments.push(input.value);
+            updatedDepartments.push({
+                uid: input.getAttribute('data-department-uid'),
+                name: input.value.trim()
+            });
         });
-        // Convert inputs back to list items
-        let newList = updatedDepartments.map(dept => `<li class="list-group-item">${dept}</li>`).join("");
 
-        target.innerHTML = newList;
+        fetch('/departments/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: JSON.stringify({
+                action: 'updateDepartments',
+                facultyUid: facultyName,
+                updatedDepartments: updatedDepartments,
+            }),
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Changes saved successfully!');
+                    location.reload();
+                } else {
+                    alert('Error saving changes. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving changes.');
+            });
     }
-
- 
 </script>
 
 {% endblock content %}
