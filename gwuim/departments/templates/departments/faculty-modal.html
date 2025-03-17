@@ -1,0 +1,25 @@
+<div class="modal fade" id="addFacultyModal" tabindex="-1" aria-labelledby="addFacultyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 7px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFacultyLabel">Add New Faculty</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="facultyForm">
+                    <div class="mb-3">
+                        <label for="facultyCode" class="form-label">Faculty Code</label>
+                        <input type="text" class="form-control" id="facultyCode" name="facultyCode">
+                    </div>
+                    <div class="mb-3">
+                        <label for="facultyName" class="form-label">Faculty Name</label>
+                        <input type="text" class="form-control" id="facultyName" name="facultyName" required>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn toggle-btn">Add Faculty</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

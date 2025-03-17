@@ -1,0 +1,34 @@
+<div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addFacultyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 7px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFacultyLabel">Add New Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="facultyForm">
+                    <div class="mb-3">
+                        <label for="facultyCode" class="form-label">Faculty Name</label>
+                        <select class="form-select" id="facultyCode" name="facultyCode">
+                            <option value="faculty1">-</option>
+                            <option value="faculty1">Faculty 1</option>
+                            <option value="faculty2">Faculty 2</option>
+                            <option value="faculty3">Faculty 3</option>
+                        </select></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="facultyCode" class="form-label">Department Code</label>
+                        <input type="text" class="form-control" id="facultyCode" name="facultyCode">
+                    </div>
+                    <div class="mb-3">
+                        <label for="facultyName" class="form-label">Department Name</label>
+                        <input type="text" class="form-control" id="facultyName" name="facultyName" required>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn toggle-btn">Add Department</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
