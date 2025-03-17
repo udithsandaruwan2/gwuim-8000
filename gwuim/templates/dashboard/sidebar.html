@@ -1,0 +1,115 @@
+{% load static %}
+
+<!-- Sidebar Start -->
+<aside class="left-sidebar">
+    <!-- Sidebar scroll-->
+    <div>
+        <div class="brand-logo d-flex align-items-center justify-content-center mt-4">
+            <a href="{% url 'home' %}" class="text-nowrap logo-img">
+            <img src=" {% static 'theme_dashboard/assets/images/logos/logo.png' %} " width="190" alt="" />
+            </a>
+            <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+            <i class="ti ti-x fs-8"></i>
+            </div>
+        </div>
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+            <ul id="sidebarnav">
+
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Home</span>
+                </li>
+                <style>
+                    .sidebar-item:hover {
+                        background-color: none;
+                    }
+                
+                    sidebar-link:hover {
+                        background-color: none;
+                    }
+                
+                    .sidebar-item-n:hover .hide-menu {
+                        color: #ffffff;
+                    }
+                
+                    .sidebar-item-n:hover i {
+                        color: #ffffff;
+                    }
+                
+                    .sidebar-item-n:hover {
+                        background-color: rgba(147, 38, 38, 0.1);
+                    }
+                </style>
+
+                {% if page == 'dashboard' %}
+                <li  class="sidebar-item  active selected ">
+                    <a class="sidebar-link" href="{% url 'dashboard' %}" aria-expanded="false" style="background-color: #932626;">
+                        <span>
+                            <i class="ti ti-layout-dashboard"></i>
+                        </span>
+                        <span class="hide-menu">Dashboard</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="{% url 'dashboard' %}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-article"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">Dashboard</span>
+                    </a>
+                </li>
+
+                {% endif %}
+
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Leave Management</span>
+                </li>
+                
+                
+
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="#" aria-expanded="false" >
+                        <span>
+                            <i class="ti ti-article"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">Leave Requests</span>
+                    </a>
+                </li>
+
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Department Management</span>
+                </li>
+
+                {% if page == 'departments' %}
+                <li class="sidebar-item  active selected ">
+                    <a class="sidebar-link" href="{% url 'departments' %}" aria-expanded="false" style="background-color: #932626;">
+                        <span>
+                            <i class="ti ti-layout-dashboard"></i>
+                        </span>
+                        <span class="hide-menu">Dashboard</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="{% url 'departments' %}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-article"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">Departments</span>
+                    </a>
+                </li>
+                
+                {% endif %}
+                
+
+            </ul>
+        </nav>
+        <!-- End Sidebar navigation -->
+    </div>
+    <!-- End Sidebar scroll-->
+</aside>
+<!--  Sidebar End -->

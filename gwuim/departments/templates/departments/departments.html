@@ -1,0 +1,195 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+{% include 'dashboard/sidebar.html' %}
+
+<!-- Main wrapper -->
+<div class="body-wrapper">
+
+    {% include 'dashboard/header.html' %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h5 class="fw-semibold">Faculties and Departments</h5>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <button class="btn toggle-btn">
+                            <i class="fas fa-edit"></i> New Faculty</button>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <button class="btn toggle-btn">
+                            <i class="fas fa-edit"></i> New Department</button>
+                    </div>
+                </div>
+
+                <style>
+                    .toggle-btn {
+                        background-color: #932626;
+                        color: #ffffff;
+                        border-color: #932626;
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .toggle-btn:hover {
+                        background-color: #ffffff;
+                        color: #932626;
+                        border-color: #932626;
+                    }
+
+                    .toggle-content {
+                        max-height: 0;
+                        overflow: hidden;
+                        transition: max-height 0.5s ease-in-out;
+                    }
+
+                    .toggle-content.show {
+                        max-height: 500px;
+                        /* Adjust based on content size */
+                    }
+                    .edit-btn {
+        transition: opacity 0.5s ease-in-out;
+    }
+                </style>
+
+                <!-- Sample Faculties -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h5 class="card-title">Faculty of Engineering</h5>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button class="btn toggle-btn edit-btn" id="edit-dept-1" data-faculty="Faculty of Engineering" style="opacity: 0;">
+                                    <i class="fas fa-edit"></i> Edit</button>
+                            </div>
+                        </div>
+
+                        <button class="btn toggle-btn" data-target="dept-1">Toggle Departments</button>
+                        <ul class="list-group mt-3 toggle-content" id="dept-1" >
+
+                            <li class="list-group-item">Computer Science</li>
+                            <li class="list-group-item">Mechanical Engineering</li>
+                            <li class="list-group-item">Electrical Engineering</li>
+
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Faculty of Science</h5>
+                        <button class="btn toggle-btn" data-target="dept-2">Toggle Departments</button>
+                        <ul class="list-group mt-3 toggle-content" id="dept-2">
+                            <li class="list-group-item">Physics</li>
+                            <li class="list-group-item">Chemistry</li>
+                            <li class="list-group-item">Biology</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Faculty of Business</h5>
+                        <button class="btn toggle-btn" data-target="dept-3">Toggle Departments</button>
+                        <ul class="list-group mt-3 toggle-content" id="dept-3">
+                            <li class="list-group-item">Finance</li>
+                            <li class="list-group-item">Marketing</li>
+                            <li class="list-group-item">Human Resource Management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'dashboard/footer.html' %}
+    <!-- Placeholder for AJAX-loaded content -->
+    <div id="data-container"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".toggle-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let targetId = this.getAttribute("data-target");
+                if (!targetId) return;
+
+                let target = document.getElementById(targetId);
+                let editButton = document.getElementById("edit-" + targetId);
+
+                if (!target) return;
+
+                target.classList.toggle("show");
+
+                if (editButton) {
+                    if (target.classList.contains("show")) {
+                        editButton.style.display = "inline-block";
+                        setTimeout(() => {
+                            editButton.style.opacity = "1";
+                        }, 50);
+                    } else {
+                        editButton.style.opacity = "0";
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll(".edit-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let facultyName = this.getAttribute("data-faculty");
+                let targetId = this.id.replace("edit-", "");
+                let target = document.getElementById(targetId);
+
+                if (!target) return;
+
+                let listItems = target.querySelectorAll("li");
+                if (listItems.length === 0) return;
+
+                let inputFields = "";
+                listItems.forEach(li => {
+                    inputFields += `<input type="text" class="form-control mt-2 dept-input" value="${li.textContent}">`;
+                });
+
+                target.innerHTML = `${inputFields}
+                <button class="btn toggle-btn mt-2 save-btn  ">Save Changes</button>`;
+
+                // Add event listener for save button
+                target.querySelector(".save-btn").addEventListener("click", function () {
+                    saveChanges(targetId, facultyName);
+                });
+            });
+        });
+    });
+
+    // Function to save changes
+    function saveChanges(targetId, facultyName) {
+        let target = document.getElementById(targetId);
+        if (!target) return;
+
+        let inputs = target.querySelectorAll(".dept-input");
+        let updatedDepartments = [];
+
+        inputs.forEach(input => {
+            updatedDepartments.push(input.value);
+        });
+
+        console.log(`Updated departments for ${facultyName}:`, updatedDepartments);
+        alert(`Changes saved for ${facultyName}`);
+
+        // Convert inputs back to list items
+        let newList = updatedDepartments.map(dept => `<li class="list-group-item">${dept}</li>`).join("");
+
+        target.innerHTML = newList;
+    }
+
+ 
+</script>
+
+{% endblock content %}
