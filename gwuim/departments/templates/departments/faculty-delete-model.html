@@ -1,4 +1,4 @@
-<div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addFacultyLabel" aria-hidden="true">
+<div class="modal fade" id="deleteDepartmentModal" tabindex="-1" aria-labelledby="addFacultyLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" style="border-radius: 7px;">
             <div class="modal-header">
@@ -16,16 +16,8 @@
                             <option value="faculty3">Faculty 3</option>
                         </select></select>
                     </div>
-                    <div class="mb-3">
-                        <label for="facultyCode" class="form-label">Department Code</label>
-                        <input type="text" class="form-control" id="facultyCode" name="facultyCode">
-                    </div>
-                    <div class="mb-3">
-                        <label for="facultyName" class="form-label">Department Name</label>
-                        <input type="text" class="form-control" id="facultyName" name="facultyName" required>
-                    </div>
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn toggle-btn">Add Department</button>
+                        <a href="{% url 'delete_confirmation' %}" type="submit" class="btn toggle-btn">Delete Facalty</a>
                     </div>
                 </form>
             </div>
