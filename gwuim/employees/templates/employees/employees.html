@@ -12,6 +12,7 @@
 <div class="body-wrapper">
 
     {% include 'dashboard/header.html' %}
+    
     <style>
         .table {
             border-radius: 10px;
@@ -40,11 +41,35 @@
         .table tbody tr:last-child td:last-child {
             border-bottom-right-radius: 10px;
         }
+        .toggle-btn {
+                        background-color: #932626;
+                        color: #ffffff;
+                        border-color: #932626;
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .toggle-btn:hover {
+                        background-color: #ffffff;
+                        color: #932626;
+                        border-color: #932626;
+                    }
     </style>
 
 
     <div class="container-fluid">
-        <h5 class="fw-semibold mb-4">Employee List</h5>
+        <div class="row mb-4">
+            <div class="col-9">
+                <h5 class="mt-2">Employee List</h5>
+            </div>
+            <div class="col-3 text-end">
+                <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                    <i class="fas fa-plus"></i> New Employee
+                </button>
+            </div>
+        </div>
+
+        
+
 
         <div class="table-responsive">
             <table class="table table-bordered">
@@ -55,6 +80,7 @@
                         <th>Department Name</th>
                         <th>Gender</th>
                         <th>Leave Count</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,6 +91,7 @@
                         <td>{{ employee.department.name }}</td>
                         <td>{{ employee.gender }}</td>
                         <td>{{ employee.leave_balance }}</td>
+                        <td><a style="color: #932626;" href="#"><i class="fas fa-info-circle"></i> more</a></td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -75,45 +102,13 @@
             </table>
         </div>
 
-        <!-- Pagination -->
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page=1" aria-label="First">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                {% endif %}
-
-                {% for num in page_obj.paginator.page_range %}
-                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                </li>
-                {% endfor %}
-
-                {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
+        
     </div>
 
+    {% include 'employees/employee-add-model.html' %}
     {% include 'dashboard/footer.html' %}
+    {% include 'dashboard/pagination.html' with query_set=employees custom_range=custom_range %}
+
     <div id="data-container"></div>
 </div>
 

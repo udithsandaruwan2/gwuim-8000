@@ -55,11 +55,21 @@
         
      {% if page != 'departments' %}
 
-            <div class="search-container">
-                <img src="https://cdn-icons-png.flaticon.com/512/149/149852.png" class="icon" alt="Search">
-                <input type="text" placeholder="Search...">
-                
-            </div>
+            <form id="searchForm" class="form" method="GET">
+                <div class="search-container">
+                    <button type="submit" style="all: unset; cursor: pointer;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149852.png" class="icon" alt="Search">
+                    </button>
+
+                    <input value="{{search_query}}" type="text" id="first-name-horizontal" class="form-control rounded-pill" name="search"
+                        placeholder="Search by Employee name">
+                    <div class="m-2">
+                        <!-- <button class="btn btn-outline-secondary rounded-pill" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button> -->
+                    </div>
+                </div>
+            </form>
 
             {% endif %}
    

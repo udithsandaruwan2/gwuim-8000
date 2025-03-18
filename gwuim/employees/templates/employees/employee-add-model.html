@@ -1,0 +1,58 @@
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addFacultyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 7px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFacultyLabel">Add New Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="facultyForm" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="action" value="addEmployee" hidden>
+                    <div class="mb-3">
+                        <label for="employeeCode" class="form-label">Employee Code</label>
+                        <input type="text" class="form-control" id="employeeCode" name="employeeCode">
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeeName" class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" id="employeeName" name="employeeName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeeEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="employeeEmail" name="employeeEmail">
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeeGender" class="form-label">Gender</label>
+                        <select class="form-control" id="employeeGender" name="employeeGender">
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeePosition" class="form-label">Position</label>
+                        <input type="text" class="form-control" id="employeePosition" name="employeePosition">
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeeDepartment" class="form-label">Department</label>
+                        <select class="form-control" id="employeeDepartment" name="employeeDepartment">
+                            <option value="">Select Department</option>
+                            <option value="hr">HR</option>
+                            <option value="engineering">Engineering</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="sales">Sales</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="employeeStartDate" class="form-label">Joined/Joining Date</label>
+                        <input type="date" class="form-control" id="employeeStartDate" name="employeeStartDate">
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn toggle-btn">Add Employee</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
