@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Employee, LeaveType, LeaveRequest
-from .utils import searchEmployees, paginateEmployees
+from .utils import searchEmployees, paginateEmployees, get_yearly_leave
 from .forms import EmployeeForm
 from django.utils import timezone
 from django.http import HttpResponse
@@ -39,10 +39,16 @@ def employeeIndetail(request, pk):
     page = 'employees'
     page_title = 'Employee Details'
 
+    months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     current_year = timezone.now().year
     employee = Employee.objects.get(uid=pk)
     profile = request.user.profile
     leave_types = LeaveType.objects.all()
+
+    yearly_leave = get_yearly_leave(employee, 2025)
+    print(yearly_leave)
+
+    filtered_data = {k: v for k, v in yearly_leave.items() if isinstance(v, dict) and 1 in v.values()}
 
     #Handling POST request
     if request.method == 'POST':
@@ -50,7 +56,7 @@ def employeeIndetail(request, pk):
             request_type = request.POST.get('requestType')
             leave_type = LeaveType.objects.get(uid=request.POST.get('leaveType'))
             start_date = timezone.datetime.strptime(request.POST.get('startDate'), '%Y-%m-%d').date()
-            end_date = timezone.datetime.strptime(request.POST.get('endDate'), '%Y-%m-%d').date()
+            comming_date = timezone.datetime.strptime(request.POST.get('commingDate'), '%Y-%m-%d').date()
             reason = request.POST.get('reason')
             status = request.POST.get('status')
             LeaveRequest.objects.create(
@@ -60,7 +66,7 @@ def employeeIndetail(request, pk):
                 status=status,
                 leave_type=leave_type,
                 start_date=start_date,
-                end_date=end_date,
+                coming_date=comming_date,
                 request_type=request_type,
             )
         return redirect('employee-indetail', pk=pk)
@@ -73,16 +79,15 @@ def employeeIndetail(request, pk):
         'employee': employee,
         'profile': profile,
         'leave_types': leave_types,
+        'yearly_leave': yearly_leave,
+        'months': months,
+        'filtered_data': filtered_data,
     }
 
     return render(request, 'employees/employee-indetail.html', context)
 
 
-from django.templatetags.static import static
-from weasyprint import HTML
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-from django.utils import timezone
+
 
 def downloadReport(request, pk):
     try:

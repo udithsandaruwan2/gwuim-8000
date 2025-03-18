@@ -1,6 +1,8 @@
 {% extends 'dashboard/main.html' %}
 
 {% load static %}
+{% load custom_filters %}
+
 
 {% block content %}
 <div class="body-wrapper" style="margin: 0; padding: 0;">
@@ -51,27 +53,41 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for leave in leave_types %}
+                {% for leave_type in leave_types %}
                     <tr>
-                        <td> {{leave.name}} </td>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>0</td>
-                        <td>3</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>2</td>
-                    </tr>
-                    
-                    {% endfor %}
+                        <td>{{ leave_type.name }}</td>
+                        {% for month in months %}
+                        
+                            {% for key, value in filtered_data.items %}
+                                {% if month == key %}
+                                    {% for inner_key, inner_value in value.items %}
+                                            {% if inner_key == leave_type.uid %}
+                                                <td>{{ inner_value }}</td>
 
+                                            {% endif %}
+
+                                    {% endfor %}
+                                    {% else %}
+                                    <td>0</td>
+                                  
+                                {% endif %}
+                                
+                            {% endfor %}
+                        
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
                 </tbody>
+
+
+
+
+
+
+
+
             </table>
+
         </div>
         {% include 'dashboard/footer.html' %}
     </div>
