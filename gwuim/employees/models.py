@@ -19,7 +19,7 @@ class Employee(models.Model):
     address = models.TextField(null=True, blank=True)
     date_of_joining = models.DateField(null=True, blank=True)
     date_of_leaving = models.DateField(null=True, blank=True)
-    leave_balance = models.DecimalField(default=0, blank=True, null=True, max_digits=5, decimal_places=2)
+    leave_balance = models.DecimalField(default=21, blank=True, null=True, max_digits=5, decimal_places=2)
     position = models.CharField(max_length=255, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     # Common fields
@@ -41,8 +41,10 @@ class LeaveType(models.Model):
     def __str__(self):
         return str(self.name)
     
+from django.db import models, transaction
+
 class LeaveRequest(models.Model):
-    #Choices
+    # Choices
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('approved', 'Approved'),
@@ -52,33 +54,50 @@ class LeaveRequest(models.Model):
         ('half', 'Half Day'),
         ('full', 'Full Day'),
     ]
-    
+
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
     start_date = models.DateField(null=False, blank=False)
-    end_date = models.DateField(null=False, blank=False)
+    coming_date = models.DateField(null=False, blank=False)
     request_type = models.CharField(max_length=10, choices=REQUEST_TYPE_CHOICES, default='full')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='approved')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     reason = models.TextField(null=True, blank=True)
     systemized_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
-    
+
     # Common fields
     uid = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return f"{self.employee.full_name} - {self.leave_type.name} ({self.status} for {self.total_days} days)"
-    
+
     @property
     def total_days(self):
         """Calculate the total number of leave days."""
-        if self.start_date and self.end_date:
-            days = (self.end_date - self.start_date).days + 1
+        if self.start_date and self.coming_date:
+            days = (self.coming_date - self.start_date).days
             if self.request_type == 'half':
                 return days - 0.5
             return days
-        return 0 
+        return 0
+
+    def save(self, *args, **kwargs):
+        """Override save method to update leave balance."""
+        if self.pk is None:  # Only update leave balance for new requests
+            with transaction.atomic():
+                if self.status == 'approved':  # Only deduct if approved
+                    self.employee.leave_balance -= self.total_days
+                    self.employee.save()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        """Restore leave balance if a request is deleted."""
+        with transaction.atomic():
+            if self.status == 'approved':  # Restore balance only if approved
+                self.employee.leave_balance += self.total_days
+                self.employee.save()
+        super().delete(*args, **kwargs)
 
 class LeaveAdjustment(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
