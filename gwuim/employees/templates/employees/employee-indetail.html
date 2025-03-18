@@ -1,0 +1,222 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="body-wrapper" style="margin: 0; padding: 0;">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-6 d-flex align-items-center">
+                <img src="{% static 'theme_dashboard/assets/images/logos/logo.png' %}" width="190" alt="Company Logo" />
+            </div>
+            <div class="col-6 text-end">
+                <!-- Visible on Web Page -->
+                <button class="btn btn-primary me-2 toggle-btn" data-bs-toggle="modal" data-bs-target="#addLeaveModal">
+                    <i class="fas fa-plus"></i> Add Leave
+                </button>
+                <button class="btn btn-secondary me-2 toggle-btn">
+                    <i class="fas fa-undo"></i> Return Leave
+                </button>
+
+                <!-- Report Download Button -->
+                <a href="{% url 'download_report' pk %}" class="btn toggle-btn">
+                    <i class="fas fa-download"></i> Download Report
+                </a>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <h6 class="mb-0 ms-3 text-center">{{ employee.full_name }} ( {{ employee.uid }} ) - {{ current_year }}</h6>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Leave Types</th>
+                        <th>January</th>
+                        <th>February</th>
+                        <th>March</th>
+                        <th>April</th>
+                        <th>May</th>
+                        <th>June</th>
+                        <th>July</th>
+                        <th>August</th>
+                        <th>September</th>
+                        <th>October</th>
+                        <th>November</th>
+                        <th>December</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sick Leave</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>0</td>
+                        <td>3</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Casual Leave</td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>3</td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Annual Leave</td>
+                        <td>3</td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>3</td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>2</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% include 'dashboard/footer.html' %}
+    </div>
+
+    
+</div>
+
+{% include 'employees/leave-add-model.html' %}
+
+<style>
+    .toggle-btn {
+                        background-color: #932626;
+                        color: #ffffff;
+                        border-color: #932626;
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .toggle-btn:hover {
+                        background-color: #ffffff;
+                        color: #932626;
+                        border-color: #932626;
+                    }
+    /* Table Styling */
+    .table {
+        border-radius: 10px;
+        overflow: hidden;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #dee2e6;
+    }
+
+    .table thead th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    .table thead th:last-child {
+        border-top-right-radius: 10px;
+    }
+
+    .table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 10px;
+    }
+
+    .table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 10px;
+    }
+
+    .table td {
+        text-align: center;
+    }
+
+    /* Print Styling */
+    @media print {
+    .toggle-btn {
+        display: none;  /* Hide buttons in the report */
+    }
+    
+    .body-wrapper {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+    }
+
+    .table {
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .table th, .table td {
+        text-align: center;
+        padding: 8px;
+    }
+
+    .container-fluid {
+        page-break-before: always;
+    }
+
+    .col-4, .col-2, .col-6 {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 0;
+    }
+
+    /* Adjust widths for landscape */
+    .table th:first-child, .table td:first-child {
+        width: 20%;
+    }
+
+    /* Other adjustments as needed */
+}
+
+
+    /* Adjust the width of the "Leave Types" column */
+    .table th:first-child,
+    .table td:first-child {
+        width: 20%;
+    }
+</style>
+
+<script>
+    function downloadReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape', 'mm', 'a4');
+
+            doc.html(document.querySelector('.body-wrapper'), {
+                callback: function (doc) {
+                    doc.save('leave_report.pdf');
+                },
+                x: 10,
+                y: 10,
+                width: 180,  // Adjust width of content
+                windowWidth: 900  // Specify the width of the window for proper rendering
+            });
+        }
+
+</script>
+
+{% endblock content %}

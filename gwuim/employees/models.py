@@ -19,7 +19,7 @@ class Employee(models.Model):
     address = models.TextField(null=True, blank=True)
     date_of_joining = models.DateField(null=True, blank=True)
     date_of_leaving = models.DateField(null=True, blank=True)
-    leave_balance = models.IntegerField(default=0, blank=True)
+    leave_balance = models.DecimalField(default=0, blank=True, null=True, max_digits=5, decimal_places=2)
     position = models.CharField(max_length=255, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     # Common fields
@@ -55,12 +55,13 @@ class LeaveRequest(models.Model):
     
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(null=False, blank=False)
+    end_date = models.DateField(null=False, blank=False)
     request_type = models.CharField(max_length=10, choices=REQUEST_TYPE_CHOICES, default='full')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='approved')
     reason = models.TextField(null=True, blank=True)
     systemized_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
+    
     # Common fields
     uid = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)

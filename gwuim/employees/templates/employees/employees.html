@@ -91,7 +91,7 @@
                         <td>{{ employee.department.name }}</td>
                         <td>{{ employee.gender }}</td>
                         <td>{{ employee.leave_balance }}</td>
-                        <td><a style="color: #932626;" href="#"><i class="fas fa-info-circle"></i> more</a></td>
+                        <td><a style="color: #932626;" href="{% url 'employee-indetail' employee.uid %}"><i class="fas fa-info-circle"></i> more</a></td>
                     </tr>
                     {% empty %}
                     <tr>
