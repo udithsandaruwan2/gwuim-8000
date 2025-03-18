@@ -1,0 +1,60 @@
+<div class="modal fade" id="addLeaveModal" tabindex="-1" aria-labelledby="addFacultyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 7px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFacultyLabel">Add a Leave</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="employeeForm" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="action" value="addLeaveRequest" hidden>
+                
+                    <div class="mb-3">
+                        <label for="facultyNameSelect" class="form-label">Leave Type</label>
+                        <select class="form-select" id="facultyNameSelect" name="leaveType">
+                            {% for leave in leave_types %}
+                            <option value="{{leave.uid}}">{{leave.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate">
+                    </div>
+                
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate">
+                    </div>
+                
+                    <div class="mb-3">
+                        <label for="requestType" class="form-label">Request Type</label>
+                        <select class="form-select" id="requestType" name="requestType">
+                            <option value="full">Full Day</option>
+                            <option value="half">Half Day</option>
+                        </select>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="approved">Approved</option>
+                        </select>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Reason</label>
+                        <textarea class="form-control" id="reason" name="reason" rows="3"></textarea>
+                    </div>
+                
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn toggle-btn">Add Leave</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

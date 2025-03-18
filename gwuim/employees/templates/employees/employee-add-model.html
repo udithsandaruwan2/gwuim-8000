@@ -1,0 +1,22 @@
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addFacultyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 7px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFacultyLabel">Add New Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="employeeForm" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="action" value="addEmployee" hidden>
+                   
+                    {{employee_form.as_p}}
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn toggle-btn">Add Employee</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
