@@ -58,27 +58,18 @@ def get_monthly_leave(employee, year=None, month=None):
 
     # Dictionary to store leave days based on leave type
     leave_summary = {}
+    
 
     for leave in leave_requests:
-        # Get the actual start and end for this month
-        effective_start = max(leave.start_date, first_day_of_month)
-        effective_end = min(leave.coming_date, last_day_of_month)
-
-        days_in_month = (effective_end - effective_start).days # Inclusive of both days
-
-        # Add to the leave type category
-        leave_type = leave.leave_type.uid  # e.g., 'full', 'half', 'sick', etc.
-        
-        if leave_type not in leave_summary:
+        request_type = leave.request_type # e.g., 'full', 'half', 'sick', etc.
+        leave_type = leave.leave_type.uid
+        if leave_type and request_type not in leave_summary:
             leave_summary[leave_type] = 0
-
-        if leave_type == 'half':
-            leave_summary[leave_type] += days_in_month - 0.5
         else:
-            leave_summary[leave_type] += days_in_month
+            leave_summary[leave_type] += leave.total_days
+
 
     return leave_summary
-
 
 def get_yearly_leave(employee, year=None):
     if not year:
@@ -87,3 +78,21 @@ def get_yearly_leave(employee, year=None):
     yearly_leaves = {month: get_monthly_leave(employee, year, month) for month in range(1, 13)}
 
     return yearly_leaves
+
+
+def process_leave_data(data):
+    # Step 1: Identify all unique leave types
+    leave_types = set()
+    for month_data in data.values():
+        leave_types.update(month_data.keys())
+
+    # Step 2: Create dynamically named arrays for each leave type (initialized with 0 for 12 months)
+    leave_balances = {leave_type: [0] * 12 for leave_type in leave_types}
+
+    # Step 3: Populate leave balances for each month
+    for month in range(1, 13):  # Ensure all months are processed
+        inner_dict = data.get(month, {})  # Get data for the month or an empty dict
+        for leave_type in leave_types:
+            leave_balances[leave_type][month - 1] = inner_dict.get(leave_type, 0)  # Default to 0 if empty
+
+    return leave_balances  # Returns a dictionary of dynamically generated arrays

@@ -58,21 +58,11 @@
                         <td>{{ leave_type.name }}</td>
                         {% for month in months %}
                         
-                            {% for key, value in filtered_data.items %}
-                                {% if month == key %}
-                                    {% for inner_key, inner_value in value.items %}
-                                            {% if inner_key == leave_type.uid %}
-                                                <td>{{ inner_value }}</td>
-
-                                            {% endif %}
-
-                                    {% endfor %}
-                                    {% else %}
                                     <td>0</td>
                                   
-                                {% endif %}
+                            
                                 
-                            {% endfor %}
+                            
                         
                         {% endfor %}
                     </tr>
@@ -93,6 +83,55 @@
     </div>
 
     
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leave Balances</title>
+</head>
+
+<body>
+    <h2>Leave Balances</h2>
+
+    {% for leave_type, balances in leave_data.items %}
+    <h3>{{ leave_type }}</h3>
+        <ul>
+            {% for balance in balances %}
+            <li>{{ balance|default:0 }}</li>
+            {% endfor %}
+        </ul>
+    {% empty %}
+    <h3>No leave data available</h3>
+    {% endfor %}
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </div>
 
 {% include 'employees/leave-add-model.html' %}

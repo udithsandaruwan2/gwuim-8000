@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Employee, LeaveType, LeaveRequest
-from .utils import searchEmployees, paginateEmployees, get_yearly_leave
+from .utils import searchEmployees, paginateEmployees, get_yearly_leave , process_leave_data
 from .forms import EmployeeForm
 from django.utils import timezone
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
+
 
 @login_required(login_url='login')
 def employees(request):
@@ -45,10 +46,13 @@ def employeeIndetail(request, pk):
     profile = request.user.profile
     leave_types = LeaveType.objects.all()
 
-    yearly_leave = get_yearly_leave(employee, 2025)
-    print(yearly_leave)
+    data = get_yearly_leave(employee, 2025)
+    print(data)
 
-    filtered_data = {k: v for k, v in yearly_leave.items() if isinstance(v, dict) and 1 in v.values()}
+
+    leave_data = process_leave_data(data)
+    print(leave_data)
+    
 
     #Handling POST request
     if request.method == 'POST':
@@ -79,9 +83,8 @@ def employeeIndetail(request, pk):
         'employee': employee,
         'profile': profile,
         'leave_types': leave_types,
-        'yearly_leave': yearly_leave,
         'months': months,
-        'filtered_data': filtered_data,
+        'leave_data': leave_data,
     }
 
     return render(request, 'employees/employee-indetail.html', context)
