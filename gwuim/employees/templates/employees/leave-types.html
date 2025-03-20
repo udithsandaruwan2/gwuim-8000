@@ -1,0 +1,128 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+{% include 'dashboard/sidebar.html' %}
+
+<!-- Main wrapper -->
+<div class="body-wrapper">
+    {% include 'dashboard/header.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <h5 class="fw-semibold">Leave Types</h5>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-end gap-2">
+                        <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addLeaveTypeModal">
+                            <i class="fas fa-plus"></i> New Leave Type
+                        </button>
+                    </div>
+                </div>
+
+                <style>
+                    .toggle-btn {
+                        background-color: #932626;
+                        color: #ffffff;
+                        border-color: #932626;
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .toggle-btn:hover {
+                        background-color: #ffffff;
+                        color: #932626;
+                        border-color: #932626;
+                    }
+
+                    .edit-btn {
+                        transition: opacity 0.5s ease-in-out;
+                    }
+                </style>
+
+                {% for leave_type in leave_types %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="card-title text-right mt-2">{{ leave_type.name }}</h5>
+                            </div>
+                            <div class="col-md-6 text-end">
+                        <button class="btn toggle-btn edit-btn m-1" id="edit-{{ leave_type.uid }}" data-leave-type="{{ leave_type.uid }}"
+                                    style="opacity: 1;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+            
+                                    <button class="btn toggle-btn edit-btn" id="edit-{{ leave_type.uid }}" data-leave-type="{{ leave_type.uid }}"
+                                        style="opacity: 1;">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% include 'dashboard/footer.html' %}
+    {% include 'employees/leavetype-add-model.html' %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".edit-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let leaveTypeId = this.getAttribute("data-leave-type");
+                let target = document.getElementById("edit-" + leaveTypeId);
+
+                if (!target) return;
+
+                let inputField = `<input type="text" class="form-control mt-2 leave-input" value="${target.previousElementSibling.textContent.trim()}" data-leave-type-uid="${leaveTypeId}">`;
+                target.parentElement.innerHTML = `${inputField}
+                <button class='btn toggle-btn mt-2 save-btn'>Save</button>`;
+
+                document.querySelector(".save-btn").addEventListener("click", function () {
+                    saveChanges(leaveTypeId);
+                });
+            });
+        });
+    });
+
+    function saveChanges(leaveTypeId) {
+        let input = document.querySelector(".leave-input");
+        if (!input) return;
+
+        fetch('/leavetypes/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: JSON.stringify({
+                action: 'updateLeaveType',
+                leaveTypeUid: leaveTypeId,
+                name: input.value.trim(),
+            }),
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Changes saved successfully!');
+                    location.reload();
+                } else {
+                    alert('Error saving changes. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving changes.');
+            });
+    }
+</script>
+
+{% endblock content %}

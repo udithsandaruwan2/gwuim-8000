@@ -128,3 +128,17 @@ def downloadReport(request, pk):
     except Employee.DoesNotExist:
         # Handle the case where the employee with the given pk does not exist
         return HttpResponse("Employee not found.", status=404)
+
+def leaveTypes(request):
+    page = 'leave_types'
+    page_title = 'Leave Types'
+
+    leave_types = LeaveType.objects.all()
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'leave_types': leave_types,
+    }
+
+    return render(request, 'employees/leave-types.html', context)

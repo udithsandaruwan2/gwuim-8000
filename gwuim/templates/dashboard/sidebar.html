@@ -55,7 +55,7 @@
                 <li class="sidebar-item sidebar-item-n">
                     <a class="sidebar-link sidebar-link-n" href="{% url 'dashboard' %}" aria-expanded="false">
                         <span>
-                            <i class="ti ti-article"></i>
+                            <i class="ti ti-layout-dashboard"></i>
                         </span>
                         <span class="hide-menu hide-menu-n">Dashboard</span>
                     </a>
@@ -79,31 +79,7 @@
                     </a>
                 </li>
 
-                <li class="nav-small-cap">
-                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                    <span class="hide-menu">Department Management</span>
-                </li>
-
-                {% if page == 'departments' %}
-                <li class="sidebar-item  active selected ">
-                    <a class="sidebar-link" href="{% url 'departments' %}" aria-expanded="false" style="background-color: #932626;">
-                        <span>
-                            <i class="ti ti-layout-dashboard"></i>
-                        </span>
-                        <span class="hide-menu">Dashboard</span>
-                    </a>
-                </li>
-                {% else %}
-                <li class="sidebar-item sidebar-item-n">
-                    <a class="sidebar-link sidebar-link-n" href="{% url 'departments' %}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-article"></i>
-                        </span>
-                        <span class="hide-menu hide-menu-n">Departments</span>
-                    </a>
-                </li>
                 
-                {% endif %}
                 
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
@@ -114,7 +90,7 @@
                 <li class="sidebar-item  active selected ">
                     <a class="sidebar-link" href="{% url 'employees' %}" aria-expanded="false" style="background-color: #932626;">
                         <span>
-                            <i class="ti ti-layout-dashboard"></i>
+                            <i class="ti ti-user"></i>
                         </span>
                         <span class="hide-menu">Employees</span>
                     </a>
@@ -123,9 +99,61 @@
                 <li class="sidebar-item sidebar-item-n">
                     <a class="sidebar-link sidebar-link-n" href="{% url 'employees' %}" aria-expanded="false">
                         <span>
-                            <i class="ti ti-article"></i>
+                            <i class="ti ti-user"></i>
                         </span>
                         <span class="hide-menu hide-menu-n">Employees</span>
+                    </a>
+                </li>
+                
+                {% endif %}
+
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Department Management</span>
+                </li>
+                
+                {% if page == 'departments' %}
+                <li class="sidebar-item  active selected ">
+                    <a class="sidebar-link" href="{% url 'departments' %}" aria-expanded="false" style="background-color: #932626;">
+                        <span>
+                            <i class="ti ti-building"></i>
+                        </span>
+                        <span class="hide-menu">Departments</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="{% url 'departments' %}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-building"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">Departments</span>
+                    </a>
+                </li>
+                
+                {% endif %}
+
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Leave Management</span>
+                </li>
+                
+                {% if page == 'leave_types' %}
+                <li class="sidebar-item  active selected ">
+                    <a class="sidebar-link" href="{% url 'leave-types' %}" aria-expanded="false" style="background-color: #932626;">
+                        <span>
+                            <i class="ti ti-briefcase"></i>
+                        </span>
+                        <span class="hide-menu">Leave Types</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="{% url 'leave-types' %}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-briefcase"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">Leave Types</span>
                     </a>
                 </li>
                 
