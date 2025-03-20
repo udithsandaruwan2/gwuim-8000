@@ -1,5 +1,41 @@
 {% if query_set.has_other_pages %}
 
+<style>
+    .pagination-primary .page-link {
+    border: 1px solid #932626 ;
+    border-radius: 7px;
+    background-color: #ffffff;
+    border-color: #932626;
+    color: #932626;
+    font-weight: 500;
+}
+
+.pagination-primary .page-link:hover {
+    border-radius: 7px;
+    background-color: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #fff;
+}
+
+.pagination-primary .active .page-link {
+    border: 1px solid #932626 ;
+    border-radius: 7px;
+    background-color: #650d0d;
+    border-color: #650d0d;
+    color: #fff;
+}
+
+.pagination-primary .disabled .page-link {
+    border: 1px solid #932626 ;
+    border-radius: 7px;
+    background-color: #ffffff;
+    border-color: #b38b8b;
+    color: #932626;
+    opacity: 0.6;
+}
+
+</style>
+
 <nav aria-label="Page navigation example">
     <ul class="pagination pagination-primary  justify-content-end">
 

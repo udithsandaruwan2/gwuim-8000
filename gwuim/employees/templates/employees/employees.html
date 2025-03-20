@@ -100,6 +100,7 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% include 'dashboard/pagination.html' with query_set=employees custom_range=custom_range %}
         </div>
 
         
@@ -107,7 +108,7 @@
 
     {% include 'employees/employee-add-model.html' %}
     {% include 'dashboard/footer.html' %}
-    {% include 'dashboard/pagination.html' with query_set=employees custom_range=custom_range %}
+    
 
     <div id="data-container"></div>
 </div>
