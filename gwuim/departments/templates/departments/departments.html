@@ -168,46 +168,6 @@
         });
     });
 
-    function saveChanges(targetId, facultyName) {
-        let target = document.getElementById(targetId);
-        if (!target) return;
-
-        let inputs = target.querySelectorAll(".dept-input");
-        let updatedDepartments = [];
-
-        inputs.forEach(input => {
-            updatedDepartments.push({
-                uid: input.getAttribute('data-department-uid'),
-                name: input.value.trim()
-            });
-        });
-
-        fetch('/departments/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-            body: JSON.stringify({
-                action: 'updateDepartments',
-                facultyUid: facultyName,
-                updatedDepartments: updatedDepartments,
-            }),
-        })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    alert('Changes saved successfully!');
-                    location.reload();
-                } else {
-                    alert('Error saving changes. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while saving changes.');
-            });
-    }
 </script>
 
 {% endblock content %}

@@ -33,6 +33,7 @@ class Employee(models.Model):
         return f"{self.full_name} ({self.employee_code})"
 
 class LeaveType(models.Model):
+    code = models.CharField(max_length=10, null=True, blank=True)
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
     # Common fields
