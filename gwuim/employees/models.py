@@ -115,19 +115,16 @@ class LeaveAdjustment(models.Model):
     def __str__(self):
         return f"Adjustment for {self.employee.full_name}"
 
-from django.db import models
-from django.db.models import Sum
-from django.dispatch import receiver
-from django.db.models.signals import post_save, post_delete
-from datetime import date
-
 class MonthlyLeaveSummary(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     year = models.IntegerField()
     month = models.IntegerField()
     request_type = models.CharField(max_length=10, choices=LeaveRequest.REQUEST_TYPE_CHOICES)
     total_days = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
-
+    # Common fields
+    uid = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     class Meta:
         unique_together = ('employee', 'year', 'month', 'request_type')
 
