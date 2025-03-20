@@ -1,6 +1,8 @@
 {% extends 'dashboard/main.html' %}
 
 {% load static %}
+{% load custom_filters %}
+
 
 {% block content %}
 <div class="body-wrapper" style="margin: 0; padding: 0;">
@@ -51,32 +53,85 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for leave in leave_types %}
+                {% for leave_type in leave_types %}
                     <tr>
-                        <td> {{leave.name}} </td>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>0</td>
-                        <td>3</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>2</td>
+                        <td>{{ leave_type.name }}</td>
+                        {% for month in months %}
+                        
+                                    <td>0</td>
+                                  
+                            
+                                
+                            
+                        
+                        {% endfor %}
                     </tr>
-                    
-                    {% endfor %}
-
+                {% endfor %}
                 </tbody>
+
+
+
+
+
+
+
+
             </table>
+
         </div>
         {% include 'dashboard/footer.html' %}
     </div>
 
     
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leave Balances</title>
+</head>
+
+<body>
+    <h2>Leave Balances</h2>
+
+    {% for leave_type, balances in leave_data.items %}
+    <h3>{{ leave_type }}</h3>
+        <ul>
+            {% for balance in balances %}
+            <li>{{ balance|default:0 }}</li>
+            {% endfor %}
+        </ul>
+    {% empty %}
+    <h3>No leave data available</h3>
+    {% endfor %}
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </div>
 
 {% include 'employees/leave-add-model.html' %}
