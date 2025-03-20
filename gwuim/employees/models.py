@@ -114,3 +114,19 @@ class LeaveAdjustment(models.Model):
 
     def __str__(self):
         return f"Adjustment for {self.employee.full_name}"
+
+class MonthlyLeaveSummary(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    year = models.IntegerField()
+    month = models.IntegerField()
+    request_type = models.CharField(max_length=10, choices=LeaveRequest.REQUEST_TYPE_CHOICES)
+    total_days = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
+    # Common fields
+    uid = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        unique_together = ('employee', 'year', 'month', 'request_type')
+
+    def __str__(self):
+        return f"{self.employee.full_name} - {self.year}-{self.month} ({self.request_type}) : {self.total_days} days"
