@@ -8,23 +8,23 @@
             <div class="modal-body">
                 <form id="facultyForm" method="POST">
                     {% csrf_token %}
-
                     <input type="text" name="action" value="addLeaveType" hidden>
                     <div class="mb-3">
-                        <label for="facultyCode" class="form-label">Department Code</label>
-                        <input type="text" class="form-control" id="facultyCode" name="departmentCode">
+                        <label for="facultyCode" class="form-label">Leave Type Code</label>
+                        <input type="text" class="form-control" id="facultyCode" name="leaveTypeCode">
                     </div>
                     <div class="mb-3">
-                        <label for="departmentName" class="form-label">Department Name</label>
-                        <input type="text" class="form-control" id="departmentName" name="departmentName" required>
+                        <label for="departmentName" class="form-label">Leave Type Name</label>
+                        <input type="text" class="form-control" id="departmentName" name="leaveTypeName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="leaveTypeDescription" class="form-label">Leave Type Description</label>
+                        <textarea class="form-control" id="leaveTypeDescription" name="leaveTypeDescription" rows="3"></textarea>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn toggle-btn">Add Department</button>
+                        <button type="submit" class="btn toggle-btn">Add Leave Type</button>
                     </div>
                 </form>
-
-
-
             </div>
         </div>
     </div>

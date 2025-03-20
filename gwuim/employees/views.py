@@ -133,6 +133,13 @@ def leaveTypes(request):
     page = 'leave_types'
     page_title = 'Leave Types'
 
+    if request.method == 'POST':
+        if request.POST.get('action') == 'addLeaveType':
+            code = request.POST.get('leaveTypeCode')
+            name = request.POST.get('leaveTypeName')
+            description = request.POST.get('leaveTypeDescription')
+            LeaveType.objects.create(code=code, name=name, description=description)
+
     leave_types = LeaveType.objects.all()
 
     context = {

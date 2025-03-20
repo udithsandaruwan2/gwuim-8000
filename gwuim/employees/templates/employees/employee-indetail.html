@@ -84,54 +84,6 @@
 
     
 
-
-
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Leave Balances</title>
-</head>
-
-<body>
-    <h2>Leave Balances</h2>
-
-    {% for leave_type, balances in leave_data.items %}
-    <h3>{{ leave_type }}</h3>
-        <ul>
-            {% for balance in balances %}
-            <li>{{ balance|default:0 }}</li>
-            {% endfor %}
-        </ul>
-    {% empty %}
-    <h3>No leave data available</h3>
-    {% endfor %}
-</body>
-
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
 
 {% include 'employees/leave-add-model.html' %}
