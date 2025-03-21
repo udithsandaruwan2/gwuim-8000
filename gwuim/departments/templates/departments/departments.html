@@ -78,14 +78,14 @@
                         </div>
 
                         <button class="btn toggle-btn" id="toggle-{{ faculty.uid }}"
-                            data-target="dept-{{ faculty.uid }}">Toggle Departments</button>
+                            data-target="dept-{{ faculty.uid }}">See Departments</button>
                         <ul class="list-group mt-3 toggle-content" id="dept-{{ faculty.uid }}">
                             {% if faculty_departments|get_item:faculty.uid %}
                             {% for department in faculty_departments|get_item:faculty.uid %}
                             <li class="list-group-item d-flex justify-content-between align-items-center"
                                 data-department-uid="{{ department.uid }}">
                                 {{ department.name }}
-                                <a href="{% url 'delete_confirmation' %}" class="btn toggle-btn delete-btn"
+                                <a href="{% url 'delete_department' department.uid %}" class="btn toggle-btn delete-btn"
                                     data-faculty="{{ faculty.uid }}" style="opacity: 1;">
                                     <i class="fas fa-trash"></i> Delete
                                 </a>
@@ -129,7 +129,7 @@
                     if (target.classList.contains("show")) {
                         editButton.style.display = "inline-block";
                         setTimeout(() => {
-                            editButton.style.opacity = "1";
+                            editButton.style.opacity = "0";
                         }, 50);
                     } else {
                         editButton.style.opacity = "0";

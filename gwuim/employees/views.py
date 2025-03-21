@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Employee, LeaveType, LeaveRequest
 from .utils import searchEmployees, paginateEmployees, get_yearly_leave , process_leave_data
-from .forms import EmployeeForm
+from .forms import EmployeeForm, LeaveTypeForm
 from django.utils import timezone
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import LeaveType
 
 
 @login_required(login_url='login')
@@ -134,7 +136,8 @@ def leaveTypes(request):
     page_title = 'Leave Types'
 
     if request.method == 'POST':
-        if request.POST.get('action') == 'addLeaveType':
+        action = request.POST.get('action')
+        if action == 'addLeaveType':
             code = request.POST.get('leaveTypeCode')
             name = request.POST.get('leaveTypeName')
             description = request.POST.get('leaveTypeDescription')
@@ -149,3 +152,46 @@ def leaveTypes(request):
     }
 
     return render(request, 'employees/leave-types.html', context)
+
+def updateLeaveType(request, pk):
+    page = 'update_leave_type'
+    page_title = 'Update Leave Type'
+
+    leave_type = get_object_or_404(LeaveType, uid=pk)  # Ensures object exists
+
+    form = LeaveTypeForm(instance=leave_type)  # Prefill form with existing data
+
+    if request.method == 'POST':
+        form = LeaveTypeForm(request.POST, instance=leave_type)
+        if form.is_valid():
+            form.save()
+            return redirect('leave_types')
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'leave_type': leave_type,  # Pass object to template for display
+        'form': form,
+    }
+
+    return render(request, 'employees/update-leave-type.html', context)
+
+
+def deleteLeaveTypeConfirmation(request, pk):
+    page = 'delete_leave_type'
+    page_title = 'Delete Leave Type'
+
+    leave_type = get_object_or_404(LeaveType, uid=pk)  # Ensures object exists
+
+    if request.method == 'POST':
+        leave_type.delete()
+        return redirect('leave_types')  # Redirect after successful deletion
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'leave_type': leave_type,  # Pass object to template for display
+    }
+
+    return render(request, 'dashboard/delete-confirmation.html', context)
+

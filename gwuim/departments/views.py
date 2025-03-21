@@ -1,18 +1,17 @@
 import json
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Faculty, Department
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from .utils import search_faculties_departments
 
 @login_required(login_url='login')
 def departments(request):
     page = 'departments'
     page_title = 'Departments'
     
-    # Queries
-    faculties = Faculty.objects.all()
-    departments = Department.objects.all()
+    faculties, departments, search_query = search_faculties_departments(request)
 
     # Create a dictionary to map faculty to their departments
     faculty_departments = {faculty.uid: [] for faculty in faculties}
@@ -63,6 +62,7 @@ def departments(request):
         'page_title': page_title,
         'faculties': faculties,
         'faculty_departments': faculty_departments,  # Pass the mapping to the template
+        'search_query': search_query,
     }
     return render(request, 'departments/departments.html', context)
 
@@ -94,13 +94,37 @@ def update_departments(request):
         return JsonResponse({'success': False, 'message': 'Invalid action.'})
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
-@login_required(login_url='login')
-def deleteConfirmation(request):
-    page = 'delete_confirmation'
-    page_title = 'Delete Confirmation'
+
+def deleteDepartmentConfirmation(request, pk):
+    page = 'delete_department_type'
+    page_title = 'Delete Department Type'
+
+    department = get_object_or_404(Department, uid=pk)  # Ensures object exists
+
+    if request.method == 'POST':
+        department.delete()
+        return redirect('departments')  # Redirect after successful deletion
 
     context = {
         'page': page,
         'page_title': page_title,
     }
-    return render(request, 'delete-confirmation.html', context)
+
+    return render(request, 'dashboard/delete-confirmation.html', context)
+
+def deleteFacultyConfirmation(request, pk):
+    page = 'delete_faculty'
+    page_title = 'Delete Faculty'
+
+    faculty = get_object_or_404(Faculty, uid=pk)  # Ensures object exists
+
+    if request.method == 'POST':
+        faculty.delete()
+        return redirect('departments')  # Redirect after successful deletion
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+    }
+
+    return render(request, 'dashboard/delete-confirmation.html', context)
