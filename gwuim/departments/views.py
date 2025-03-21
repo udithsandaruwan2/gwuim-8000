@@ -111,3 +111,20 @@ def deleteDepartmentConfirmation(request, pk):
     }
 
     return render(request, 'dashboard/delete-confirmation.html', context)
+
+def deleteFacultyConfirmation(request, pk):
+    page = 'delete_faculty'
+    page_title = 'Delete Faculty'
+
+    faculty = get_object_or_404(Faculty, uid=pk)  # Ensures object exists
+
+    if request.method == 'POST':
+        faculty.delete()
+        return redirect('departments')  # Redirect after successful deletion
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+    }
+
+    return render(request, 'dashboard/delete-confirmation.html', context)
