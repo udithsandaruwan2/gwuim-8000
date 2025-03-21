@@ -1,7 +1,7 @@
 {% load static %}
 <!--  Header Start -->
 <header class="app-header">
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light ">
         <ul class="navbar-nav">
             <li class="nav-item d-block d-xl-none">
                 <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
@@ -31,7 +31,7 @@
             .search-container {
                 display: flex;
                 align-items: center;
-                border: 1px solid rgb(92, 92, 92);
+                border: 1px solid rgb(161, 161, 161);
                 border-radius: 50px;
                 padding: 5px 30px;
                 width: 350px;
@@ -46,6 +46,7 @@
             }
         
             .search-container .icon {
+                color: rgb(161, 161, 161);
                 width: 15px;
                 height: 15px;
                 margin: 0 5px;
@@ -53,7 +54,7 @@
         </style>
       
         
-     {% if page != 'departments' and page != 'leave_types' %}
+     {% if page != 'leave_types' %}
 
             <form id="searchForm" class="form" method="GET">
                 <div class="search-container">
@@ -61,8 +62,9 @@
                         <img src="https://cdn-icons-png.flaticon.com/512/149/149852.png" class="icon" alt="Search">
                     </button>
 
-                    <input value="{{search_query}}" type="text" id="first-name-horizontal" class="form-control rounded-pill" name="search"
-                        placeholder="Search by Employee name">
+                    <input value="{{search_query}}" type="text" id="first-name-horizontal" class="form-control" name="search"
+                        placeholder="Search by code or name" style="border: none; outline: none; box-shadow: none;">
+
                     <div class="m-2">
                         <!-- <button class="btn btn-outline-secondary rounded-pill" type="submit">
                             <i class="bi bi-search"></i>

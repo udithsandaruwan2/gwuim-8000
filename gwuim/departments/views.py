@@ -4,15 +4,14 @@ from .models import Faculty, Department
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from .utils import search_faculties_departments
 
 @login_required(login_url='login')
 def departments(request):
     page = 'departments'
     page_title = 'Departments'
     
-    # Queries
-    faculties = Faculty.objects.all()
-    departments = Department.objects.all()
+    faculties, departments, search_query = search_faculties_departments(request)
 
     # Create a dictionary to map faculty to their departments
     faculty_departments = {faculty.uid: [] for faculty in faculties}
@@ -63,6 +62,7 @@ def departments(request):
         'page_title': page_title,
         'faculties': faculties,
         'faculty_departments': faculty_departments,  # Pass the mapping to the template
+        'search_query': search_query,
     }
     return render(request, 'departments/departments.html', context)
 
