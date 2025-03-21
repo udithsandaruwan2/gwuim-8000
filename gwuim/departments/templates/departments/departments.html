@@ -78,7 +78,7 @@
                         </div>
 
                         <button class="btn toggle-btn" id="toggle-{{ faculty.uid }}"
-                            data-target="dept-{{ faculty.uid }}">Toggle Departments</button>
+                            data-target="dept-{{ faculty.uid }}">See Departments</button>
                         <ul class="list-group mt-3 toggle-content" id="dept-{{ faculty.uid }}">
                             {% if faculty_departments|get_item:faculty.uid %}
                             {% for department in faculty_departments|get_item:faculty.uid %}

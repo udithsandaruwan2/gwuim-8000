@@ -1,0 +1,99 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .modal-content {
+        background: #fff;
+        padding: 40px;
+        /* Increased padding */
+        border-radius: 12px;
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 950px;
+        /* Increased width */
+        width: 100%;
+    }
+
+    .update-icon {
+        font-size: 50px;
+        color: #932626;
+        margin-bottom: 15px;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        padding: 10px 24px;
+        display: inline-block;
+    }
+
+    .btn-update {
+        background-color: #932626;
+        color: white;
+        border-radius: 6px;
+        padding: 10px 24px;
+        border: none;
+    }
+
+    .btn-cancel:hover {
+        color: #5a6268;
+        border: 1px solid #5a6268;
+        background-color: #ffffff;
+    }
+
+    .btn-update:hover {
+        color: #932626;
+        border: 1px solid #932626;
+        background-color: #ffffff;
+    }
+
+    /* Form Styling */
+    form label {
+        font-weight: bold;
+        display: block;
+        text-align: left;
+        margin-top: 10px;
+    }
+
+    form input,
+    form select,
+    form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+</style>
+<div class="modal-content" style="border-radius: 16px; width: 500px;">
+    <div class="modal-header justify-content-center">
+        <h5 class="modal-title text-center" id="addFacultyLabel">Update Leave Type</h5>
+    </div>
+    <div class="modal-body">
+        <form id="employeeForm" method="POST">
+            {% csrf_token %}
+            <input type="text" name="action" value="addEmployee" hidden>
+            {{ form.as_p }}
+            <div class="d-flex justify-content-between mt-3">
+                <a href="javascript:window.history.back();" class="btn btn-cancel">Cancel</a>
+                <button type="submit" class="btn btn-update">Update Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock content %}
