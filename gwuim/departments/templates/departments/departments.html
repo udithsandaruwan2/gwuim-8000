@@ -85,7 +85,7 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center"
                                 data-department-uid="{{ department.uid }}">
                                 {{ department.name }}
-                                <a href="{% url 'delete_confirmation' %}" class="btn toggle-btn delete-btn"
+                                <a href="{% url 'delete_department' department.uid %}" class="btn toggle-btn delete-btn"
                                     data-faculty="{{ faculty.uid }}" style="opacity: 1;">
                                     <i class="fas fa-trash"></i> Delete
                                 </a>

@@ -7,5 +7,6 @@ urlpatterns = [
     path('download-report/<str:pk>/', views.downloadReport, name='download_report'),
 
     # Leave 
-    path('leave-types', views.leaveTypes, name='leave-types'),
+    path('leave-types', views.leaveTypes, name='leave_types'),
+    path('leave-types/<str:pk>/delete', views.deleteLeaveTypeConfirmation, name='delete_leave_type'),
 ]

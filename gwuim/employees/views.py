@@ -7,6 +7,8 @@ from django.utils import timezone
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import LeaveType
 
 
 @login_required(login_url='login')
@@ -149,3 +151,23 @@ def leaveTypes(request):
     }
 
     return render(request, 'employees/leave-types.html', context)
+
+
+
+def deleteLeaveTypeConfirmation(request, pk):
+    page = 'delete_leave_type'
+    page_title = 'Delete Leave Type'
+
+    leave_type = get_object_or_404(LeaveType, uid=pk)  # Ensures object exists
+
+    if request.method == 'POST':
+        leave_type.delete()
+        return redirect('leave_types')  # Redirect after successful deletion
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'leave_type': leave_type,  # Pass object to template for display
+    }
+
+    return render(request, 'dashboard/delete-confirmation.html', context)

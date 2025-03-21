@@ -1,5 +1,5 @@
 import json
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Faculty, Department
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -94,13 +94,20 @@ def update_departments(request):
         return JsonResponse({'success': False, 'message': 'Invalid action.'})
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
-@login_required(login_url='login')
-def deleteConfirmation(request):
-    page = 'delete_confirmation'
-    page_title = 'Delete Confirmation'
+
+def deleteDepartmentConfirmation(request, pk):
+    page = 'delete_department_type'
+    page_title = 'Delete Department Type'
+
+    department = get_object_or_404(Department, uid=pk)  # Ensures object exists
+
+    if request.method == 'POST':
+        department.delete()
+        return redirect('departments')  # Redirect after successful deletion
 
     context = {
         'page': page,
         'page_title': page_title,
     }
-    return render(request, 'delete-confirmation.html', context)
+
+    return render(request, 'dashboard/delete-confirmation.html', context)
