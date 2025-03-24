@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout, authenticate, login as auth_login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from employees.models import LeaveRequest
 
 
 def home(request):
@@ -50,6 +51,8 @@ def login(request):
 def dashboard(request):
     page = 'dashboard'
     page_title = 'Dashboard'
+
+    leave_requests = LeaveRequest.objects.all().order_by('-created_at')[:10]
 
     context = {
         'page': page,
