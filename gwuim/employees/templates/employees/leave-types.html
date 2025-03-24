@@ -45,7 +45,10 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h5 class="card-title text-right mt-2 leave-type-name">{{ leave_type.name }}</h5>
+                                    <h5 class="card-title text-right mt-2 leave-type-name">
+                                        {{ leave_type.name }}
+                                    </h5>
+                                    <p>{{ leave_type.max_days|floatformat:0 }} total days can be taken as <strong style="color: #932626;">{{ leave_type.name }}</strong> leaves. </p>
                                 </div>
                                 <div class="col-md-6 text-end">
                                     <a href="{% url 'update_leave_type' leave_type.uid %}" class="btn toggle-btn m-1 edit-btn" data-leave-type="{{ leave_type.uid }}">

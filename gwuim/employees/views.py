@@ -49,7 +49,6 @@ def employeeIndetail(request, pk):
     leave_types = LeaveType.objects.all()
 
     leaves_data = arrays_to_table(request, employee)
-    print(leaves_data)
 
     #Handling POST request
     if request.method == 'POST':
@@ -136,8 +135,10 @@ def leaveTypes(request):
         if action == 'addLeaveType':
             code = request.POST.get('leaveTypeCode')
             name = request.POST.get('leaveTypeName')
+            max_days = request.POST.get('leaveTypeMaxDays')
             description = request.POST.get('leaveTypeDescription')
-            LeaveType.objects.create(code=code, name=name, description=description)
+            LeaveType.objects.create(code=code, name=name, max_days=max_days, description=description)
+            return redirect('leave_types')
 
     leave_types = LeaveType.objects.all()
 

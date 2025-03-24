@@ -19,7 +19,7 @@ class EmployeeForm(forms.ModelForm):
 class LeaveTypeForm(forms.ModelForm):
     class Meta:
         model = LeaveType
-        fields = ['code', 'name', 'description']  # Include code, name, and description fields
+        fields = ['code', 'name', 'max_days', 'description']  # Include code, name, and description fields
 
     # Add custom widget with the desired styling for each field
     code = forms.CharField(
@@ -36,6 +36,13 @@ class LeaveTypeForm(forms.ModelForm):
             'placeholder': 'Enter leave type name',  # Optionally add a placeholder
         })
     )
+
+    max_days = forms.FloatField(
+            widget=forms.TextInput(attrs={
+                'class': 'form-control mt-2 edit-input',  # Add the classes here
+                'placeholder': 'Enter maximum allocating days',  # Optionally add a placeholder
+            })
+        )
 
     description = forms.CharField(
         widget=forms.Textarea(attrs={

@@ -36,6 +36,7 @@ class LeaveType(models.Model):
     code = models.CharField(max_length=10, null=True, blank=True)
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
+    max_days = models.FloatField(default=0.0, blank=True, null=True)
     # Common fields
     uid = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
