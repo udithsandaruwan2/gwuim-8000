@@ -21,7 +21,7 @@ class Employee(models.Model):
     address = models.TextField(null=True, blank=True)
     date_of_joining = models.DateField(null=True, blank=True)
     date_of_leaving = models.DateField(null=True, blank=True)
-    leave_balance = models.DecimalField(default=0, blank=True, null=True, max_digits=5, decimal_places=2)
+    leave_balance = models.FloatField(default=0.0, blank=True, null=True)
     position = models.CharField(max_length=255, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     # Common fields
@@ -36,6 +36,7 @@ class LeaveType(models.Model):
     code = models.CharField(max_length=10, null=True, blank=True)
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
+    max_days = models.FloatField(default=0.0, blank=True, null=True)
     # Common fields
     uid = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,7 +65,7 @@ class LeaveRequest(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     reason = models.TextField(null=True, blank=True)
     systemized_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
-
+    total_days = models.FloatField(default=0.0, editable=False, blank=True)
     # Common fields
     uid = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -73,8 +74,8 @@ class LeaveRequest(models.Model):
     def __str__(self):
         return f"{self.employee.full_name} - {self.leave_type.name} ({self.status} for {self.total_days} days)"
 
-    @property
-    def total_days(self):
+
+    def calculate_total_days(self):
         """Calculate the total number of leave days."""
         if self.start_date and self.coming_date:
             days = (self.coming_date - self.start_date).days
@@ -86,20 +87,21 @@ class LeaveRequest(models.Model):
         return Decimal(0)
 
     def save(self, *args, **kwargs):
-        """Override save method to update leave balance."""
-        if self.pk is None:  # Only update leave balance for new requests
-            with transaction.atomic():
-                if self.status == 'approved':  # Only deduct if approved
-                    self.employee.leave_balance += self.total_days
-                    self.employee.save()
+        """Override save method to handle leave balance."""
+        if not self.pk:  # New request
+            self.total_days = self.calculate_total_days()  # Correct calculation logic
+            # if self.status == 'approved':
+            #     with transaction.atomic():
+            #         self.employee.leave_balance += self.total_days
+            #         self.employee.save()
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        """Restore leave balance if a request is deleted."""
-        with transaction.atomic():
-            if self.status == 'approved':  # Restore balance only if approved
-                self.employee.leave_balance -= self.total_days
-                self.employee.save()
+        """Restore leave balance if an approved request is deleted."""
+        # if self.status == 'approved':
+        #     with transaction.atomic():
+        #         self.employee.leave_balance -= self.total_days
+        #         self.employee.save()
         super().delete(*args, **kwargs)
 
 class LeaveAdjustment(models.Model):
@@ -116,17 +118,16 @@ class LeaveAdjustment(models.Model):
         return f"Adjustment for {self.employee.full_name}"
 
 class MonthlyLeaveSummary(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    year = models.IntegerField()
-    month = models.IntegerField()
-    request_type = models.CharField(max_length=10, choices=LeaveRequest.REQUEST_TYPE_CHOICES)
-    total_days = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
+    year = models.IntegerField(null=True, blank=True)
+    month = models.IntegerField(null=True, blank=True)
+    total_days = models.FloatField(default=0.0, null=True, blank=True)
     # Common fields
     uid = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     class Meta:
-        unique_together = ('employee', 'year', 'month', 'request_type')
+        unique_together = ('employee', 'year', 'month')
 
     def __str__(self):
-        return f"{self.employee.full_name} - {self.year}-{self.month} ({self.request_type}) : {self.total_days} days"
+        return f"{self.employee.full_name} - {self.year}-{self.month} : {self.total_days} days"

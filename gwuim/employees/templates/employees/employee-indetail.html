@@ -13,17 +13,23 @@
             </div>
             <div class="col-6 text-end">
                 <!-- Visible on Web Page -->
-                <button class="btn btn-primary me-2 toggle-btn" data-bs-toggle="modal" data-bs-target="#addLeaveModal">
+                <button class="btn me-2 toggle-btn" data-bs-toggle="modal" data-bs-target="#addLeaveModal">
                     <i class="fas fa-plus"></i> Add Leave
                 </button>
-                <button class="btn btn-secondary me-2 toggle-btn">
+                <button class="btn me-2 toggle-btn">
                     <i class="fas fa-undo"></i> Return Leave
                 </button>
 
                 <!-- Report Download Button -->
-                <a href="{% url 'download_report' pk %}" class="btn toggle-btn">
+                <button class="btn toggle-btn" id="downloadBtn">
                     <i class="fas fa-download"></i> Download Report
-                </a>
+                </button>
+                
+                <!-- Content to be captured (optional, you can wrap the content in a div for better control) -->
+                <div id="contentToCapture">
+                    <!-- Your content here -->
+                </div>
+
             </div>
         </div>
 
@@ -53,19 +59,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for leave_type in leave_types %}
-                    <tr>
-                        <td>{{ leave_type.name }}</td>
-                        {% for month in months %}
-                        
-                                    <td>0</td>
-                                  
-                            
-                                
-                            
-                        
-                        {% endfor %}
-                    </tr>
+                {% for data in leaves_data %}
+                <tr>
+                    <td>{{ data.leave_type_name }}</td>
+                    {% for days in data.leave_days_array %}
+                    <td>{{ days }}</td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
                 </tbody>
 
@@ -183,21 +183,25 @@
 </style>
 
 <script>
-    function downloadReport() {
+    document.getElementById("downloadBtn").addEventListener("click", function () {
+        // Target the content you want to capture
+        const content = document.getElementById("contentToCapture");
+
+        // Use html2canvas to capture the screenshot
+        html2canvas(content).then(function (canvas) {
+            // Create a new jsPDF instance
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape', 'mm', 'a4');
+            const doc = new jsPDF();
 
-            doc.html(document.querySelector('.body-wrapper'), {
-                callback: function (doc) {
-                    doc.save('leave_report.pdf');
-                },
-                x: 10,
-                y: 10,
-                width: 180,  // Adjust width of content
-                windowWidth: 900  // Specify the width of the window for proper rendering
-            });
-        }
+            // Convert the canvas to an image and add it to the PDF
+            const imgData = canvas.toDataURL("image/png");
+            doc.addImage(imgData, "PNG", 10, 10, 180, 160);  // Adjust coordinates and size
 
+            // Save the generated PDF
+            doc.save("report.pdf");
+        });
+    });
 </script>
+
 
 {% endblock content %}
