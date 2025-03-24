@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Employee, LeaveType, LeaveRequest
-from .utils import searchEmployees, paginateEmployees, get_yearly_leave , process_leave_data
+from .utils import searchEmployees, paginateEmployees, data_insertion_to_arrays, arrays_to_table
 from .forms import EmployeeForm, LeaveTypeForm
 from django.utils import timezone
 from django.http import HttpResponse
@@ -48,13 +48,8 @@ def employeeIndetail(request, pk):
     profile = request.user.profile
     leave_types = LeaveType.objects.all()
 
-    data = get_yearly_leave(employee, 2025)
-    print(data)
-
-
-    leave_data = process_leave_data(data)
-    print(leave_data)
-    
+    leaves_data = arrays_to_table(request, employee)
+    print(leaves_data)
 
     #Handling POST request
     if request.method == 'POST':
@@ -86,7 +81,8 @@ def employeeIndetail(request, pk):
         'profile': profile,
         'leave_types': leave_types,
         'months': months,
-        'leave_data': leave_data,
+        'leaves_data': leaves_data,
+
     }
 
     return render(request, 'employees/employee-indetail.html', context)
