@@ -73,9 +73,6 @@ class LeaveRequest(models.Model):
 
     def __str__(self):
         return f"{self.employee.full_name} - {self.leave_type.name} ({self.status} for {self.total_days} days)"
-    
-
-
 
     def calculate_total_days(self):
         """Calculate the total number of leave days."""
