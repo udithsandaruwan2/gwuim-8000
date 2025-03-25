@@ -10,6 +10,11 @@ from .utils import search_faculties_departments
 def departments(request):
     page = 'departments'
     page_title = 'Departments'
+
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
     
     faculties, departments, search_query = search_faculties_departments(request)
 
@@ -63,6 +68,7 @@ def departments(request):
         'faculties': faculties,
         'faculty_departments': faculty_departments,  # Pass the mapping to the template
         'search_query': search_query,
+        'profile':profile
     }
     return render(request, 'departments/departments.html', context)
 
@@ -94,10 +100,15 @@ def update_departments(request):
         return JsonResponse({'success': False, 'message': 'Invalid action.'})
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
-
+@login_required(login_url='login')
 def deleteDepartmentConfirmation(request, pk):
     page = 'delete_department_type'
     page_title = 'Delete Department Type'
+
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
 
     department = get_object_or_404(Department, uid=pk)  # Ensures object exists
 
@@ -108,13 +119,20 @@ def deleteDepartmentConfirmation(request, pk):
     context = {
         'page': page,
         'page_title': page_title,
+        'profile':profile
     }
 
     return render(request, 'dashboard/delete-confirmation.html', context)
 
+@login_required(login_url='login')
 def deleteFacultyConfirmation(request, pk):
     page = 'delete_faculty'
     page_title = 'Delete Faculty'
+
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
 
     faculty = get_object_or_404(Faculty, uid=pk)  # Ensures object exists
 
@@ -125,6 +143,7 @@ def deleteFacultyConfirmation(request, pk):
     context = {
         'page': page,
         'page_title': page_title,
+        'profile':profile
     }
 
     return render(request, 'dashboard/delete-confirmation.html', context)

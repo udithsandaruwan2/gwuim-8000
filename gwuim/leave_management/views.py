@@ -8,6 +8,11 @@ def leaveRequets(request):
     page = 'leave_requests'
     page_title = 'Leave Requests'
 
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
+
     # Queries With pagination
     requests, search_query = searchRequests(request)
     custom_range, requests = paginateRequests(request, requests, 10)
@@ -18,6 +23,7 @@ def leaveRequets(request):
         'requests': requests,
         'search_query': search_query,
         'custom_range': custom_range,
-        'requests':requests
+        'requests':requests,
+        'profile':profile
     }
     return render(request, 'leave_management/leave_requests.html', context)

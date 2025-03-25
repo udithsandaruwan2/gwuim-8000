@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-mrt#6rvb+&8!i+zdqauq7a0+r=^2_*v0k&@%-3u6n@^f-s!e7^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -127,12 +127,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+# Static files (CSS, JavaScript, images)
+STATIC_URL = '/static/'  # Include a leading slash
+STATIC_ROOT = BASE_DIR / "staticfiles"  # This is where the static files will be collected when you run collectstatic
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "static",  # This is where your static files are stored during development
 ]
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / "media"
+
+# Media files (uploads)
+MEDIA_URL = '/media/'  # Include a leading slash
+MEDIA_ROOT = BASE_DIR / "media"  # This is where media files (uploads) are stored
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

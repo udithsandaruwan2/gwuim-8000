@@ -1,0 +1,37 @@
+{% extends 'home/main.html' %}
+
+{% load static %}
+
+{% block content %}
+<main class="main">
+    <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 70vh;">
+        <div class="row justify-content-center text-center">
+            
+                <img src="https://img.freepik.com/premium-vector/404-page-site-with-text-page-found-icon-danger-isolated-illustration-lost-page_456605-343.jpg" style="max-width: 500px; " alt="404 Error Image" />
+                <!-- <img src="{% static 'theme_home/assets/img/404.png' %}" alt="404 Image" class="img-fluid" /> -->
+                <!-- Updated button class to match the CSS -->
+            
+                <button class="btn toggle-btn mt-4" style="max-width: 200px;" onclick="window.history.back();">Go Back</button>
+     
+            </div>
+        </div>
+    </div>
+</main>
+<style>
+    /* Button Styling */
+.toggle-btn {
+    background-color: #932626;
+    color: #ffffff;
+    border-color: #932626;
+    transition: all 0.3s ease-in-out;
+    padding: 8px 15px;
+}
+
+.toggle-btn:hover {
+    background-color: #ffffff;
+    color: #932626;
+    border-color: #932626;
+}
+
+</style>
+{% endblock content %}
