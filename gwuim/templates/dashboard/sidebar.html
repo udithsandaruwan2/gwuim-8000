@@ -70,14 +70,26 @@
                 
                 
 
-                <li class="sidebar-item sidebar-item-n">
-                    <a class="sidebar-link sidebar-link-n" href="#" aria-expanded="false" >
+                {% if page == 'leave_requests' %}
+                <li class="sidebar-item  active selected ">
+                    <a class="sidebar-link" href="{% url 'leave_requests' %}" aria-expanded="false" style="background-color: #932626;">
                         <span>
-                            <i class="ti ti-article"></i>
+                            <i class="ti ti-calendar"></i>
                         </span>
-                        <span class="hide-menu hide-menu-n">Leave Requests</span>
+                        <span class="hide-menu">Leave Resuests</span>
                     </a>
                 </li>
+                {% else %}
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="{% url 'leave_requests' %}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-calendar"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">Leave Resuests</span>
+                    </a>
+                </li>
+                
+                {% endif %}
 
                 
                 

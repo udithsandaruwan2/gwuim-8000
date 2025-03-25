@@ -1,0 +1,129 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_filters %} <!-- Load the custom filters -->
+
+{% block content %}
+
+{% include 'dashboard/sidebar.html' %}
+
+<!-- Main wrapper -->
+<div class="body-wrapper">
+
+    {% include 'dashboard/header.html' %}
+
+    <style>
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #dee2e6;
+        }
+
+        .table thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        .table thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        .table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+
+        .table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+
+        .toggle-btn {
+            background-color: #932626;
+            color: #ffffff;
+            border-color: #932626;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .toggle-btn:hover {
+            background-color: #ffffff;
+            color: #932626;
+            border-color: #932626;
+        }
+    </style>
+
+
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-9">
+                <h5 class="mt-2">Leave Requests List</h5>
+            </div>
+            <div class="col-3 text-end">
+                <!-- <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                    <i class="fas fa-plus"></i> New Employee
+                </button> -->
+            </div>
+        </div>
+
+
+
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">No.</th>
+                        <th class="text-center">Leave Types</th>
+                        <th class="text-center">Request Type</th>
+                        <th class="text-center">Start Date</th>
+                        <th class="text-center">Coming Date</th>
+                        <th class="text-center">Reason</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Total Days</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in requests %}
+                    <tr>
+                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td class="text-center">{{ request.leave_type }}</td>
+                        <td class="text-center">{{ request.request_type }}</td>
+                        <td class="text-center">{{ request.start_date }}</td>
+                        <td class="text-center">{{ request.coming_date }}</td>
+                        <td class="text-center">
+                            {% if request.reason %}
+                            {{ request.reason|slice:50 }}
+                            {% else %}
+                            No any specific reason added
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ request.status }}</td>
+                        <td class="text-center">{{ request.total_days }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No requests found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% include 'dashboard/pagination.html' with query_set=requests custom_range=custom_range %}
+        </div>
+
+
+    </div>
+
+    {% include 'employees/employee-add-model.html' %}
+    {% include 'dashboard/footer.html' %}
+
+
+    <div id="data-container"></div>
+</div>
+
+{% endblock content %}
