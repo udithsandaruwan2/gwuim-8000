@@ -79,18 +79,18 @@
                         <th>Name</th>
                         <th>Department Name</th>
                         <th>Gender</th>
-                        <th>Leave Count</th>
+                        
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for employee in employees %}
                     <tr>
-                        <td>{{ employee.employee_code }}</td>
+                        <td> {% if employee.employee_code %} {{employee.employee_code}} {% else %} # {% endif %} </td>
                         <td>{{ employee.full_name }}</td>
                         <td>{{ employee.department.name }}</td>
                         <td>{{ employee.gender }}</td>
-                        <td>{{ employee.leave_balance }}</td>
+                        
                         <td><a style="color: #932626;" href="{% url 'employee-indetail' employee.uid %}" target="_blank"><i class="fas fa-info-circle"></i> more</a></td>
                     </tr>
                     {% empty %}

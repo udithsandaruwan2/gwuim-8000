@@ -13,13 +13,9 @@
             </div>
             <div class="col-6 text-end">
                 <!-- Visible on Web Page -->
-                <button class="btn me-2 toggle-btn" data-bs-toggle="modal" data-bs-target="#addLeaveModal">
-                    <i class="fas fa-plus"></i> Add Leave
-                </button>
-                <button class="btn me-2 toggle-btn">
-                    <i class="fas fa-undo"></i> Return Leave
-                </button>
-
+                <a href="{% url 'employee-indetail' pk %}" class="btn me-2 toggle-btn">
+                    <i class="fas fa-left-arrow"></i> Go Back
+                </a>
                 <!-- Report Download Button -->
                 <button class="btn toggle-btn" id="downloadBtn">
                     <i class="fas fa-download"></i> Download Report
@@ -33,43 +29,57 @@
             </div>
         </div>
 
-        <div class="row mb-4">
-            <div class="col-12 d-flex align-items-center justify-content-center">
-                <h6 class="mb-0 ms-3 text-center">{{ employee.full_name }} ( {{ employee.uid }} ) - {{ current_year }}</h6>
-            </div>
-        </div>
-
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Leave Types</th>
-                        <th>January</th>
-                        <th>February</th>
-                        <th>March</th>
-                        <th>April</th>
-                        <th>May</th>
-                        <th>June</th>
-                        <th>July</th>
-                        <th>August</th>
-                        <th>September</th>
-                        <th>October</th>
-                        <th>November</th>
-                        <th>December</th>
+                        <th class="text-center">No.</th>
+                        <th class="text-center">Leave Types</th>
+                        <th class="text-center">Request Type</th>
+                        <th class="text-center">Start Date</th>
+                        <th class="text-center">Coming Date</th>
+                        <th class="text-center">Reason</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Total Days</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for data in leaves_data %}
-                <tr>
-                    <td>{{ data.leave_type_name }}</td>
-                    {% for days in data.leave_days_array %}
-                    <td>{{ days }}</td>
+                    {% for request in leave_requests %}
+                    <tr>
+                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td class="text-center">{{ request.leave_type }}</td>
+                        <td class="text-center">{{ request.request_type }}</td>
+                        <td class="text-center">{{ request.start_date }}</td>
+                        <td class="text-center">{{ request.coming_date }}</td>
+                        <td class="text-center">
+                            {% if request.reason %}
+                            {{ request.reason|slice:50 }}
+                            {% else %}
+                            No any specific reason added
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ request.status }}</td>
+                        <td class="text-center">{{ request.total_days }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No requests found.</td>
+                    </tr>
                     {% endfor %}
-                </tr>
-                {% endfor %}
                 </tbody>
-
-
+            </table>
+            
+            <style>
+                td,
+                th {
+                    text-align: center;
+                }
+            
+                .table td,
+                .table th {
+                    padding: 14px;
+                }
+            </style>
 
 
 
@@ -78,11 +88,6 @@
 
             </table>
 
-        </div>
-        <div class="text-end">
-            <a href="{% url 'leave_requests_history' employee.uid %}" class="btn toggle-btn" id="downloadBtn">
-                <i class="fas fa-book"></i> View History
-            </a>
         </div>
         {% include 'dashboard/footer.html' %}
     </div>

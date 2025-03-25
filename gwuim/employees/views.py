@@ -88,6 +88,22 @@ def employeeIndetail(request, pk):
 
 
 
+def employeeLeaveHistory(request, pk):
+    page = 'employee_leave_history'
+    page_title = 'Employee Leave History'
+
+    # Fetch leave requests for the employee with the given primary key
+    leave_requests = LeaveRequest.objects.filter(employee__uid=pk)
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'leave_requests': leave_requests,
+        'pk': pk,
+    }
+
+    return render(request, 'employees/employee-indetail-leave-request-history.html', context)
+
 
 def downloadReport(request, pk):
     try:
