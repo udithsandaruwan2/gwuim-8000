@@ -2,6 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout, authenticate, login as auth_login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from employees.models import LeaveRequest
+from django.http import JsonResponse
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+import calendar
+from datetime import datetime
 
 
 def home(request):
@@ -51,9 +57,14 @@ def dashboard(request):
     page = 'dashboard'
     page_title = 'Dashboard'
 
+    leave_requests = LeaveRequest.objects.all().order_by('-created_at')[:5]
+    leave_requests_count = LeaveRequest.objects.all().count()
+
     context = {
         'page': page,
-        'page_title': page_title
+        'page_title': page_title,
+        'leave_requests': leave_requests,
+        'leave_requests_count': leave_requests_count,
     }
     return render(request, 'users/dashboard.html', context)
 
@@ -62,3 +73,44 @@ def logoutView(request):
     user = request.user
     logout(request)
     return redirect('home')
+
+
+def leave_requests_chart_data(request):
+    year = int(request.GET.get('year', datetime.now().year))  # Default to current year
+
+    # Generate a dictionary with all months initialized to 0
+    monthly_data = {f"{month} {year}": 0 for month in calendar.month_name[1:]}
+
+    # Fetch data from the database
+    data = (
+        LeaveRequest.objects
+        .filter(start_date__year=year)
+        .annotate(month=TruncMonth('start_date'))
+        .values('month')
+        .annotate(total_leaves=Sum('total_days'))
+        .order_by('month')
+    )
+
+    # Update monthly_data with real values
+    for entry in data:
+        month_str = entry['month'].strftime('%B %Y')
+        monthly_data[month_str] = entry['total_leaves']
+
+    # Format data for chart
+    chart_data = {
+        'labels': list(monthly_data.keys()),
+        'values': list(monthly_data.values()),
+    }
+
+    return JsonResponse(chart_data)
+
+def leave_requests_pie_chart_data(request):
+    data = {
+        'labels': ['Approved', 'Rejected', 'Pending'],
+        'values': [
+            LeaveRequest.objects.filter(status='approved').count(),
+            LeaveRequest.objects.filter(status='rejected').count(),
+            LeaveRequest.objects.filter(status='pending').count(),
+        ]
+    }
+    return JsonResponse(data)
