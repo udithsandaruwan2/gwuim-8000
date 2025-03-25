@@ -14,15 +14,26 @@ def home(request):
     page = 'home'
     page_title = 'Home'
 
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
+
     context = {
         'page': page,
-        'page_title': page_title
+        'page_title': page_title,
+        'profile':profile
     }
     return render(request, 'users/index.html', context)
 
 def login(request):
     page = 'login'
     page_title = 'Login'
+
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
 
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
@@ -48,7 +59,8 @@ def login(request):
 
     context = {
         'page': page,
-        'page_title': page_title
+        'page_title': page_title,
+        'profile':profile
     }
     return render(request, 'users/login-register.html', context)
 
@@ -56,6 +68,11 @@ def login(request):
 def dashboard(request):
     page = 'dashboard'
     page_title = 'Dashboard'
+
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
 
     leave_requests = LeaveRequest.objects.all().order_by('-created_at')[:5]
     leave_requests_count = LeaveRequest.objects.all().count()
@@ -65,6 +82,7 @@ def dashboard(request):
         'page_title': page_title,
         'leave_requests': leave_requests,
         'leave_requests_count': leave_requests_count,
+        'profile':profile
     }
     return render(request, 'users/dashboard.html', context)
 
@@ -74,7 +92,7 @@ def logoutView(request):
     logout(request)
     return redirect('home')
 
-
+@login_required(login_url='login')
 def leave_requests_chart_data(request):
     year = int(request.GET.get('year', datetime.now().year))  # Default to current year
 
@@ -104,6 +122,7 @@ def leave_requests_chart_data(request):
 
     return JsonResponse(chart_data)
 
+@login_required(login_url='login')
 def leave_requests_pie_chart_data(request):
     data = {
         'labels': ['Approved', 'Rejected', 'Pending'],

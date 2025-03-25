@@ -16,6 +16,11 @@ def employees(request):
     page = 'employees'
     page_title = 'Employees'
 
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
+
     # Queries With pagination
     employees, search_query = searchEmployees(request)
     custom_range, employees = paginateEmployees(request, employees, 10)
@@ -36,16 +41,27 @@ def employees(request):
         'search_query': search_query,
         'custom_range': custom_range,
         'employee_form': employee_form,
+        'profile':profile
     }
     return render(request, 'employees/employees.html', context)
+
+@login_required(login_url='login')
 def employeeIndetail(request, pk):
     page = 'employees'
     page_title = 'Employee Details'
 
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
+
     months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     current_year = timezone.now().year
     employee = Employee.objects.get(uid=pk)
-    profile = request.user.profile
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
     leave_types = LeaveType.objects.all()
 
     leaves_data = arrays_to_table(request, employee)
@@ -81,12 +97,35 @@ def employeeIndetail(request, pk):
         'leave_types': leave_types,
         'months': months,
         'leaves_data': leaves_data,
+        'profile':profile
 
     }
 
     return render(request, 'employees/employee-indetail.html', context)
 
 
+@login_required(login_url='login')
+def employeeLeaveHistory(request, pk):
+    page = 'employee_leave_history'
+    page_title = 'Employee Leave History'
+
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
+
+    # Fetch leave requests for the employee with the given primary key
+    leave_requests = LeaveRequest.objects.filter(employee__uid=pk)
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'leave_requests': leave_requests,
+        'pk': pk,
+        'profile':profile
+    }
+
+    return render(request, 'employees/employee-indetail-leave-request-history.html', context)
 
 
 def downloadReport(request, pk):
@@ -126,9 +165,15 @@ def downloadReport(request, pk):
         # Handle the case where the employee with the given pk does not exist
         return HttpResponse("Employee not found.", status=404)
 
+@login_required(login_url='login')
 def leaveTypes(request):
     page = 'leave_types'
     page_title = 'Leave Types'
+
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -146,13 +191,20 @@ def leaveTypes(request):
         'page': page,
         'page_title': page_title,
         'leave_types': leave_types,
+        'profile':profile
     }
 
     return render(request, 'employees/leave-types.html', context)
 
+@login_required(login_url='login')
 def updateLeaveType(request, pk):
     page = 'update_leave_type'
     page_title = 'Update Leave Type'
+
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
 
     leave_type = get_object_or_404(LeaveType, uid=pk)  # Ensures object exists
 
@@ -169,14 +221,20 @@ def updateLeaveType(request, pk):
         'page_title': page_title,
         'leave_type': leave_type,  # Pass object to template for display
         'form': form,
+        'profile':profile
     }
 
     return render(request, 'employees/update-leave-type.html', context)
 
-
+@login_required(login_url='login')
 def deleteLeaveTypeConfirmation(request, pk):
     page = 'delete_leave_type'
     page_title = 'Delete Leave Type'
+
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
 
     leave_type = get_object_or_404(LeaveType, uid=pk)  # Ensures object exists
 
@@ -188,6 +246,7 @@ def deleteLeaveTypeConfirmation(request, pk):
         'page': page,
         'page_title': page_title,
         'leave_type': leave_type,  # Pass object to template for display
+        'profile':profile
     }
 
     return render(request, 'dashboard/delete-confirmation.html', context)

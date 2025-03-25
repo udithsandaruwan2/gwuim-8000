@@ -1,0 +1,217 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+{% load custom_filters %}
+
+
+{% block content %}
+<div class="body-wrapper" style="margin: 0; padding: 0;">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-6 d-flex align-items-center">
+                <img src="{% static 'theme_dashboard/assets/images/logos/logo.png' %}" width="190" alt="Company Logo" />
+            </div>
+            <div class="col-6 text-end">
+                <!-- Visible on Web Page -->
+                <a href="{% url 'employee-indetail' pk %}" class="btn me-2 toggle-btn">
+                    <i class="fas fa-left-arrow"></i> Go Back
+                </a>
+                <!-- Report Download Button -->
+                <button class="btn toggle-btn" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download Report
+                </button>
+                
+                <!-- Content to be captured (optional, you can wrap the content in a div for better control) -->
+                <div id="contentToCapture">
+                    <!-- Your content here -->
+                </div>
+
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">No.</th>
+                        <th class="text-center">Leave Types</th>
+                        <th class="text-center">Request Type</th>
+                        <th class="text-center">Start Date</th>
+                        <th class="text-center">Coming Date</th>
+                        <th class="text-center">Reason</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Total Days</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in leave_requests %}
+                    <tr>
+                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td class="text-center">{{ request.leave_type }}</td>
+                        <td class="text-center">{{ request.request_type }}</td>
+                        <td class="text-center">{{ request.start_date }}</td>
+                        <td class="text-center">{{ request.coming_date }}</td>
+                        <td class="text-center">
+                            {% if request.reason %}
+                            {{ request.reason|slice:50 }}
+                            {% else %}
+                            No any specific reason added
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ request.status }}</td>
+                        <td class="text-center">{{ request.total_days }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No requests found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <style>
+                td,
+                th {
+                    text-align: center;
+                }
+            
+                .table td,
+                .table th {
+                    padding: 14px;
+                }
+            </style>
+
+
+
+
+
+
+            </table>
+
+        </div>
+        {% include 'dashboard/footer.html' %}
+    </div>
+
+    e
+
+</div>
+
+{% include 'employees/leave-add-model.html' %}
+
+<style>
+    .toggle-btn {
+                        background-color: #932626;
+                        color: #ffffff;
+                        border-color: #932626;
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .toggle-btn:hover {
+                        background-color: #ffffff;
+                        color: #932626;
+                        border-color: #932626;
+                    }
+    /* Table Styling */
+    .table {
+        border-radius: 10px;
+        overflow: hidden;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #dee2e6;
+    }
+
+    .table thead th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    .table thead th:last-child {
+        border-top-right-radius: 10px;
+    }
+
+    .table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 10px;
+    }
+
+    .table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 10px;
+    }
+
+    .table td {
+        text-align: center;
+    }
+
+    /* Print Styling */
+    @media print {
+    .toggle-btn {
+        display: none;  /* Hide buttons in the report */
+    }
+    
+    .body-wrapper {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+    }
+
+    .table {
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .table th, .table td {
+        text-align: center;
+        padding: 8px;
+    }
+
+    .container-fluid {
+        page-break-before: always;
+    }
+
+    .col-4, .col-2, .col-6 {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 0;
+    }
+
+    /* Adjust widths for landscape */
+    .table th:first-child, .table td:first-child {
+        width: 20%;
+    }
+
+    /* Other adjustments as needed */
+}
+
+
+    /* Adjust the width of the "Leave Types" column */
+    .table th:first-child,
+    .table td:first-child {
+        width: 20%;
+    }
+</style>
+
+<script>
+    document.getElementById("downloadBtn").addEventListener("click", function () {
+        // Target the content you want to capture
+        const content = document.getElementById("contentToCapture");
+
+        // Use html2canvas to capture the screenshot
+        html2canvas(content).then(function (canvas) {
+            // Create a new jsPDF instance
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Convert the canvas to an image and add it to the PDF
+            const imgData = canvas.toDataURL("image/png");
+            doc.addImage(imgData, "PNG", 10, 10, 180, 160);  // Adjust coordinates and size
+
+            // Save the generated PDF
+            doc.save("report.pdf");
+        });
+    });
+</script>
+
+
+{% endblock content %}

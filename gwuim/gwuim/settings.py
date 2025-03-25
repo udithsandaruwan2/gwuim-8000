@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-mrt#6rvb+&8!i+zdqauq7a0+r=^2_*v0k&@%-3u6n@^f-s!e7^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -92,6 +95,23 @@ DATABASES = {
     }
 }
 
+# PostgreSQL Database configuration
+# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+# Load environment variables from a .env file
+load_dotenv()
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('DB_NAME', 'gwuim'),
+#         'USER': os.getenv('DB_USER', 'postgres'),
+#         'PASSWORD': os.getenv('DB_PASSWORD', 'postgres'),
+#         'HOST': os.getenv('DB_HOST', 'localhost'),  # Default to localhost
+#         'PORT': os.getenv('DB_PORT', '5432'),       # Default PostgreSQL port
+#     }
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -127,12 +147,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+# Static files (CSS, JavaScript, images)
+STATIC_URL = '/static/'  # Include a leading slash
+STATIC_ROOT = BASE_DIR / "staticfiles"  # This is where the static files will be collected when you run collectstatic
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "static",  # This is where your static files are stored during development
 ]
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / "media"
+
+# Media files (uploads)
+MEDIA_URL = '/media/'  # Include a leading slash
+MEDIA_ROOT = BASE_DIR / "media"  # This is where media files (uploads) are stored
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

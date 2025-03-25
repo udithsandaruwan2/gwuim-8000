@@ -79,6 +79,11 @@
             </table>
 
         </div>
+        <div class="text-end">
+            <a href="{% url 'leave_requests_history' employee.uid %}" class="btn toggle-btn" id="downloadBtn">
+                <i class="fas fa-book"></i> View History
+            </a>
+        </div>
         {% include 'dashboard/footer.html' %}
     </div>
 
