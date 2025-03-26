@@ -3,6 +3,7 @@ from departments.models import Department
 from users.models import Profile
 from decimal import Decimal
 from django.db import transaction
+import uuid
 
 class Employee(models.Model):
     #Choices
@@ -25,7 +26,7 @@ class Employee(models.Model):
     position = models.CharField(max_length=255, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     # Common fields
-    uid = models.AutoField(primary_key=True)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -38,7 +39,7 @@ class LeaveType(models.Model):
     description = models.TextField(blank=True, null=True)
     max_days = models.FloatField(default=0.0, blank=True, null=True)
     # Common fields
-    uid = models.AutoField(primary_key=True)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -67,7 +68,7 @@ class LeaveRequest(models.Model):
     systemized_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
     total_days = models.FloatField(default=0.0, editable=False, blank=True)
     # Common fields
-    uid = models.AutoField(primary_key=True)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -109,7 +110,7 @@ class LeaveAdjustment(models.Model):
     adjustment_amount = models.IntegerField()
     reason = models.TextField()
     # Common fields
-    uid = models.AutoField(primary_key=True)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -122,7 +123,7 @@ class MonthlyLeaveSummary(models.Model):
     month = models.IntegerField(null=True, blank=True)
     total_days = models.FloatField(default=0.0, null=True, blank=True)
     # Common fields
-    uid = models.AutoField(primary_key=True)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     class Meta:
