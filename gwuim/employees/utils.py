@@ -2,6 +2,7 @@ from .models import Employee
 from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import LeaveType, LeaveRequest
+from decimal import Decimal
 
 
 def searchEmployees(request):
@@ -83,3 +84,10 @@ def arrays_to_table(request, employee):
             'leave_days_array': array
         })
     return table_data
+
+def calculate_total_days(request_type, start_date, coming_date):
+        """Calculate the total number of leave days."""
+        if start_date and coming_date:
+            days = (coming_date - start_date).days + 1  # Add 1 to include start date
+            return Decimal(max(days - 0.5, 0)) if request_type == 'half' else Decimal(days)
+        return Decimal(0)

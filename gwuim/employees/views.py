@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Employee, LeaveType, LeaveRequest
-from .utils import searchEmployees, paginateEmployees, data_insertion_to_arrays, arrays_to_table
+from .utils import searchEmployees, paginateEmployees, calculate_total_days, arrays_to_table
 from .forms import EmployeeForm, LeaveTypeForm
 from django.utils import timezone
 from django.http import HttpResponse
@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import LeaveType
+from django.contrib import messages
 
 
 @login_required(login_url='login')
@@ -69,22 +70,34 @@ def employeeIndetail(request, pk):
     #Handling POST request
     if request.method == 'POST':
         if request.POST.get('action') == 'addLeaveRequest':
-            request_type = request.POST.get('requestType')
             leave_type = LeaveType.objects.get(uid=request.POST.get('leaveType'))
+            request_type = request.POST.get('requestType')
             start_date = timezone.datetime.strptime(request.POST.get('startDate'), '%Y-%m-%d').date()
             comming_date = timezone.datetime.strptime(request.POST.get('commingDate'), '%Y-%m-%d').date()
-            reason = request.POST.get('reason')
-            status = request.POST.get('status')
-            LeaveRequest.objects.create(
-                employee = employee,
-                systemized_by=profile,
-                reason=reason,
-                status=status,
-                leave_type=leave_type,
-                start_date=start_date,
-                coming_date=comming_date,
-                request_type=request_type,
-            )
+            leave_balance = employee.leave_balance[f'{leave_type.name.lower()}']
+            total_days= calculate_total_days(request_type, start_date, comming_date)
+            entering_type = request.POST.get('leaveEnteringType')
+            manual_total_days = request.POST.get('manualTotalDays')
+            if not manual_total_days:
+                manual_total_days = 0.0
+            manual_total_days = float(manual_total_days)
+            if total_days <= leave_balance or manual_total_days <= leave_balance:
+                reason = request.POST.get('reason')
+                status = request.POST.get('status')
+                request = LeaveRequest.objects.create(
+                    employee = employee,
+                    systemized_by=profile,
+                    reason=reason,
+                    status=status,
+                    leave_type=leave_type,
+                    start_date=start_date,
+                    coming_date=comming_date,
+                    request_type=request_type,
+                    entering_type=entering_type,
+                    manual_total_days=manual_total_days
+                )
+            else:
+                messages.error(request, f'Insufficient leave balance in {leave_type}.')
         return redirect('employee-indetail', pk=pk)
 
     context = {

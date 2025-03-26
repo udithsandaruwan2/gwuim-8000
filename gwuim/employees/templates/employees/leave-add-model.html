@@ -18,6 +18,14 @@
                             {% endfor %}
                         </select>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label for="leaveEnteringType" class="form-label">Calculate Type</label>
+                        <select class="form-select" id="leaveEnteringType" name="leaveEnteringType">
+                            <option value="auto">Auto</option>
+                            <option value="manual">Manual</option>
+                        </select>
+                    </div>
                 
                     <div class="mb-3">
                         <label for="startDate" class="form-label">Start Date</label>
@@ -28,6 +36,12 @@
                         <label for="endDate" class="form-label">Commig Date</label>
                         <input type="date" class="form-control" id="endDate" name="commingDate">
                     </div>
+
+                    <div class="manual-total mb-3" style="display: none;">
+                        <label for="endDate" class="form-label">Total Days</label>
+                        <input type="number" class="form-control" id="manualTotalDays" name="manualTotalDays" step="0.01" min="0">
+                    </div>
+
                 
                     <div class="mb-3">
                         <label for="requestType" class="form-label">Request Type</label>
@@ -58,3 +72,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const leaveEnteringTypeSelect = document.getElementById('leaveEnteringType'); // Assuming this is the leaveEnteringType select
+        const manualTotalField = document.querySelector('.manual-total'); // Assuming the div with the 'manual-total' class
+
+        // Function to toggle the visibility based on selection
+        function toggleManualTotalField() {
+            if (leaveEnteringTypeSelect.value === 'manual') {
+                manualTotalField.style.display = 'block'; // Show the manual total field
+            } else {
+                manualTotalField.style.display = 'none'; // Hide the manual total field
+            }
+        }
+
+        // Initial check in case the page is loaded with 'manual' already selected
+        toggleManualTotalField();
+
+        // Event listener to handle changes
+        leaveEnteringTypeSelect.addEventListener('change', toggleManualTotalField);
+    });
+</script>
