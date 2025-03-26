@@ -4,21 +4,28 @@ import sys
 import webbrowser
 import time
 import ctypes
+import socket
 import pystray
 from pystray import MenuItem as item
 from PIL import Image
 
 # Function to load the icon from the file
 def create_image():
-    # Load the icon from the specified path
-    image = Image.open(r"C:\workspace\gwuim\gwuim\app_icon.ico")
-    return image
+    return Image.open(r"C:\workspace\gwuim\gwuim\app_icon.ico")
 
 # Function to stop the server and exit
 def on_exit(icon, item):
-    icon.stop()  # Stop the system tray icon
-    server_process.terminate()  # Terminate the Django server process
-    os._exit(0)  # Stop the program
+    icon.stop()
+
+    # Terminate any running Django servers
+    subprocess.call('taskkill /F /IM python.exe /T', shell=True)
+
+    os._exit(0)
+
+# Function to check if port 8000 is already in use
+def is_port_in_use(port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(('localhost', port)) == 0
 
 # Hide the terminal window
 if sys.platform == "win32":
@@ -27,16 +34,26 @@ if sys.platform == "win32":
 # Navigate to the Django project folder
 os.chdir(r"C:\workspace\gwuim\gwuim")
 
-# Activate virtual environment
-subprocess.Popen(r'venv\Scripts\activate.bat &&  python manage.py runserver' , shell=True, creationflags=subprocess.CREATE_NO_WINDOW)
+# Check if the server is already running
+if is_port_in_use(8000):
+    print("Server is already running. Restarting server...")
 
-# Start the Django server in a separate process and store the process reference
-server_process = subprocess.Popen(r'python manage.py runserver ', shell=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    # Kill any running Django servers
+    subprocess.call('taskkill /F /IM python.exe /T', shell=True)
+    time.sleep(2)  # Small delay to ensure processes are properly closed
 
-# Give the server a few seconds to start before opening the browser
+# Start the Django server
+print("Starting server...")
+server_process = subprocess.Popen(
+    r'venv\Scripts\activate.bat && python manage.py runserver',
+    shell=True,
+    creationflags=subprocess.CREATE_NO_WINDOW
+)
+
+# Give the server a few seconds to start
 time.sleep(5)
 
-# Open the default web browser and navigate to localhost:8000
+# Open the default web browser
 webbrowser.open("http://localhost:8000")
 
 # Create system tray icon
