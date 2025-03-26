@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 # from employees.models import Employee
 
 class Faculty(models.Model):
@@ -6,7 +7,7 @@ class Faculty(models.Model):
     name = models.CharField(max_length=255, unique=True)
     # dean = models.OneToOneField(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="faculty_dean")
     # Common fields
-    uid = models.AutoField(primary_key=True)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -24,7 +25,7 @@ class Department(models.Model):
     # head = models.OneToOneField(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="department_head")
     faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True, blank=True)
     # Common fields
-    uid = models.AutoField(primary_key=True)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
