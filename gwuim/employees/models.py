@@ -22,9 +22,9 @@ class Employee(models.Model):
     address = models.TextField(null=True, blank=True)
     date_of_joining = models.DateField(null=True, blank=True)
     date_of_leaving = models.DateField(null=True, blank=True)
-    leave_balance = models.FloatField(default=0.0, blank=True, null=True)
     position = models.CharField(max_length=255, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
+    leave_balance = models.JSONField(default=dict, blank=True, null=True)
     # Common fields
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,9 +46,6 @@ class LeaveType(models.Model):
     def __str__(self):
         return str(self.name)
     
-from decimal import Decimal
-from django.db import models, transaction
-import uuid
 
 class LeaveRequest(models.Model):
     STATUS_CHOICES = [
@@ -60,6 +57,10 @@ class LeaveRequest(models.Model):
         ('half', 'Half Day'),
         ('full', 'Full Day'),
     ]
+    ENTERING_CHOICES = [
+        ('auto', 'Auto'),
+        ('manual', 'Manual'),
+    ]
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
@@ -70,6 +71,9 @@ class LeaveRequest(models.Model):
     reason = models.TextField(null=True, blank=True)
     systemized_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
     total_days = models.FloatField(default=0.0, editable=False, blank=True)
+    entering_type = models.CharField(max_length=10, choices=ENTERING_CHOICES, default='auto')
+    manual_total_days = models.FloatField(default=0.0, blank=True, null=True)
+    # Common fields
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -80,13 +84,23 @@ class LeaveRequest(models.Model):
     def calculate_total_days(self):
         """Calculate the total number of leave days."""
         if self.start_date and self.coming_date:
-            days = (self.coming_date - self.start_date).days + 1  # Add 1 to include start date
+            days = (self.coming_date - self.start_date).days
+            if days == 0:
+                days = days + 1
             return Decimal(max(days - 0.5, 0)) if self.request_type == 'half' else Decimal(days)
         return Decimal(0)
 
+    def assign_manual_total_days(self):
+        """Assign manual_total_days to total_days if entering_type is 'manual'."""
+        if self.entering_type == 'manual' and self.manual_total_days is not None:
+            self.total_days = self.manual_total_days
+        else:
+            self.total_days = float(self.calculate_total_days())
+
     def save(self, *args, **kwargs):
         """Override save method to ensure `total_days` updates correctly."""
-        self.total_days = float(self.calculate_total_days())  # Correct calculation logic
+        # self.total_days = float(self.calculate_total_days())  # Correct calculation logic
+        self.assign_manual_total_days()  # Assign manual_total_days if needed
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

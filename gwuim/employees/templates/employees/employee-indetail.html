@@ -84,6 +84,36 @@
                 <i class="fas fa-book"></i> View History
             </a>
         </div>
+
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+
+                        {% for type in leave_types %}
+
+                        <th>{{ type.name }}</th>
+
+                        {% endfor %}
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total leave balance</td>
+                        {% for type in leave_types %}
+                        <th>{{ employee.leave_balance|get_dic_item:type|get_value }} / {{type.max_days|get_value}} </th>
+                        {% endfor %}
+
+                    </tr>
+                </tbody>
+        
+
+        
+            </table>
+        
+        </div>
         {% include 'dashboard/footer.html' %}
     </div>
 
