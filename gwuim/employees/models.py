@@ -46,8 +46,11 @@ class LeaveType(models.Model):
     def __str__(self):
         return str(self.name)
     
+from decimal import Decimal
+from django.db import models, transaction
+import uuid
+
 class LeaveRequest(models.Model):
-    # Choices
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('approved', 'Approved'),
@@ -67,7 +70,6 @@ class LeaveRequest(models.Model):
     reason = models.TextField(null=True, blank=True)
     systemized_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
     total_days = models.FloatField(default=0.0, editable=False, blank=True)
-    # Common fields
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -78,26 +80,18 @@ class LeaveRequest(models.Model):
     def calculate_total_days(self):
         """Calculate the total number of leave days."""
         if self.start_date and self.coming_date:
-            days = (self.coming_date - self.start_date).days
-            if days == 0:  # If start and coming dates are the same, add 1
-                days = 1
-            if self.request_type == 'half':
-                return Decimal(days - 0.5)
-            return Decimal(days)
+            days = (self.coming_date - self.start_date).days + 1  # Add 1 to include start date
+            return Decimal(max(days - 0.5, 0)) if self.request_type == 'half' else Decimal(days)
         return Decimal(0)
 
     def save(self, *args, **kwargs):
-        """Override save method to handle leave balance."""
-        if not self.pk:  # New request
-            self.total_days = self.calculate_total_days()  # Correct calculation logic
-            # if self.status == 'approved':
-            #     with transaction.atomic():
-            #         self.employee.leave_balance += self.total_days
-            #         self.employee.save()
+        """Override save method to ensure `total_days` updates correctly."""
+        self.total_days = float(self.calculate_total_days())  # Correct calculation logic
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         """Restore leave balance if an approved request is deleted."""
+        # Uncomment if leave balance logic is required
         # if self.status == 'approved':
         #     with transaction.atomic():
         #         self.employee.leave_balance -= self.total_days
