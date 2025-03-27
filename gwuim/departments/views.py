@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .utils import search_faculties_departments
+from audit_logs.utils import create_audit_log
 
 @login_required(login_url='login')
 def departments(request):
@@ -15,7 +16,15 @@ def departments(request):
         profile = request.user.profile
     except:
         profile = None
-    
+
+    # Log the view page action
+    if request.user.is_authenticated:
+        create_audit_log(
+            action_performed="Viewed Departments Page",
+            performed_by=request.user.profile,  # Assuming the user has a Profile object
+            details="User viewed the departments page."
+        )
+
     faculties, departments, search_query = search_faculties_departments(request)
 
     # Create a dictionary to map faculty to their departments
@@ -31,6 +40,15 @@ def departments(request):
             faculty_code = request.POST.get('facultyCode')
             faculty_name = request.POST.get('facultyName')
             Faculty.objects.create(code=faculty_code, name=faculty_name)
+
+            # Log the action of adding a faculty
+            if request.user.is_authenticated:
+                create_audit_log(
+                    action_performed="Added Faculty",
+                    performed_by=request.user.profile,
+                    details=f"Added faculty with code: {faculty_code}, name: {faculty_name}"
+                )
+
             return redirect('departments')  # Redirect to refresh the page
 
         # Handling 'addDepartment' action
@@ -42,10 +60,19 @@ def departments(request):
             try:
                 faculty = Faculty.objects.get(uid=faculty_id)
                 Department.objects.create(code=department_code, name=department_name, faculty=faculty)
+
+                # Log the action of adding a department
+                if request.user.is_authenticated:
+                    create_audit_log(
+                        action_performed="Added Department",
+                        performed_by=request.user.profile,
+                        details=f"Added department with code: {department_code}, name: {department_name}, under faculty: {faculty.name}"
+                    )
             except Faculty.DoesNotExist:
                 return JsonResponse({'success': False, 'error': 'Faculty not found.'})
+
             return redirect('departments')  # Redirect to refresh the page
-        
+
         # Handling 'updateDepartments' action for AJAX request
         elif request.POST.get('action') == 'updateDepartments':
             updated_departments = json.loads(request.POST.get('updatedDepartments'))  # Get the list of updated departments
@@ -53,8 +80,17 @@ def departments(request):
             try:
                 for dept_data in updated_departments:
                     department = Department.objects.get(uid=dept_data['uid'])
+                    old_name = department.name
                     department.name = dept_data['name']
                     department.save()
+
+                    # Log the action of updating a department
+                    if request.user.is_authenticated:
+                        create_audit_log(
+                            action_performed="Updated Department",
+                            performed_by=request.user.profile,
+                            details=f"Updated department from name: {old_name} to {department.name}"
+                        )
 
                 # Return success response after updating departments
                 return JsonResponse({'success': True})
@@ -68,7 +104,7 @@ def departments(request):
         'faculties': faculties,
         'faculty_departments': faculty_departments,  # Pass the mapping to the template
         'search_query': search_query,
-        'profile':profile
+        'profile': profile
     }
     return render(request, 'departments/departments.html', context)
 
@@ -89,8 +125,17 @@ def update_departments(request):
                 # Update department names
                 for dept_data in updated_departments:
                     department = Department.objects.get(uid=dept_data['uid'], faculty=faculty)
+                    old_name = department.name
                     department.name = dept_data['name']
                     department.save()
+
+                    # Log the department update action
+                    if request.user.is_authenticated:
+                        create_audit_log(
+                            action_performed="Updated Department",
+                            performed_by=request.user.profile,
+                            details=f"Updated department from name: {old_name} to {department.name}, under faculty: {faculty.name}"
+                        )
 
                 return JsonResponse({'success': True})
             except Faculty.DoesNotExist:
@@ -112,14 +157,30 @@ def deleteDepartmentConfirmation(request, pk):
 
     department = get_object_or_404(Department, uid=pk)  # Ensures object exists
 
+    # Log the deletion action (before actually deleting the department)
+    if request.user.is_authenticated:
+        create_audit_log(
+            action_performed="Viewed Department Deletion Confirmation",
+            performed_by=request.user.profile,
+            details=f"User is about to delete department: {department.name} (UID: {department.uid})"
+        )
+
     if request.method == 'POST':
+        # Log the department deletion
+        if request.user.is_authenticated:
+            create_audit_log(
+                action_performed="Deleted Department",
+                performed_by=request.user.profile,
+                details=f"Deleted department: {department.name} (UID: {department.uid})"
+            )
+
         department.delete()
         return redirect('departments')  # Redirect after successful deletion
 
     context = {
         'page': page,
         'page_title': page_title,
-        'profile':profile
+        'profile': profile
     }
 
     return render(request, 'dashboard/delete-confirmation.html', context)
@@ -136,14 +197,30 @@ def deleteFacultyConfirmation(request, pk):
 
     faculty = get_object_or_404(Faculty, uid=pk)  # Ensures object exists
 
+    # Log the deletion action (before actually deleting the faculty)
+    if request.user.is_authenticated:
+        create_audit_log(
+            action_performed="Viewed Faculty Deletion Confirmation",
+            performed_by=request.user.profile,
+            details=f"User is about to delete faculty: {faculty.name} (UID: {faculty.uid})"
+        )
+
     if request.method == 'POST':
+        # Log the faculty deletion
+        if request.user.is_authenticated:
+            create_audit_log(
+                action_performed="Deleted Faculty",
+                performed_by=request.user.profile,
+                details=f"Deleted faculty: {faculty.name} (UID: {faculty.uid})"
+            )
+
         faculty.delete()
         return redirect('departments')  # Redirect after successful deletion
 
     context = {
         'page': page,
         'page_title': page_title,
-        'profile':profile
+        'profile': profile
     }
 
     return render(request, 'dashboard/delete-confirmation.html', context)
