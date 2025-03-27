@@ -77,7 +77,7 @@ def employeeIndetail(request, pk):
             start_date = timezone.datetime.strptime(request.POST.get('startDate'), '%Y-%m-%d').date()
             comming_date = timezone.datetime.strptime(request.POST.get('commingDate'), '%Y-%m-%d').date()
             leave_balance = employee.leave_balance[f'{leave_type.name.lower()}']
-            total_days = calculate_total_days(request, request_type, start_date, comming_date)
+            total_days = calculate_total_days(request_type, start_date, comming_date)
             entering_type = request.POST.get('leaveEnteringType')
             manual_total_days = request.POST.get('manualTotalDays')
             if not manual_total_days:
