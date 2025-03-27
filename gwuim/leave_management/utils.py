@@ -4,7 +4,6 @@ from employees.models import LeaveRequest
 
 def searchRequests(request):
     search_query = request.GET.get('search', '')
-
     # Use the double underscore syntax to filter by the 'name' field of the related models
     requests = LeaveRequest.objects.distinct().filter(
         Q(employee__full_name__icontains=search_query) |  # Corrected lookup for employee's name
@@ -13,8 +12,6 @@ def searchRequests(request):
     )
     
     return requests, search_query
-
-
 
 def paginateRequests(request, requests, results):
     page = request.GET.get('page', 1)  # Default to page 1 if not provided
