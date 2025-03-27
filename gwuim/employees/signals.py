@@ -54,13 +54,6 @@ def update_employee_leave_balance_on_request(sender, instance, created, **kwargs
                 employee.leave_balance[leave_type.name.lower()] -= instance.total_days
             employee.save(update_fields=['leave_balance'])
 
-            # Log the action: Leave request created, balance updated
-            create_audit_log(
-                action_performed="Updated Leave Balance",
-                performed_by=instance.employee.profile,  # Assuming the employee has a profile info
-                details=f"Updated leave balance for employee {employee.full_name} ({employee.employee_code}) due to leave request"
-            )
-
 
 @receiver(post_delete, sender=LeaveRequest)
 def update_employee_leave_balance_on_request(sender, instance, **kwargs):
@@ -70,10 +63,3 @@ def update_employee_leave_balance_on_request(sender, instance, **kwargs):
     if leave_type.name.lower() in employee.leave_balance:
         employee.leave_balance[leave_type.name.lower()] += instance.total_days
         employee.save(update_fields=['leave_balance'])
-
-        # Log the action: Leave request deleted, balance restored
-        create_audit_log(
-            action_performed="Restored Leave Balance",
-            performed_by=instance.employee.profile,  # Assuming the employee has a profile info
-            details=f"Restored leave balance for employee {employee.full_name} ({employee.employee_code}) due to deleted leave request"
-        )
