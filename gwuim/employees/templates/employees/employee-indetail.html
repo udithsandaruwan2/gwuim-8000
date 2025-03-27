@@ -8,10 +8,10 @@
 <div class="body-wrapper" style="margin: 0; padding: 0;">
     <div class="container-fluid">
         <div class="row mb-4">
-            <div class="col-6 d-flex align-items-center">
+            <div class="col-8 d-flex align-items-center">
                 <img src="{% static 'theme_dashboard/assets/images/logos/logo.png' %}" width="190" alt="Company Logo" />
             </div>
-            <div class="col-6 text-end">
+            <div class="col-4 text-end">
                 <!-- Visible on Web Page -->
                 <button class="btn me-2 toggle-btn" data-bs-toggle="modal" data-bs-target="#addLeaveModal">
                     <i class="fas fa-plus"></i> Add Leave
@@ -21,9 +21,9 @@
                 </button>
 
                 <!-- Report Download Button -->
-                <button class="btn toggle-btn" id="downloadBtn">
+                <!-- <button class="btn toggle-btn" id="downloadBtn">
                     <i class="fas fa-download"></i> Download Report
-                </button>
+                </button> -->
                 
                 <!-- Content to be captured (optional, you can wrap the content in a div for better control) -->
                 <div id="contentToCapture">
@@ -101,7 +101,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Total leave balance</td>
+                        <td style="width: fit-content;">Total leave balance</td>
                         {% for type in leave_types %}
                         <th>{{ employee.leave_balance|get_dic_item:type|get_value }} / {{type.max_days|get_value}} </th>
                         {% endfor %}
@@ -117,7 +117,7 @@
         {% include 'dashboard/footer.html' %}
     </div>
 
-    e
+
 
 </div>
 
@@ -170,44 +170,36 @@
     }
 
     /* Print Styling */
-    @media print {
-    .toggle-btn {
-        display: none;  /* Hide buttons in the report */
+    /* Improved Table Styling for Print */
+@media print {
+    .table th, .table td {
+        width: 6%;  /* Optimize space for each month column */
+        padding: 4px;  /* Reduce padding for better fit */
+        font-size: 12px; /* Smaller text for compact display */
+        word-wrap: break-word;
+        text-align: center;
     }
-    
+
+    .table th:first-child, .table td:first-child {
+        width: 20%; /* Maintain enough space for 'Leave Types' column */
+    }
+
     .body-wrapper {
         width: 100%;
-        height: 100%;
         padding: 0;
-    }
-
-    .table {
-        width: 100%;
-        table-layout: fixed;
-    }
-
-    .table th, .table td {
-        text-align: center;
-        padding: 8px;
+        margin: 0;
     }
 
     .container-fluid {
-        page-break-before: always;
-    }
-
-    .col-4, .col-2, .col-6 {
-        display: inline-block;
-        vertical-align: middle;
+        width: 100%;
         padding: 0;
     }
 
-    /* Adjust widths for landscape */
-    .table th:first-child, .table td:first-child {
-        width: 20%;
+    .toggle-btn {
+        display: none; /* Hide buttons when printing */
     }
-
-    /* Other adjustments as needed */
 }
+
 
 
     /* Adjust the width of the "Leave Types" column */
