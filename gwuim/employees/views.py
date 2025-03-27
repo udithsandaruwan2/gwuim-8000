@@ -1,14 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Employee, LeaveType, LeaveRequest
 from .utils import searchEmployees, paginateEmployees, calculate_total_days, arrays_to_table
+from audit_logs.utils import create_audit_log
 from .forms import EmployeeForm, LeaveTypeForm
 from django.utils import timezone
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import LeaveType
 from django.contrib import messages
 
 
@@ -27,12 +26,18 @@ def employees(request):
     custom_range, employees = paginateEmployees(request, employees, 10)
     employee_form = EmployeeForm()
 
-    #Handling POST request
+    # Handling POST request for adding new employee
     if request.method == 'POST':
         if request.POST.get('action') == 'addEmployee':
             employee_form = EmployeeForm(request.POST)
             if employee_form.is_valid():
                 employee_form.save()
+                # Log action: Add Employee
+                create_audit_log(
+                    action_performed="Added Employee",
+                    performed_by=request.user.profile,
+                    details=f"Added new employee with data: {employee_form.cleaned_data}"
+                )
                 return redirect('employees')
 
     context = {
@@ -42,9 +47,10 @@ def employees(request):
         'search_query': search_query,
         'custom_range': custom_range,
         'employee_form': employee_form,
-        'profile':profile
+        'profile': profile
     }
     return render(request, 'employees/employees.html', context)
+
 
 @login_required(login_url='login')
 def employeeIndetail(request, pk):
@@ -59,15 +65,11 @@ def employeeIndetail(request, pk):
     months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     current_year = timezone.now().year
     employee = Employee.objects.get(uid=pk)
-    try:
-        profile = request.user.profile
-    except:
-        profile = None
     leave_types = LeaveType.objects.all()
 
     leaves_data = arrays_to_table(request, employee)
 
-    #Handling POST request
+    # Handling POST request for adding a leave request
     if request.method == 'POST':
         if request.POST.get('action') == 'addLeaveRequest':
             leave_type = LeaveType.objects.get(uid=request.POST.get('leaveType'))
@@ -75,17 +77,19 @@ def employeeIndetail(request, pk):
             start_date = timezone.datetime.strptime(request.POST.get('startDate'), '%Y-%m-%d').date()
             comming_date = timezone.datetime.strptime(request.POST.get('commingDate'), '%Y-%m-%d').date()
             leave_balance = employee.leave_balance[f'{leave_type.name.lower()}']
-            total_days= calculate_total_days(request_type, start_date, comming_date)
+            total_days = calculate_total_days(request_type, start_date, comming_date)
             entering_type = request.POST.get('leaveEnteringType')
             manual_total_days = request.POST.get('manualTotalDays')
             if not manual_total_days:
                 manual_total_days = 0.0
             manual_total_days = float(manual_total_days)
+
             if total_days <= leave_balance or manual_total_days <= leave_balance:
                 reason = request.POST.get('reason')
                 status = request.POST.get('status')
-                request = LeaveRequest.objects.create(
-                    employee = employee,
+                # Create leave request and log it
+                leave_request = LeaveRequest.objects.create(
+                    employee=employee,
                     systemized_by=profile,
                     reason=reason,
                     status=status,
@@ -95,6 +99,12 @@ def employeeIndetail(request, pk):
                     request_type=request_type,
                     entering_type=entering_type,
                     manual_total_days=manual_total_days
+                )
+                # Log action: Add Leave Request
+                create_audit_log(
+                    action_performed="Added Leave Request",
+                    performed_by=request.user.profile,
+                    details=f"Leave request added for employee {employee.full_name} ({employee.employee_code})"
                 )
             else:
                 messages.error(request, f'Insufficient leave balance in {leave_type}.')
@@ -109,9 +119,7 @@ def employeeIndetail(request, pk):
         'profile': profile,
         'leave_types': leave_types,
         'months': months,
-        'leaves_data': leaves_data,
-        'profile':profile
-
+        'leaves_data': leaves_data
     }
 
     return render(request, 'employees/employee-indetail.html', context)
@@ -130,12 +138,19 @@ def employeeLeaveHistory(request, pk):
     # Fetch leave requests for the employee with the given primary key
     leave_requests = LeaveRequest.objects.filter(employee__uid=pk)
 
+    # Log action: View Leave History
+    create_audit_log(
+        action_performed="Viewed Leave History",
+        performed_by=request.user.profile,
+        details=f"Viewed leave history for employee {pk}"
+    )
+
     context = {
         'page': page,
         'page_title': page_title,
         'leave_requests': leave_requests,
         'pk': pk,
-        'profile':profile
+        'profile': profile
     }
 
     return render(request, 'employees/employee-indetail-leave-request-history.html', context)
@@ -170,6 +185,13 @@ def downloadReport(request, pk):
             options={'page-size': 'A4', 'orientation': 'landscape'}
         )
 
+        # Log action: Download Report
+        create_audit_log(
+            action_performed="Downloaded Employee Report",
+            performed_by=request.user.profile,
+            details=f"Downloaded leave report for employee {employee.full_name} ({employee.employee_code})"
+        )
+
         # Return the PDF as a response
         response = HttpResponse(pdf, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename=leave_report_{pk}.pdf'
@@ -177,6 +199,7 @@ def downloadReport(request, pk):
     except Employee.DoesNotExist:
         # Handle the case where the employee with the given pk does not exist
         return HttpResponse("Employee not found.", status=404)
+
 
 @login_required(login_url='login')
 def leaveTypes(request):
@@ -188,6 +211,7 @@ def leaveTypes(request):
     except:
         profile = None
 
+    # Handling POST request for adding new leave type
     if request.method == 'POST':
         action = request.POST.get('action')
         if action == 'addLeaveType':
@@ -195,7 +219,13 @@ def leaveTypes(request):
             name = request.POST.get('leaveTypeName')
             max_days = request.POST.get('leaveTypeMaxDays')
             description = request.POST.get('leaveTypeDescription')
+            # Create new leave type and log it
             LeaveType.objects.create(code=code, name=name, max_days=max_days, description=description)
+            create_audit_log(
+                action_performed="Added Leave Type",
+                performed_by=request.user.profile,
+                details=f"Added new leave type with code: {code} and name: {name}"
+            )
             return redirect('leave_types')
 
     leave_types = LeaveType.objects.all()
@@ -204,10 +234,11 @@ def leaveTypes(request):
         'page': page,
         'page_title': page_title,
         'leave_types': leave_types,
-        'profile':profile
+        'profile': profile
     }
 
     return render(request, 'employees/leave-types.html', context)
+
 
 @login_required(login_url='login')
 def updateLeaveType(request, pk):
@@ -220,13 +251,19 @@ def updateLeaveType(request, pk):
         profile = None
 
     leave_type = get_object_or_404(LeaveType, uid=pk)  # Ensures object exists
-
     form = LeaveTypeForm(instance=leave_type)  # Prefill form with existing data
 
+    # Handling POST request for updating leave type
     if request.method == 'POST':
         form = LeaveTypeForm(request.POST, instance=leave_type)
         if form.is_valid():
             form.save()
+            # Log action: Update Leave Type
+            create_audit_log(
+                action_performed="Updated Leave Type",
+                performed_by=request.user.profile,
+                details=f"Updated leave type {leave_type.name} with new data: {form.cleaned_data}"
+            )
             return redirect('leave_types')
 
     context = {
@@ -234,10 +271,11 @@ def updateLeaveType(request, pk):
         'page_title': page_title,
         'leave_type': leave_type,  # Pass object to template for display
         'form': form,
-        'profile':profile
+        'profile': profile
     }
 
     return render(request, 'employees/update-leave-type.html', context)
+
 
 @login_required(login_url='login')
 def deleteLeaveTypeConfirmation(request, pk):
@@ -253,14 +291,19 @@ def deleteLeaveTypeConfirmation(request, pk):
 
     if request.method == 'POST':
         leave_type.delete()
+        # Log action: Delete Leave Type
+        create_audit_log(
+            action_performed="Deleted Leave Type",
+            performed_by=request.user.profile,
+            details=f"Deleted leave type {leave_type.name} (Code: {leave_type.code})"
+        )
         return redirect('leave_types')  # Redirect after successful deletion
 
     context = {
         'page': page,
         'page_title': page_title,
         'leave_type': leave_type,  # Pass object to template for display
-        'profile':profile
+        'profile': profile
     }
 
     return render(request, 'dashboard/delete-confirmation.html', context)
-

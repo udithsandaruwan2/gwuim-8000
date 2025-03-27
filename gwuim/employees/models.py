@@ -2,7 +2,6 @@ from django.db import models
 from departments.models import Department
 from users.models import Profile
 from decimal import Decimal
-from django.db import transaction
 import uuid
 
 class Employee(models.Model):
