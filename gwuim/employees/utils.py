@@ -7,7 +7,6 @@ from decimal import Decimal
 
 def searchEmployees(request):
     search_query = request.GET.get('search', '')
-
     employees = Employee.objects.distinct().filter(
         Q(employee_code__icontains=search_query) |
         Q(full_name__icontains=search_query) |
@@ -15,7 +14,6 @@ def searchEmployees(request):
         Q(position__icontains=search_query) |
         Q(department__name__icontains=search_query) 
     )
-    
     return employees, search_query
 
 def paginateEmployees(request, employees, results):
@@ -67,7 +65,6 @@ def data_insertion_to_arrays(request, employee):
             if 1 <= month <= 12:
                 # Add the total leave days for the corresponding month
                 array[month - 1] += leave.total_days
-              
     return leave_type_arrays
 
 def arrays_to_table(request, employee):

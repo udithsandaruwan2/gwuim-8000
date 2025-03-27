@@ -1,10 +1,19 @@
 from django import forms
 from .models import Employee, LeaveRequest, LeaveType
 
+
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['employee_code', 'full_name', 'email', 'gender', 'position', 'department', 'date_of_joining']
+        fields = [
+            'employee_code', 
+            'full_name', 
+            'email', 
+            'gender', 
+            'position', 
+            'department', 
+            'date_of_joining'
+        ]
         widgets = {
             'employee_code': forms.NumberInput(attrs={'class': 'form-control', 'id': 'employeeCode'}),
             'full_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'employeeName'}),
@@ -38,11 +47,11 @@ class LeaveTypeForm(forms.ModelForm):
     )
 
     max_days = forms.FloatField(
-            widget=forms.TextInput(attrs={
-                'class': 'form-control mt-2 edit-input',  # Add the classes here
-                'placeholder': 'Enter maximum allocating days',  # Optionally add a placeholder
-            })
-        )
+        widget=forms.TextInput(attrs={
+            'class': 'form-control mt-2 edit-input',  # Add the classes here
+            'placeholder': 'Enter maximum allocating days',  # Optionally add a placeholder
+        })
+    )
 
     description = forms.CharField(
         widget=forms.Textarea(attrs={
