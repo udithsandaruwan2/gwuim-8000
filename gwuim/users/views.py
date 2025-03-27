@@ -8,30 +8,41 @@ from django.db.models import Sum
 from django.db.models.functions import TruncMonth
 import calendar
 from datetime import datetime
+from audit_logs.utils import create_audit_log
 
 
 def home(request):
+    """Home page view."""
     page = 'home'
     page_title = 'Home'
 
     try:
-        profile = request.user.profile
+        profile = request.user.profile  # Get user profile if available
     except:
         profile = None
+
+    # Log the action: User accessed the home page
+    create_audit_log(
+        action_performed="Accessed Home Page",
+        performed_by=profile,
+        details="User accessed the home page."
+    )
 
     context = {
         'page': page,
         'page_title': page_title,
-        'profile':profile
+        'profile': profile
     }
     return render(request, 'users/index.html', context)
 
+
 def login(request):
+    """Login view for user authentication."""
     page = 'login'
     page_title = 'Login'
 
     try:
-        profile = request.user.profile
+        profile = request.user.profile  # Get user profile if available
     except:
         profile = None
 
@@ -47,54 +58,89 @@ def login(request):
         if not password:
             messages.error(request, 'Password is required')
             return redirect('login')
-        
+
         user = authenticate(request, username=username, password=password)
         if user is None:
             messages.error(request, 'Email or password is incorrect')
             return redirect('login')
 
         auth_login(request, user)
-        return redirect('dashboard')
 
+        # Log the action: User logged in successfully
+        create_audit_log(
+            action_performed="User Logged In",
+            performed_by=user.profile,
+            details=f"User {username} logged in."
+        )
+
+        return redirect('dashboard')
 
     context = {
         'page': page,
         'page_title': page_title,
-        'profile':profile
+        'profile': profile
     }
     return render(request, 'users/login-register.html', context)
 
+
 @login_required(login_url='login')
 def dashboard(request):
+    """Dashboard view for logged-in users."""
     page = 'dashboard'
     page_title = 'Dashboard'
 
     try:
-        profile = request.user.profile
+        profile = request.user.profile  # Get user profile if available
     except:
         profile = None
 
     leave_requests = LeaveRequest.objects.all().order_by('-created_at')[:5]
     leave_requests_count = LeaveRequest.objects.all().count()
 
+    # Log the action: User accessed the dashboard
+    create_audit_log(
+        action_performed="Accessed Dashboard",
+        performed_by=profile,
+        details="User accessed the dashboard page."
+    )
+
     context = {
         'page': page,
         'page_title': page_title,
         'leave_requests': leave_requests,
         'leave_requests_count': leave_requests_count,
-        'profile':profile
+        'profile': profile
     }
     return render(request, 'users/dashboard.html', context)
 
+
 @login_required(login_url='login')
 def logoutView(request):
+    """Logout view to log out the user."""
     user = request.user
     logout(request)
+
+    # Log the action: User logged out
+    create_audit_log(
+        action_performed="User Logged Out",
+        performed_by=user.profile,
+        details=f"User {user.username} logged out."
+    )
+
     return redirect('home')
+
 
 @login_required(login_url='login')
 def leave_requests_chart_data(request):
+    """View to fetch and return leave request data for the chart."""
     year = int(request.GET.get('year', datetime.now().year))  # Default to current year
+
+    # Log the action: User accessed leave requests chart data
+    create_audit_log(
+        action_performed="Accessed Leave Requests Chart Data",
+        performed_by=request.user.profile,
+        details=f"User accessed leave requests chart data for the year {year}."
+    )
 
     # Generate a dictionary with all months initialized to 0
     monthly_data = {f"{month} {year}": 0 for month in calendar.month_name[1:]}
@@ -122,8 +168,17 @@ def leave_requests_chart_data(request):
 
     return JsonResponse(chart_data)
 
+
 @login_required(login_url='login')
 def leave_requests_pie_chart_data(request):
+    """View to fetch and return leave request pie chart data."""
+    # Log the action: User accessed leave requests pie chart data
+    create_audit_log(
+        action_performed="Accessed Leave Requests Pie Chart Data",
+        performed_by=request.user.profile,
+        details="User accessed leave requests pie chart data."
+    )
+
     data = {
         'labels': ['Approved', 'Rejected', 'Pending'],
         'values': [

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .utils import searchRequests, paginateRequests
-from .utils import create_audit_log  # Assuming create_audit_log function is defined in utils.py
+from audit_logs.utils import create_audit_log
 
 @login_required(login_url='login')
 def leaveRequets(request):
