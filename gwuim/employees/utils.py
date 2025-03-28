@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import LeaveType, LeaveRequest
 from decimal import Decimal
+from datetime import datetime, timedelta
 
 
 def searchEmployees(request):
@@ -50,22 +51,35 @@ def create_leave_type_arrays_from_model():
 
     return leave_type_arrays
 
+from datetime import datetime, timedelta
+from collections import defaultdict
+
 def data_insertion_to_arrays(request, employee):
     leave_type_arrays = create_leave_type_arrays_from_model()
 
-    # Iterate over each leave type and their corresponding array
     for leave_type, array in leave_type_arrays.items():
-        # Fetch leave requests for the current leave type
         leaves_data = LeaveRequest.objects.filter(leave_type__name=leave_type, employee=employee)
-        
+
         for leave in leaves_data:
-            # Ensure that start_date is a datetime object
-            month = leave.start_date.month
-            
-            if 1 <= month <= 12:
-                # Add the total leave days for the corresponding month
-                array[month - 1] += leave.total_days
+            start_date = leave.start_date if isinstance(leave.start_date, datetime) else datetime.strptime(str(leave.start_date), "%Y-%m-%d")
+            coming_date = leave.coming_date if isinstance(leave.coming_date, datetime) else datetime.strptime(str(leave.coming_date), "%Y-%m-%d")
+
+            if leave.manual_total_days:
+                array[start_date.month - 1] += leave.manual_total_days
+            else:
+                current_date = start_date
+                while current_date <= coming_date:
+                    month_index = current_date.month - 1
+                    end_of_month = datetime(current_date.year, current_date.month % 12 + 1, 1) - timedelta(days=1)
+                    if coming_date <= end_of_month:
+                        array[month_index] += (coming_date - current_date).days
+                        break
+                    else:
+                        array[month_index] += (end_of_month - current_date).days + 1
+                        current_date = end_of_month + timedelta(days=1)
+
     return leave_type_arrays
+
 
 def arrays_to_table(request, employee):
     leave_type_arrays = data_insertion_to_arrays(request, employee)

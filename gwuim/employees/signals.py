@@ -33,12 +33,6 @@ def update_employee_leave_balance(sender, instance, created, **kwargs):
                 employee.leave_balance[instance.name.lower()] = float(instance.max_days)
                 employee.save(update_fields=['leave_balance'])
 
-                # Log the action: New leave type added to employee's leave balance
-                create_audit_log(
-                    action_performed="Updated Employee Leave Balance",
-                    performed_by=instance.profile,  # Assuming the leave type has a profile info
-                    details=f"Added leave type {instance.name} to employee {employee.full_name} ({employee.employee_code})"
-                )
 
 
 @receiver(post_save, sender=LeaveRequest)

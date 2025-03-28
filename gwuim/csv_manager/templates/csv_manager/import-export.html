@@ -1,0 +1,70 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_filters %} <!-- Load the custom filters -->
+
+{% block content %}
+
+{% include 'dashboard/sidebar.html' %}
+
+<!-- Main wrapper -->
+<div class="body-wrapper">
+
+    {% include 'dashboard/header.html' %}
+
+
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-9">
+                <h5 class="mt-2">Imports / Exports</h5>
+            </div>
+            <div class="col-3 text-end">
+                <!-- <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                    <i class="fas fa-plus"></i> New Employee
+                </button> -->
+            </div>
+        </div>
+
+
+<div class="row">
+    <a href="#" class="col-3" data-bs-toggle="modal" data-bs-target="#importModal">
+        <div class="card hover-card">
+            <div class="card-body text-center">
+                <i class="fas fa-file-csv fa-3x mb-3" style="color: #932626;"></i>
+                <h5 class="card-title">Import Employees</h5>
+            </div>
+        </div>
+    </a>
+    <a href="#" class="col-3">
+        <div class="card hover-card">
+            <div class="card-body text-center">
+                <i class="fas fa-file-csv fa-3x mb-3" style="color: #932626;"></i>
+                <h5 class="card-title">Export Employees</h5>
+            </div>
+        </div>
+    </a>
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .hover-card:hover {
+        transform: scale(1.05);
+        /* Slightly enlarges the card */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        /* Adds a soft shadow */
+    }
+</style>
+
+
+    </div>
+
+    {% include 'csv_manager/import-model.html' %}
+
+    <div id="data-container"></div>
+</div>
+
+{% endblock content %}
