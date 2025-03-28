@@ -171,6 +171,32 @@
                 
                 {% endif %}
 
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Import Export Management</span>
+                </li>
+                
+                {% if page == 'csv_manager' %}
+                <li class="sidebar-item  active selected ">
+                    <a class="sidebar-link" href="{% url 'csv_manager' %}" aria-expanded="false" style="background-color: #932626;">
+                        <span>
+                            <i class="ti ti-file-import"></i>
+                        </span>
+                        <span class="hide-menu">CSV Manager</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="{% url 'csv_manager' %}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-file-import"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">CSV Manager</span>
+                    </a>
+                </li>
+                
+                {% endif %}
+
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

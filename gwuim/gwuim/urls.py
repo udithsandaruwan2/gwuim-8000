@@ -12,6 +12,7 @@ urlpatterns = [
     path('', include('employees.urls')),
     path('', include('audit_logs.urls')),
     path('', include('leave_management.urls')),
+    path('', include('csv_manager.urls'))
 ]
 
 if settings.DEBUG:
