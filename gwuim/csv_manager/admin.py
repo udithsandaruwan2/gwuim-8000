@@ -1,3 +1,4 @@
 from django.contrib import admin
+from .models import EmployeeFile
 
-# Register your models here.
+admin.site.register(EmployeeFile)

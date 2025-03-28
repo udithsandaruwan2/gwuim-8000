@@ -1,0 +1,42 @@
+<!-- add_employee_file.html (your template) -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="addEmployeeLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 7px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEmployeeLabel">Add New Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="employeeForm" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="text" name="action" value="addFile" hidden>
+
+                    <!-- Add file upload field -->
+                    <div class="mb-3">
+                        <label for="id_file" class="form-label">Upload Employee File</label>
+                        {{ form.file }}
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn toggle-btn">Import Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .toggle-btn {
+                        background-color: #932626;
+                        color: #ffffff;
+                        border-color: #932626;
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .toggle-btn:hover {
+                        background-color: #ffffff;
+                        color: #932626;
+                        border-color: #932626;
+                    }
+</style>
