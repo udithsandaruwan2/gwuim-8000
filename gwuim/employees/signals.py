@@ -11,14 +11,8 @@ def set_default_leave_balance(sender, instance, created, **kwargs):
         leave_types = LeaveType.objects.all()
         if leave_types.exists():
             leave_balance = {leave.name.lower(): float(leave.max_days) for leave in leave_types}
-            Employee.objects.filter(id=instance.id).update(leave_balance=leave_balance)
+            Employee.objects.filter(uid=instance.uid).update(leave_balance=leave_balance)
 
-            # Log the action: Default leave balance set for new employee
-            create_audit_log(
-                action_performed="Set Default Leave Balance",
-                performed_by=instance.profile,  # Assuming the employee has a profile with this info
-                details=f"Set default leave balance for employee {instance.full_name} ({instance.employee_code})"
-            )
 
 
 @receiver(post_save, sender=LeaveType)

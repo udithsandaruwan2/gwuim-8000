@@ -1,7 +1,8 @@
 import csv
 import os
 from django.conf import settings
-
+from employees.models import Employee
+from departments.models import Department
 def csv_reader(file_path):
     # Remove the '/media' part from the file path if it starts with '/media'
     if file_path.startswith('/media/'):
@@ -21,6 +22,31 @@ def csv_reader(file_path):
         header = next(csv_reader)
 
         for row in csv_reader:
-            for idx, column_data in enumerate(row):
-                print(f"Column {header[idx]}: {column_data}")  # Print data corresponding to each column header
-            print()
+            if not row:  # Skip empty rows
+                continue
+
+            row_data = dict(zip(header, row))
+
+            # Skip rows with missing required fields
+            if not row_data.get('Full Name') or not row_data.get('Employee Code'):
+                print(f"Skipping row due to missing required fields: {row}")
+                continue
+
+            # Handle optional fields (set None for empty values)
+            department = None
+            if row_data.get('Department'):
+                department, _ = Department.objects.get_or_create(name=row_data['Department'])
+
+            Employee.objects.create(
+                employee_code=int(row_data['Employee Code']) if row_data['Employee Code'] else None,
+                full_name=row_data['Full Name'],
+                email=row_data['Email'] if row_data.get('Email') else None,
+                contact_number=row_data['Contact Number'] if row_data.get('Contact Number') else None,
+                date_of_birth=row_data['Date of Birth'] if row_data.get('Date of Birth') else None,
+                gender=row_data['Gender'].lower() if row_data.get('Gender') else None,
+                address=row_data['Address'] if row_data.get('Address') else None,
+                date_of_joining=row_data['Date of Joining'] if row_data.get('Date of Joining') else None,
+                position=row_data['Position'] if row_data.get('Position') else None,
+                department=department
+            )
+            
