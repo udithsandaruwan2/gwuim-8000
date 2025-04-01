@@ -21,13 +21,6 @@ def home(request):
     except:
         profile = None
 
-    # Log the action: User accessed the home page
-    create_audit_log(
-        action_performed="Accessed Home Page",
-        performed_by=profile,
-        details="User accessed the home page."
-    )
-
     context = {
         'page': page,
         'page_title': page_title,

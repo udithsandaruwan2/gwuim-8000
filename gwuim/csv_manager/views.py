@@ -9,6 +9,11 @@ def importExport(request):
     page = 'csv_manager'
     page_title = 'CSV Manager'
 
+    try:
+        profile = request.user.profile
+    except:
+        profile = None
+
     if request.method == 'POST' and request.FILES:
         form = EmployeeFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -22,7 +27,8 @@ def importExport(request):
     context = {
         'page': page,
         'page_title': page_title,
-        'form': form
+        'form': form,
+        'profile': profile,
     }
 
     return render(request, 'csv_manager/import-export.html', context)
