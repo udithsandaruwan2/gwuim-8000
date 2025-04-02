@@ -4,7 +4,7 @@ import uuid
 
 class AuditLog(models.Model):
     action_performed = models.CharField(max_length=255)
-    performed_by = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    performed_by = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
     details = models.TextField()
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)

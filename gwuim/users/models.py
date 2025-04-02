@@ -14,11 +14,12 @@ class UserRole(models.Model):
         return f"{self.uid} - {self.role_name}"
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", null=True, blank=True)
+    employee = models.OneToOneField('employees.Employee', on_delete=models.CASCADE, related_name="employee_profile", null=True, blank=True)
     full_name = models.CharField(max_length=50)
     username = models.CharField(max_length=20, unique=True)
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
-    email = models.EmailField()
+    email = models.EmailField(null=True, blank=True)
     role = models.ForeignKey(UserRole, on_delete=models.CASCADE, null=True, blank=True)
     # Common fields
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)

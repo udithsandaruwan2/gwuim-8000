@@ -38,6 +38,10 @@ def employees(request):
                     performed_by=request.user.profile,
                     details=f"Added new employee with data: {employee_form.cleaned_data}"
                 )
+                messages.success(request, 'Employee added successfully.')
+                return redirect('employees')
+            else:   
+                messages.error(request, 'Error adding employee. Please check the form.')
                 return redirect('employees')
 
     context = {
@@ -108,6 +112,8 @@ def employeeIndetail(request, pk):
                 )
             else:
                 messages.error(request, f'Insufficient leave balance in {leave_type}.')
+        
+            messages.success(request, 'Leave request submitted successfully.')
         return redirect('employee-indetail', pk=pk)
 
     context = {
@@ -226,6 +232,8 @@ def leaveTypes(request):
                 performed_by=request.user.profile,
                 details=f"Added new leave type with code: {code} and name: {name}"
             )
+
+            messages.success(request, 'Leave type added successfully.')
             return redirect('leave_types')
 
     leave_types = LeaveType.objects.all()
@@ -264,6 +272,10 @@ def updateLeaveType(request, pk):
                 performed_by=request.user.profile,
                 details=f"Updated leave type {leave_type.name} with new data: {form.cleaned_data}"
             )
+            messages.success(request, 'Leave type updated successfully.')
+            return redirect('leave_types')
+        else:
+            messages.error(request, 'Error updating leave type. Please check the form.')
             return redirect('leave_types')
 
     context = {
@@ -297,6 +309,8 @@ def deleteLeaveTypeConfirmation(request, pk):
             performed_by=request.user.profile,
             details=f"Deleted leave type {leave_type.name} (Code: {leave_type.code})"
         )
+
+        messages.success(request, 'Leave type deleted successfully.')
         return redirect('leave_types')  # Redirect after successful deletion
 
     context = {

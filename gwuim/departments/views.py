@@ -4,6 +4,7 @@ from .models import Faculty, Department
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .utils import search_faculties_departments
 from audit_logs.utils import create_audit_log
 
@@ -48,7 +49,8 @@ def departments(request):
                     performed_by=request.user.profile,
                     details=f"Added faculty with code: {faculty_code}, name: {faculty_name}"
                 )
-
+            
+            messages.success(request, 'Faculty added successfully.')
             return redirect('departments')  # Redirect to refresh the page
 
         # Handling 'addDepartment' action
@@ -69,8 +71,10 @@ def departments(request):
                         details=f"Added department with code: {department_code}, name: {department_name}, under faculty: {faculty.name}"
                     )
             except Faculty.DoesNotExist:
+                messages.error(request, 'Faculty not found.')
                 return JsonResponse({'success': False, 'error': 'Faculty not found.'})
-
+            
+            messages.success(request, 'Department added successfully.')
             return redirect('departments')  # Redirect to refresh the page
 
         # Handling 'updateDepartments' action for AJAX request
@@ -91,10 +95,11 @@ def departments(request):
                             performed_by=request.user.profile,
                             details=f"Updated department from name: {old_name} to {department.name}"
                         )
-
+                messages.success(request, 'Departments updated successfully.')
                 # Return success response after updating departments
                 return JsonResponse({'success': True})
             except Department.DoesNotExist:
+                messages.error(request, 'Department not found.')
                 # Return failure response if the department is not found
                 return JsonResponse({'success': False, 'error': 'Department not found'})
 
@@ -136,13 +141,17 @@ def update_departments(request):
                             performed_by=request.user.profile,
                             details=f"Updated department from name: {old_name} to {department.name}, under faculty: {faculty.name}"
                         )
-
+                messages.success(request, 'Departments updated successfully.')
                 return JsonResponse({'success': True})
             except Faculty.DoesNotExist:
+                messages.error(request, 'Faculty not found.')
                 return JsonResponse({'success': False, 'error': 'Faculty not found.'})
             except Department.DoesNotExist:
+                messages.error(request, 'Department not found.')
                 return JsonResponse({'success': False, 'error': 'Department not found.'})
+        messages.error(request, 'Invalid action.')
         return JsonResponse({'success': False, 'message': 'Invalid action.'})
+    messages.error(request, 'Invalid request method.')
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 @login_required(login_url='login')
@@ -175,6 +184,7 @@ def deleteDepartmentConfirmation(request, pk):
             )
 
         department.delete()
+        messages.success(request, 'Department deleted successfully.')
         return redirect('departments')  # Redirect after successful deletion
 
     context = {
@@ -215,6 +225,7 @@ def deleteFacultyConfirmation(request, pk):
             )
 
         faculty.delete()
+        messages.success(request, 'Faculty deleted successfully.')
         return redirect('departments')  # Redirect after successful deletion
 
     context = {

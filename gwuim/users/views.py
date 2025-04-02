@@ -66,6 +66,7 @@ def login(request):
             details=f"User {username} logged in."
         )
 
+        messages.success(request, f'Welcome back, {user.username}!')
         return redirect('dashboard')
 
     context = {
@@ -120,6 +121,7 @@ def logoutView(request):
         details=f"User {user.username} logged out."
     )
 
+    messages.success(request, 'You have been logged out successfully.')
     return redirect('home')
 
 

@@ -6,9 +6,26 @@ def searchRequests(request):
     search_query = request.GET.get('search', '')
     # Use the double underscore syntax to filter by the 'name' field of the related models
     requests = LeaveRequest.objects.distinct().filter(
+        Q(employee__employee_code__icontains=search_query) |
         Q(employee__full_name__icontains=search_query) |  # Corrected lookup for employee's name
         Q(leave_type__name__icontains=search_query) |  # Corrected lookup for leave type's name
-        Q(request_type__icontains=search_query)  # Correct lookup for request_type
+        Q(employee__department__name__icontains=search_query) |  # Corrected lookup for department's name
+        Q(request_type__icontains=search_query)
+    )
+    
+    return requests, search_query
+
+def searchRequestsSupervisor(request):
+    search_query = request.GET.get('search', '')
+    # Use the double underscore syntax to filter by the 'name' field of the related models
+    requests = LeaveRequest.objects.distinct().filter(
+        Q(employee__employee_code__icontains=search_query) |  # Corrected lookup for employee's code
+        Q(employee__full_name__icontains=search_query) |  # Corrected lookup for employee's name
+        Q(leave_type__name__icontains=search_query) |  # Corrected lookup for leave type's name
+        Q(employee__department__name__icontains=search_query) |  # Corrected lookup for department's name
+        Q(request_type__icontains=search_query),  # Correct lookup for request_type
+        status='pending',  # Filter only pending requests
+        
     )
     
     return requests, search_query

@@ -3,6 +3,8 @@ from django.dispatch import receiver
 from .models import Employee, LeaveType, LeaveRequest
 from audit_logs.utils import create_audit_log
 from django.utils import timezone
+from users.models import Profile
+from .models import Employee
 
 @receiver(post_save, sender=Employee)
 def set_default_leave_balance(sender, instance, created, **kwargs):
@@ -51,3 +53,27 @@ def update_employee_leave_balance_on_request(sender, instance, **kwargs):
     if leave_type.name.lower() in employee.leave_balance:
         employee.leave_balance[leave_type.name.lower()] += instance.total_days
         employee.save(update_fields=['leave_balance'])
+
+@receiver(post_save, sender=Employee)
+def createProfile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(
+            employee=instance, 
+            username=instance.employee_code,
+            email=instance.email,
+            full_name=instance.full_name, 
+        )
+
+@receiver(post_save, sender=Profile)
+def updateUser(sender, instance, created, **kwargs):
+    if not created:
+        employee = instance.employee
+        employee.employee_code= instance.username
+        employee.full_name = instance.full_name
+        employee.email = instance.email
+        employee.save()
+
+@receiver(post_delete, sender=Profile)
+def deleteUser(sender, instance, **kwargs):
+    employee = instance.employee
+    employee.delete()
