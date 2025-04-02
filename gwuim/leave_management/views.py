@@ -8,6 +8,7 @@ from employees.models import LeaveRequest, LeaveType, Employee
 from departments.models import Department
 from employees.utils import calculate_total_days
 from django.contrib import messages
+from users.models import Profile
 
 @login_required(login_url='login')
 def leaveRequests(request):
@@ -130,11 +131,11 @@ def addLeaveRequestByEmployee(request):
                 manual_total_days=manual_total_days
             )
             # Log action: Add Leave Request
-            # create_audit_log(
-            #     action_performed="Added Leave Request",
-            #     performed_by=employee.profile,
-            #     details=f"Leave request added for employee {employee.full_name} ({employee.employee_code})"
-            # )
+            create_audit_log(
+                action_performed="Added Leave Request",
+                performed_by=Profile.objects.get(employee=employee),
+                details=f"Leave request added for employee {employee.full_name} ({employee.employee_code})"
+            )
         else:
             messages.error(request, f'Insufficient leave balance in {leave_type}.')
         return redirect('home')
