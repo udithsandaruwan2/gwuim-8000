@@ -4,7 +4,10 @@ from .utils import csv_reader
 from employees.models import Employee  # Import the Employee model
 import csv
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
+@login_required(login_url='login')
 def importExport(request):
     page = 'csv_manager'
     page_title = 'CSV Manager'
@@ -20,9 +23,13 @@ def importExport(request):
             form.save()  # Save the form (which saves the file)
             file_path = form.instance.file.url  # Get the relative file URL
             csv_reader(file_path)  # Pass the relative URL to the CSV reader
+            messages.success(request, 'File imported successfully!')
             return redirect('csv_manager')  # Redirect to 'csv_manager' page after saving
+        else:
+            messages.error(request, 'Invalid form submission. Please try again.')
     else:
         form = EmployeeFileForm()  # Initialize the form for GET request
+        
 
     context = {
         'page': page,
@@ -33,6 +40,7 @@ def importExport(request):
 
     return render(request, 'csv_manager/import-export.html', context)
 
+@login_required
 def export_employees_csv(request):
     # Create the HTTP response with CSV content type
     response = HttpResponse(content_type='text/csv')

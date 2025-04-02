@@ -59,6 +59,7 @@ def createProfile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
             employee=instance, 
+            username=instance.employee_code,
             email=instance.email,
             full_name=instance.full_name, 
         )
@@ -67,6 +68,7 @@ def createProfile(sender, instance, created, **kwargs):
 def updateUser(sender, instance, created, **kwargs):
     if not created:
         employee = instance.employee
+        employee.employee_code= instance.username
         employee.full_name = instance.full_name
         employee.email = instance.email
         employee.save()

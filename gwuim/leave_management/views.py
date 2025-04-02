@@ -78,6 +78,7 @@ def leaveRequestsSupervisor(request):
                 details=f"User updated leave request {request_id} to status {status}."
             )
             
+            messages.success(request, f'Leave request {request_id} status updated to {status}.')
             return redirect('leave_requests_for_approval') 
 
     context = {
@@ -138,6 +139,8 @@ def addLeaveRequestByEmployee(request):
             )
         else:
             messages.error(request, f'Insufficient leave balance in {leave_type}.')
+        
+        messages.success(request, 'Leave request submitted successfully.')
         return redirect('home')
 
 
