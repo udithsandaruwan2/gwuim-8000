@@ -66,6 +66,18 @@
                 <!-- <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
                     <i class="fas fa-plus"></i> New Employee
                 </button> -->
+
+                <form id="searchForm" class="form" method="GET">
+                
+                <select class="form-select" name="search" id="department" onchange="this.form.submit()">
+                    <option value=""></option>
+                    {% for department in departments %}
+                    <option value="{{ department.name }}" {% if department.name == search_query %}selected{% endif %}>
+                        {{ department.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                </form>
             </div>
         </div>
 
@@ -77,40 +89,93 @@
                 <thead>
                     <tr>
                         <th class="text-center">No.</th>
-                        <th class="text-center">Leave Types</th>
-                        <th class="text-center">Request Type</th>
+                        <th class="text-center">Employee Code</th>
+                        <th class="text-center">Name</th>
                         <th class="text-center">Start Date</th>
                         <th class="text-center">Coming Date</th>
                         <th class="text-center">Reason</th>
                         <th class="text-center">Status</th>
                         <th class="text-center">Total Days</th>
+                        <!-- {% if profile.role.role_name == 'supervisor' %}
+                        <th class="text-center">Action</th>
+                        {% endif %} -->
 
 
                     </tr>
                 </thead>
                 <tbody>
-                    {% for request in requests %}
-                    <tr>
-                        <td class="text-center">{{ forloop.counter }}</td>
-                        <td class="text-center">{{ request.leave_type }}</td>
-                        <td class="text-center">{{ request.request_type }}</td>
-                        <td class="text-center">{{ request.start_date }}</td>
-                        <td class="text-center">{{ request.coming_date }}</td>
-                        <td class="text-center">
-                            {% if request.reason %}
-                            {{ request.reason|slice:50 }}
-                            {% else %}
-                            No any specific reason added
-                            {% endif %}
-                        </td>
-                        <td class="text-center">{{ request.status }}</td>
-                        <td class="text-center">{{ request.total_days }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="8" class="text-center">No requests found.</td>
-                    </tr>
-                    {% endfor %}
+                    {% if profile.role.role_name == 'admin' %}
+                        {% for request in requests %}
+                        <tr>
+                            <td class="text-center">{{ forloop.counter }}</td>
+                            <td class="text-center">{{ request.employee.employee_code }}</td>
+                            <td class="text-center">{{ request.employee.full_name }}</td>
+                            <td class="text-center">{{ request.start_date }}</td>
+                            <td class="text-center">{{ request.coming_date }}</td>
+                            <td class="text-center">
+                                {% if request.reason %}
+                                {{ request.reason|slice:50 }}
+                                {% else %}
+                                No any specific reason added
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ request.status }}</td>
+                            <td class="text-center">{{ request.total_days }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">No requests found.</td>
+                        </tr>
+                        {% endfor %}
+
+                    {% endif %}
+
+                    {% if profile.role.role_name == 'supervisor' %}
+
+                        {% for request in requests %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="text" name="requestId" value="{{ request.uid }}" hidden>
+                            <input type="text" name="action" value="updateRequest" hidden>
+                            
+                        <tr>
+                            <td class="text-center">{{ forloop.counter }}</td>
+                            <td class="text-center">{{ request.employee.employee_code }}</td>
+                            <td class="text-center">{{ request.employee.full_name }}</td>
+                            <td class="text-center">{{ request.start_date }}</td>
+                            <td class="text-center">{{ request.coming_date }}</td>
+                            <td class="text-center">
+                                {% if request.reason %}
+                                {{ request.reason|slice:50 }}
+                                {% else %}
+                                No any specific reason added
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <select class="form-select" name="status" id="status" onchange="this.form.submit()">
+                                    <option value="Pending" {% if request.status == "Pending" %}selected{% endif %}>Pending</option>
+                                    <option value="Approved" {% if request.status == "Approved" %}selected{% endif %}>Approved</option>
+                                    <option value="Rejected" {% if request.status == "Rejected" %}selected{% endif %}>Rejected</option>
+                                </select>
+                            </td>
+                            <td class="text-center">{{ request.total_days }}</td>
+                            <!-- <td class="text-center">
+                                <a href="" style="color: #932626;">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </td> -->
+                        </tr>
+                        </form>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center">No requests found.</td>
+                        </tr>
+                        {% endfor %}
+
+                    {% endif %}
+
+
+
                 </tbody>
             </table>
             {% include 'dashboard/pagination.html' with query_set=requests custom_range=custom_range %}
