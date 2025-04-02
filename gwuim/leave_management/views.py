@@ -2,9 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .utils import searchRequests, paginateRequests, searchRequestsSupervisor
+from django.utils import timezone
 from audit_logs.utils import create_audit_log
-from employees.models import LeaveRequest
+from employees.models import LeaveRequest, LeaveType, Employee
 from departments.models import Department
+from employees.utils import calculate_total_days
+from django.contrib import messages
 
 @login_required(login_url='login')
 def leaveRequests(request):
@@ -88,6 +91,62 @@ def leaveRequestsSupervisor(request):
     
     return render(request, 'leave_management/leave_requests.html', context)
 
+
+def addLeaveRequestByEmployee(request):
+    """View to handle adding a new leave request."""
+    page = 'add_leave_request_employee'
+    page_title = 'Add Leave Request (Employee)'
+     # Get all leave types for selection
+    leave_types = LeaveType.objects.all()
+    # Log the action: User accessed the add leave request page
+
+    if request.method == 'POST':
+        employee = Employee.objects.get(employee_code=request.POST.get('code'))  # Get the employee object
+        leave_type = LeaveType.objects.get(uid=request.POST.get('leaveType'))
+        request_type = request.POST.get('requestType')
+        start_date = timezone.datetime.strptime(request.POST.get('startDate'), '%Y-%m-%d').date()
+        comming_date = timezone.datetime.strptime(request.POST.get('commingDate'), '%Y-%m-%d').date()
+        leave_balance = employee.leave_balance[f'{leave_type.name.lower()}']
+        total_days = calculate_total_days(request_type, start_date, comming_date)
+        entering_type = request.POST.get('leaveEnteringType')
+        manual_total_days = request.POST.get('manualTotalDays')
+        if not manual_total_days:
+            manual_total_days = 0.0
+        manual_total_days = float(manual_total_days)
+
+        if total_days <= leave_balance or manual_total_days <= leave_balance:
+            reason = request.POST.get('reason')
+            status = 'pending'
+            # Create leave request and log it
+            leave_request = LeaveRequest.objects.create(
+                employee=employee,
+                reason=reason,
+                status=status,
+                leave_type=leave_type,
+                start_date=start_date,
+                coming_date=comming_date,
+                request_type=request_type,
+                entering_type=entering_type,
+                manual_total_days=manual_total_days
+            )
+            # Log action: Add Leave Request
+            # create_audit_log(
+            #     action_performed="Added Leave Request",
+            #     performed_by=employee.profile,
+            #     details=f"Leave request added for employee {employee.full_name} ({employee.employee_code})"
+            # )
+        else:
+            messages.error(request, f'Insufficient leave balance in {leave_type}.')
+        return redirect('home')
+
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'leave_types': leave_types,  # Include all leave types for selection
+    }
+
+    return render(request, 'leave_management/add-leave-request.html', context)
 
 # @login_required(login_url='login')
 # def deleteLeaveTypeConfirmation(request, pk):

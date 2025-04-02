@@ -1,0 +1,106 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div
+    class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+            <div class="col-md-6 col-lg-6 col-xxl-3">
+                <div class="card mb-3 mt-3">
+                    <div class="card-body">
+                        <a href="{% url 'home' %}" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                            <img src=" {% static 'theme_dashboard/assets/images/logos/logo.png' %} " width="220" alt=""
+                                class="mb-3">
+                        </a>
+                        <form id="requestForm" method="POST">
+                            {% csrf_token %}
+                            <input type="text" name="action" value="addLeaveRequest" hidden>
+
+                            <div class="mb-3">
+                                <label for="facultyNameSelect" class="form-label">Employee Code</label>
+                                <input type="number" class="form-control" id="manualTotalDays" name="code"
+                                    placeholder="Enter Employee Code" required>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="facultyNameSelect" class="form-label">Leave Type</label>
+                                <select class="form-select" id="facultyNameSelect" name="leaveType">
+                                    {% for leave in leave_types %}
+                                    <option value="{{leave.uid}}">{{leave.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="leaveEnteringType" class="form-label">Calculate Type</label>
+                                <select class="form-select" id="leaveEnteringType" name="leaveEnteringType">
+                                    <option value="auto">Auto</option>
+                                    <option value="manual">Manual</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="startDate" name="startDate" required>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">Commig Date</label>
+                                <input type="date" class="form-control" id="endDate" name="commingDate" required>
+                            </div>
+                        
+                            <div class="manual-total mb-3" style="display: none;">
+                                <label for="endDate" class="form-label">Total Days</label>
+                                <input type="number" class="form-control" id="manualTotalDays" name="manualTotalDays" step="0.01" min="0">
+                            </div>
+                        
+                        
+                            <div class="mb-3">
+                                <label for="requestType" class="form-label">Request Type</label>
+                                <select class="form-select" id="requestType" name="requestType">
+                                    <option value="full">Full Day</option>
+                                    <option value="half">Half Day</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="reason" class="form-label">Reason</label>
+                                <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
+                            </div>
+                        
+                            <button class=" btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" style="background-color: #932626;">
+                                Send the request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const leaveEnteringTypeSelect = document.getElementById('leaveEnteringType'); // Assuming this is the leaveEnteringType select
+        const manualTotalField = document.querySelector('.manual-total'); // Assuming the div with the 'manual-total' class
+
+        // Function to toggle the visibility based on selection
+        function toggleManualTotalField() {
+            if (leaveEnteringTypeSelect.value === 'manual') {
+                manualTotalField.style.display = 'block'; // Show the manual total field
+            } else {
+                manualTotalField.style.display = 'none'; // Hide the manual total field
+            }
+        }
+
+        // Initial check in case the page is loaded with 'manual' already selected
+        toggleManualTotalField();
+
+        // Event listener to handle changes
+        leaveEnteringTypeSelect.addEventListener('change', toggleManualTotalField);
+    });
+</script>
+
+{% endblock content %}
