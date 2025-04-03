@@ -127,5 +127,5 @@ This project is licensed under the **Apache License**.
 ---
 
 ## 📬 Contact
-For inquiries, contact **[your email]** or open an issue in the repository.
+For inquiries, contact **info.dev.udith@gmail.com** or open an issue in the repository.
 
