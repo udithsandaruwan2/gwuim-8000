@@ -15,7 +15,12 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+    if len(sys.argv) == 1:
+        sys.argv.append("runserver")
+        sys.argv.append("8080")  # Change this to your desired port
+
     execute_from_command_line(sys.argv)
+
 
 
 if __name__ == '__main__':

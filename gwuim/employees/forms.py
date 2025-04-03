@@ -23,6 +23,11 @@ class EmployeeForm(forms.ModelForm):
             'department': forms.Select(attrs={'class': 'form-control', 'id': 'employeeDepartment'}),
             'date_of_joining': forms.DateInput(attrs={'class': 'form-control', 'id': 'employeeStartDate', 'type': 'date'}),
         }
+        error_messages = {
+            'employee_code': {
+            'required': 'Employee code is required.',
+            },
+        }
 
 
 class LeaveTypeForm(forms.ModelForm):
