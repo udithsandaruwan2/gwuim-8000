@@ -16,7 +16,7 @@ class UserRole(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", null=True, blank=True)
     employee = models.OneToOneField('employees.Employee', on_delete=models.CASCADE, related_name="employee_profile", null=True, blank=True)
-    full_name = models.CharField(max_length=50)
+    full_name = models.CharField(max_length=50, null=True, blank=True)
     username = models.CharField(max_length=20, unique=True)
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     email = models.EmailField(null=True, blank=True)

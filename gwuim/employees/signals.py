@@ -54,26 +54,26 @@ def update_employee_leave_balance_on_request(sender, instance, **kwargs):
         employee.leave_balance[leave_type.name.lower()] += instance.total_days
         employee.save(update_fields=['leave_balance'])
 
+
 @receiver(post_save, sender=Employee)
-def createProfile(sender, instance, created, **kwargs):
+def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
-            employee=instance, 
-            username=instance.employee_code,
+            employee=instance,
+            full_name=instance.full_name,
             email=instance.email,
-            full_name=instance.full_name, 
+            username=f"user_{instance.employee_code}" if instance.employee_code else f"user_{instance.uid}"
         )
 
 @receiver(post_save, sender=Profile)
-def updateUser(sender, instance, created, **kwargs):
-    if not created:
-        employee = instance.employee
-        employee.employee_code= instance.username
-        employee.full_name = instance.full_name
-        employee.email = instance.email
-        employee.save()
+def update_employee_from_profile(sender, instance, created, **kwargs):
+    if not created and instance.employee:
+        # Ensure the employee object exists before updating
+        instance.employee.full_name = instance.full_name
+        instance.employee.email = instance.email
+        instance.employee.save()
 
 @receiver(post_delete, sender=Profile)
-def deleteUser(sender, instance, **kwargs):
-    employee = instance.employee
-    employee.delete()
+def delete_employee_with_profile(sender, instance, **kwargs):
+    if instance.employee:
+        instance.employee.delete()

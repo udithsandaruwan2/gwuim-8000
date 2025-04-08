@@ -1,0 +1,6 @@
+Employee Code,Full Name,Email,Contact Number,Date of Birth,Gender,Address,Date of Joining,Position,Department
+1001,John Doe,john@example.com,1234567890,1990-05-15,Male,"123 Street, NY",2020-03-10,Assistant Manager,DC
+1002,Jane Smith,jane@example.com,9876543210,1992-07-22,Female,"456 Avenue, LA",2021-06-01,Assistant Manager,DC
+1003,Michael Johnson,michael@example.com,,1988-12-10,Male,"789 Blvd, SF",2019-09-20,Assistant Manager,DC
+1004,Emily Davis,emily@example.com,5432109876,1995-03-18,Female,,2022-07-15,HR Assistant Manager,DC
+1005,David Wilson,,,1985-11-25,Male,"321 Road, TX",2015-05-30,Assistant Manager,DC

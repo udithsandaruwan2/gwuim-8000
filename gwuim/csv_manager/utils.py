@@ -35,7 +35,7 @@ def csv_reader(file_path):
             # Handle optional fields (set None for empty values)
             department = None
             if row_data.get('Department'):
-                department, _ = Department.objects.get_or_create(name=row_data['Department'])
+                department, _ = Department.objects.get_or_create(code=row_data['Department'])
 
             Employee.objects.create(
                 employee_code=int(row_data['Employee Code']) if row_data['Employee Code'] else None,

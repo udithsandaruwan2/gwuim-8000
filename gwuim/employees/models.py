@@ -13,7 +13,7 @@ class Employee(models.Model):
     ]
     user = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name="profile", null=True, blank=True)
     employee_code = models.IntegerField(blank=True, null=True)  
-    full_name = models.CharField(max_length=200)
+    full_name = models.CharField(max_length=200, null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
     contact_number = models.CharField(max_length=20, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
