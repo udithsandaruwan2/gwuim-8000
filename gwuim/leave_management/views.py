@@ -103,7 +103,12 @@ def addLeaveRequestByEmployee(request):
     # Log the action: User accessed the add leave request page
 
     if request.method == 'POST':
-        employee = Employee.objects.get(employee_code=request.POST.get('code'))  # Get the employee object
+        
+        employee = Employee.objects.filter(employee_code=request.POST.get('code')).first()
+        if not employee:
+            messages.error(request, 'Employee not found.')
+            return redirect('add_leave_request_employee')
+
         leave_type = LeaveType.objects.get(uid=request.POST.get('leaveType'))
         request_type = request.POST.get('requestType')
         start_date = timezone.datetime.strptime(request.POST.get('startDate'), '%Y-%m-%d').date()
