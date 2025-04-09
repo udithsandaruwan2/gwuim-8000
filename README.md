@@ -78,6 +78,19 @@ To easily run the application with one click, you can create an executable file 
    pip install -r requirements.txt
    ```
 
+   ## 📁 .env Configuration
+
+   Create a `.env` file in the root directory of your Django project and add the following content:
+
+   ```env
+   SECRET_KEY=django-insecure-mrt#6rvb+&8!i+zdqauq7a0+r=^2_*v0k&@%-3u6n@^f-s!e7^
+
+   DB_NAME=gwuim-8000
+   DB_USER=postgres
+   DB_PASSWORD=postgres
+   DB_HOST=localhost
+   DB_PORT=5432
+
 3.. **Run the `executable_creator.py` script**:
    
    To generate the `.exe` file, run:
