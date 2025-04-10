@@ -125,6 +125,28 @@ def logoutView(request):
     return redirect('home')
 
 
+def profile(request):
+    """Profile view for the logged-in user."""
+    page = 'profile'
+    page_title = 'Profile'
+
+    try:
+        profile = request.user.profile  # Get user profile if available
+    except:
+        profile = None
+
+    if request.method == 'POST':
+        # Handle profile update logic here
+        pass
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'profile': profile
+    }
+    return render(request, 'users/profile.html', context)
+
+
 @login_required(login_url='login')
 def leave_requests_chart_data(request):
     """View to fetch and return leave request data for the chart."""
@@ -183,3 +205,4 @@ def leave_requests_pie_chart_data(request):
         ]
     }
     return JsonResponse(data)
+

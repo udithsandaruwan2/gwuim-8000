@@ -18,7 +18,7 @@ class Profile(models.Model):
     employee = models.OneToOneField('employees.Employee', on_delete=models.CASCADE, related_name="employee_profile", null=True, blank=True)
     full_name = models.CharField(max_length=50, null=True, blank=True)
     username = models.CharField(max_length=20, unique=True)
-    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True, default='profile_images/default_user.png')
     email = models.EmailField(null=True, blank=True)
     role = models.ForeignKey(UserRole, on_delete=models.CASCADE, null=True, blank=True)
     # Common fields
