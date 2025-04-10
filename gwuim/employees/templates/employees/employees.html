@@ -91,7 +91,19 @@
                         <td>{{ employee.department.name }}</td>
                         <td>{{ employee.gender }}</td>
                         
-                        <td><a style="color: #932626;" href="{% url 'employee-indetail' employee.uid %}" target="_blank"><i class="fas fa-info-circle"></i> more</a></td>
+                        <td style="text-align: center;">
+                            <div style="display: inline-flex; gap: 16px; align-items: center;">
+                                <a style="color: #932626; text-decoration: none;" href="{% url 'employee-indetail' employee.uid %}"
+                                    target="_blank">
+                                    <i class="fas fa-info-circle"></i> More
+                                </a>
+                                <a style="color: #932626; text-decoration: none;" href="{% url 'view_employee' employee.uid %}">
+                                    <i class="fas fa-user"></i> Profile
+                                </a>
+                            </div>
+                        </td>
+
+
                     </tr>
                     {% empty %}
                     <tr>

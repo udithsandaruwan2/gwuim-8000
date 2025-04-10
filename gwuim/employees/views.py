@@ -9,7 +9,23 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.contrib import messages
+from users.models import Profile
 
+@login_required(login_url='login')
+def employee(request, pk):
+
+    try:
+        employee = Employee.objects.get(uid=pk)
+    except:
+        employee = None
+        messages.error(request, 'Employee not found.')
+    try:
+        profile = Profile.objects.get(employee=employee)
+    except:
+        profile = None
+        messages.error(request, 'Profile not found.')
+
+    return redirect('profile', pk=profile.uid)
 
 @login_required(login_url='login')
 def employees(request):

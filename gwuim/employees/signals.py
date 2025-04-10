@@ -5,6 +5,7 @@ from audit_logs.utils import create_audit_log
 from django.utils import timezone
 from users.models import Profile
 from .models import Employee
+from users.models import UserRole
 
 @receiver(post_save, sender=Employee)
 def set_default_leave_balance(sender, instance, created, **kwargs):
@@ -60,6 +61,7 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
             employee=instance,
+            role=UserRole.objects.get(role_name='employee'),
             full_name=instance.full_name,
             email=instance.email,
             username=f"{instance.employee_code}" if instance.employee_code else f"{instance.uid}"

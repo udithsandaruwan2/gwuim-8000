@@ -13,14 +13,14 @@ def createProfile(sender, instance, created, **kwargs):
             full_name=instance.first_name, 
         )
 
-@receiver(post_save, sender=Profile)
-def updateUser(sender, instance, created, **kwargs):
-    if not created:
-        user = instance.user
-        user.first_name = instance.full_name
-        user.username = instance.username
-        user.email = instance.email
-        user.save()
+# @receiver(post_save, sender=Profile)
+# def updateUser(sender, instance, created, **kwargs):
+#     if not created:
+#         user = instance.user
+#         user.first_name = instance.full_name
+#         user.username = instance.username
+#         user.email = instance.email
+#         user.save()
 
 @receiver(post_delete, sender=Profile)
 def deleteUser(sender, instance, **kwargs):

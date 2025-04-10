@@ -9,6 +9,7 @@ from django.db.models.functions import TruncMonth
 import calendar
 from datetime import datetime
 from audit_logs.utils import create_audit_log
+from .models import Profile
 
 
 def home(request):
@@ -125,15 +126,16 @@ def logoutView(request):
     return redirect('home')
 
 
-def profile(request):
+def profile(request, pk):
     """Profile view for the logged-in user."""
     page = 'profile'
     page_title = 'Profile'
 
     try:
-        profile = request.user.profile  # Get user profile if available
-    except:
-        profile = None
+        profile = Profile.objects.get(uid=pk)  # Get user profile by UID
+    except Profile.DoesNotExist:
+        messages.error(request, 'Profile not found')
+        return redirect('employees')
 
     if request.method == 'POST':
         # Handle profile update logic here
