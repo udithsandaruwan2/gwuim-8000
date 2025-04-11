@@ -26,3 +26,4 @@ def updateUser(sender, instance, created, **kwargs):
 def deleteUser(sender, instance, **kwargs):
     user = instance.user
     user.delete()
+

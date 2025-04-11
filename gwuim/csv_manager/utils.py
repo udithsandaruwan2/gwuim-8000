@@ -37,16 +37,44 @@ def csv_reader(file_path):
             if row_data.get('Department'):
                 department, _ = Department.objects.get_or_create(code=row_data['Department'])
 
-            Employee.objects.create(
-                employee_code=int(row_data['Employee Code']) if row_data['Employee Code'] else None,
-                full_name=row_data['Full Name'],
-                email=row_data['Email'] if row_data.get('Email') else None,
-                contact_number=row_data['Contact Number'] if row_data.get('Contact Number') else None,
-                date_of_birth=row_data['Date of Birth'] if row_data.get('Date of Birth') else None,
-                gender=row_data['Gender'].lower() if row_data.get('Gender') else None,
-                address=row_data['Address'] if row_data.get('Address') else None,
-                date_of_joining=row_data['Date of Joining'] if row_data.get('Date of Joining') else None,
-                position=row_data['Position'] if row_data.get('Position') else None,
-                department=department
+            # Ensure employee_code is valid before proceeding
+            try:
+                employee_code = int(row_data['Employee Code'])
+            except (ValueError, TypeError):
+                print(f"Invalid Employee Code: {row_data['Employee Code']}. Skipping row: {row}")
+                continue
+
+            # Try to fetch the employee if they already exist
+            employee, created = Employee.objects.get_or_create(
+                employee_code=employee_code,
+                defaults={
+                    'full_name': row_data['Full Name'],
+                    'email': row_data.get('Email'),
+                    'contact_number': row_data.get('Contact Number'),
+                    'date_of_birth': row_data.get('Date of Birth'),
+                    'gender': row_data.get('Gender').lower() if row_data.get('Gender') else None,
+                    'address': row_data.get('Address'),
+                    'date_of_joining': row_data.get('Date of Joining'),
+                    'position': row_data.get('Position'),
+                    'department': department
+                }
             )
+
+            # If the employee already exists, update their details
+            if not created:
+                employee.full_name = row_data['Full Name']
+                employee.email = row_data.get('Email')
+                employee.contact_number = row_data.get('Contact Number')
+                employee.date_of_birth = row_data.get('Date of Birth')
+                employee.gender = row_data.get('Gender').lower() if row_data.get('Gender') else None
+                employee.address = row_data.get('Address')
+                employee.date_of_joining = row_data.get('Date of Joining')
+                employee.position = row_data.get('Position')
+                employee.department = department
+
+                employee.save()
+                print(f"Updated employee details for {employee.full_name} (Employee Code: {employee_code})")
+            else:
+                print(f"Created new employee: {employee.full_name} (Employee Code: {employee_code})")
+
             

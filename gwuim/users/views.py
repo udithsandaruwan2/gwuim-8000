@@ -9,6 +9,9 @@ from django.db.models.functions import TruncMonth
 import calendar
 from datetime import datetime
 from audit_logs.utils import create_audit_log
+from .models import Profile
+from employees.forms import EmployeeForm
+from employees.models import Employee
 
 
 def home(request):
@@ -124,6 +127,38 @@ def logoutView(request):
     messages.success(request, 'You have been logged out successfully.')
     return redirect('home')
 
+@login_required(login_url='login')
+def profile(request, pk):  # Changed view function name
+    """Profile view for the logged-in user."""
+    page = 'profile'
+    page_title = 'Profile'
+
+    employee_uid = request.session.get('employee_uid', None)
+    employee = Employee.objects.filter(uid=employee_uid).first()
+
+    form = EmployeeForm(instance=employee)
+
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully')
+
+    try:
+        user_profile = Profile.objects.get(uid=pk)  # Avoid shadowing the function name
+    except Profile.DoesNotExist:
+        user_profile = None
+        messages.error(request, 'Profile not found')
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'profile': user_profile,
+        'form': form,
+    }
+    return render(request, 'users/profile.html', context)
+
+
 
 @login_required(login_url='login')
 def leave_requests_chart_data(request):
@@ -183,3 +218,4 @@ def leave_requests_pie_chart_data(request):
         ]
     }
     return JsonResponse(data)
+

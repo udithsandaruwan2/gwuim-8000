@@ -5,6 +5,7 @@ from audit_logs.utils import create_audit_log
 from django.utils import timezone
 from users.models import Profile
 from .models import Employee
+from users.models import UserRole
 
 @receiver(post_save, sender=Employee)
 def set_default_leave_balance(sender, instance, created, **kwargs):
@@ -60,10 +61,23 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
             employee=instance,
+            role=UserRole.objects.get(role_name='employee'),
             full_name=instance.full_name,
             email=instance.email,
-            username=f"user_{instance.employee_code}" if instance.employee_code else f"user_{instance.uid}"
+            username=f"{instance.employee_code}" if instance.employee_code else f"{instance.uid}"
         )
+
+@receiver(post_save, sender=Employee)
+def update_profile_from_employees(sender, instance, created, **kwargs):
+    if not created:
+        # Ensure the employee object exists before updating
+        profile = instance.employee_profile
+        if not profile:
+            return
+        profile.full_name = instance.full_name
+        profile.email = instance.email
+        profile.username = instance.employee_code
+        profile.save()
 
 @receiver(post_save, sender=Profile)
 def update_employee_from_profile(sender, instance, created, **kwargs):
@@ -71,6 +85,7 @@ def update_employee_from_profile(sender, instance, created, **kwargs):
         # Ensure the employee object exists before updating
         instance.employee.full_name = instance.full_name
         instance.employee.email = instance.email
+        instance.employee.employee_code = instance.username
         instance.employee.save()
 
 @receiver(post_delete, sender=Profile)
