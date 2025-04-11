@@ -67,6 +67,18 @@ def create_profile(sender, instance, created, **kwargs):
             username=f"{instance.employee_code}" if instance.employee_code else f"{instance.uid}"
         )
 
+@receiver(post_save, sender=Employee)
+def update_profile_from_employees(sender, instance, created, **kwargs):
+    if not created:
+        # Ensure the employee object exists before updating
+        profile = instance.employee_profile
+        if not profile:
+            return
+        profile.full_name = instance.full_name
+        profile.email = instance.email
+        profile.username = instance.employee_code
+        profile.save()
+
 @receiver(post_save, sender=Profile)
 def update_employee_from_profile(sender, instance, created, **kwargs):
     if not created and instance.employee:

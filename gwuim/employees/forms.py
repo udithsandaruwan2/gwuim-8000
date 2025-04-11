@@ -23,6 +23,14 @@ class EmployeeForm(forms.ModelForm):
             'department': forms.Select(attrs={'class': 'form-control', 'id': 'employeeDepartment'}),
             'date_of_joining': forms.DateInput(attrs={'class': 'form-control', 'id': 'employeeStartDate', 'type': 'date'}),
         }
+        contact_number = forms.CharField(
+            max_length=20,
+            widget=forms.TextInput(attrs={
+                'class': 'form-control custom-input',
+                'placeholder': 'Eg: +123456789'
+            })
+        )
+
         error_messages = {
             'employee_code': {
             'required': 'Employee code is required.',

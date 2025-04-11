@@ -19,11 +19,17 @@ def employee(request, pk):
     except:
         employee = None
         messages.error(request, 'Employee not found.')
+        return redirect('employees')
+
     try:
         profile = Profile.objects.get(employee=employee)
     except:
         profile = None
         messages.error(request, 'Profile not found.')
+        return redirect('employees')
+
+    # Store employee uid in session
+    request.session['employee_uid'] = pk
 
     return redirect('profile', pk=profile.uid)
 
