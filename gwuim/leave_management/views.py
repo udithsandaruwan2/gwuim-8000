@@ -26,7 +26,7 @@ def leaveRequests(request):
     )
 
     # Queries with pagination
-    requests_queryset, search_query = searchRequests(request)  # Search leave requests
+    requests_queryset, search_query, from_date, to_date = searchRequests(request)  # Search leave requests
     custom_range, requests_paginated = paginateRequests(request, requests_queryset, 10)  # Paginate results
     departments = Department.objects.all()  # Get all departments
 
@@ -37,7 +37,9 @@ def leaveRequests(request):
         'search_query': search_query,  # Include search query for filtering
         'custom_range': custom_range,  # Include custom pagination range
         'profile': profile,  # Include user profile for user-specific info
-        'departments': departments  # Include all departments for filtering
+        'departments': departments,  # Include all departments for filtering
+        'from_date': from_date,  # Include from date for filtering
+        'to_date': to_date,  # Include to date for filtering
     }
     
     return render(request, 'leave_management/leave_requests.html', context)

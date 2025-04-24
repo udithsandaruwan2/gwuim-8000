@@ -59,27 +59,61 @@
 
     <div class="container-fluid">
         <div class="row mb-4">
-            <div class="col-9">
+            <div class="col-3">
                 <h5 class="mt-2">Leave Requests List</h5>
             </div>
-            <div class="col-3 text-end">
+            <div class="col-9 text-end">
                 <!-- <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
                     <i class="fas fa-plus"></i> New Employee
                 </button> -->
 
-                <form id="searchForm" class="form" method="GET">
-                
-                <select class="form-select" name="search" id="department" onchange="this.form.submit()">
-                    <option value=""></option>
-                    {% for department in departments %}
-                    <option value="{{ department.name }}" {% if department.name == search_query %}selected{% endif %}>
-                        {{ department.name }}
-                    </option>
-                    {% endfor %}
-                </select>
+
+
+                <form id="dateFilterForm" class="form d-flex justify-content-end mb-3" method="GET">
+                    <input type="date" class="form-control me-2" name="from_date" id="from_date" value="{{ request.GET.from_date }}"
+                        onchange="submitCombinedForm('dateFilterForm')" />
+                    <input type="date" class="form-control me-2" name="to_date" id="to_date" value="{{ request.GET.to_date }}"
+                        onchange="submitCombinedForm('dateFilterForm')" />
+
+                        <select class="form-select" name="search" id="department" onchange="submitCombinedForm('dateFilterForm')">
+                            <option value=""></option>
+                            {% for department in departments %}
+                            <option value="{{ department.name }}" {% if department.name == search_query %}selected{% endif %}>
+                                {{ department.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
                 </form>
+
             </div>
         </div>
+
+        <script>
+            function submitCombinedForm(submittingFormId) {
+                const formA = document.getElementById('searchForm');
+                const formB = document.getElementById('dateFilterForm');
+        
+                const activeForm = document.getElementById(submittingFormId);
+                const otherForm = (submittingFormId === 'searchForm') ? formB : formA;
+        
+                // Clone values from the other form into hidden inputs
+                const otherInputs = otherForm.querySelectorAll('input');
+                otherInputs.forEach(input => {
+                    if (input.name && input.value) {
+                        let hidden = activeForm.querySelector(`input[name="${input.name}"]`);
+                        if (!hidden) {
+                            hidden = document.createElement('input');
+                            hidden.type = 'hidden';
+                            hidden.name = input.name;
+                            activeForm.appendChild(hidden);
+                        }
+                        hidden.value = input.value;
+                    }
+                });
+        
+                activeForm.submit();
+            }
+        </script>
 
 
 
