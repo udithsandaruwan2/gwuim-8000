@@ -138,7 +138,7 @@ def profile(request, pk):  # Changed view function name
 
     form = EmployeeForm(instance=employee)
 
-    if request.method == 'POST':
+    if request.method == 'PUT':
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()

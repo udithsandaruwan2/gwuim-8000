@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<form method="POST" enctype="multipart/form-data">
+<form method="PUT" enctype="multipart/form-data">
 
         <!-- Card Content -->
         <div class="card p-4">
@@ -34,7 +34,7 @@
                         <img src="{{ profile.profile_image.url }}" alt="Profile" class="rounded-circle me-3"
                             style="width: 100px; height: 100px; border: #212529 solid 1px; margin-right: 10px;">
                         <div>
-                            <h5 class="mt-1 fw-bold mb-2"> {{ profile.full_name }} </h5>
+                            <h5 class="mt-1 fw-bold mb-2"> {{ profile.full_name }} : {{ profile.username }} </h5>
                             <p class="mb-2 text-muted"> {{ profile.employee.position }} </p>
                             <p class="mb-0 text-muted"> {{ profile.employee.address }} </p>
                         </div>
@@ -42,8 +42,8 @@
         
                     <!-- Buttons Section -->
                     <div class="col-3 d-flex flex-column justify-content-between">
-                        <button class="btn btn-primary toggle-btn p-2">Upload a profile Photo</button>
-                        <button class="btn btn-light btn-cancel p-2">Delete</button>
+                        <button class="btn btn-primary toggle-btn p-2" disabled>Upload a profile Photo</button>
+                        <button class="btn btn-light btn-cancel p-2" disabled>Delete</button>
                     </div>
                 </div>
             </div>
@@ -69,21 +69,21 @@
                     </div>
                     
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">Date of Birth</label>
+                        <label class="form-label">{{ form.date_of_birth.label_tag }}</label>
                         <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
+                            {{ form.date_of_birth }}
                         </div>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">NIC</label>
+                        <label class="form-label"> {{ form.nic.label }} </label>
                         <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
+                            {{ form.nic }}
                         </div>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">Gender</label>
+                        <label class="form-label"> {{ form.gender.label }} </label>
                         <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
+                            {{ form.gender }}
                         </div>
                     </div>
                 </div>
@@ -96,22 +96,10 @@
    
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <label class="form-label">Email</label>
+                    <div class="col-md-12 mb-4">
+                        <label class="form-label"> {{ form.address.label }} </label>
                         <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Contact Number</label>
-                        <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Username</label>
-                        <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
+                            {{ form.address }}
                         </div>
                     </div>
         
@@ -123,22 +111,30 @@
        
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <label class="form-label">First Name</label>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label"> {{ form.date_of_joining.label }} </label>
                         <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
+                            {{ form.date_of_joining }}
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Last Name</label>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"> {{ form.date_of_leaving.label }} </label>
                         <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
+                            {{ form.date_of_leaving }}
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">User Name</label>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"> {{ form.position.label }} </label>
                         <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
+                            {{ form.position }}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"> {{ form.department.label }} </label>
+                        <div class="form-group">
+                            {{ form.department }}
                         </div>
                     </div>
         
@@ -148,37 +144,13 @@
       
         
        
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <label class="form-label">First Name</label>
-                        <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Last Name</label>
-                        <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">User Name</label>
-                        <div class="form-group">
-                            <input type="text" class="form-control custom-input" placeholder="Eg: Melon">
-                        </div>
-                    </div>
-        
-                </div>
-            </div>
-            <hr class="m-3">
        
         
         
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 d-flex justify-content-end">
-                        <a href="user-profile.html" class="btn btn-light me-2 btn-cancel">Cancel</a>
+                        <a href="javascript:void(0);" class="btn btn-light me-2 btn-cancel" onclick="history.back(); return false;">Cancel</a>
                         <button class="btn btn-primary toggle-btn">Save Changes</button>
                     </div>
                 </div>
@@ -199,17 +171,26 @@
                         color: #932626;
                         border-color: #932626;
                     }
+                    .toggle-btn:disabled {
+                        background-color: #d6d6d6;
+                        color: #ffffff;
+                        border-color: #d6d6d6;
+                        cursor: not-allowed;
+                    }
+
 
                     .btn-cancel {
             background-color: #6c757d;
             color: white;
         }
 
+        
                     .btn-cancel:hover {
              color: #5a6268;
             border: 1px solid #5a6268;            
             background-color: #ffffff;
         }
+        
         </style>
 
 
