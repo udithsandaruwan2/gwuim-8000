@@ -189,3 +189,16 @@ def addLeaveRequestByEmployee(request):
 #     }
 
 #     return render(request, 'dashboard/delete-confirmation.html', context)
+
+@login_required(login_url='login')
+def leaveRequestDetailsForm(request, pk):
+    page = 'leave_request_details'
+    page_title = 'Leave Request Details'
+    leave_request = get_object_or_404(LeaveRequest, uid=pk)  # Ensure request exists
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'leave_request': leave_request,  # Pass object to template for display
+    }
+    return render(request, 'leave_management/leave-form.html', context)
