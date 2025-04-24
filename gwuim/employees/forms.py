@@ -30,7 +30,7 @@ class EmployeeForm(forms.ModelForm):
             'address': forms.Textarea(attrs={'class': 'form-control', 'id': 'employeeAddress', 'rows': 3}),
         }
         contact_number = forms.CharField(
-            max_length=20,
+            max_length=200,
             widget=forms.TextInput(attrs={
                 'class': 'form-control custom-input',
                 'placeholder': 'Eg: +123456789'

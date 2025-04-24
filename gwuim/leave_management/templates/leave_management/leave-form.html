@@ -1,0 +1,114 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="body-wrapper" style="margin: 0; padding: 0;">
+    <div class="container-fluid">
+        <div id="form-new" class="container mt-4 p-4" style="background-color: #fff; max-width: 800px; margin: auto; font-family: Arial, sans-serif; ">
+            
+            <!-- Logo Row -->
+            <div class="row mb-4 justify-content-center">
+                <div class="col-auto text-center">
+                    <img src="{% static 'theme_dashboard/assets/images/logos/logo.png' %}" width="190" alt="Company Logo" />
+                </div>
+            </div>
+            
+            <h4 class="text-center mb-4" style="color: #932626;">Leave Request Form</h4>
+            
+            <!-- Static Form Display -->
+            <div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2">Date:</label>
+                        <div class="form-control border-1">2025-04-24</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2">Employee Name:</label>
+                        <div class="form-control border-1">John Doe</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2">Title:</label>
+                        <div class="form-control border-1">Software Engineer</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2">Department:</label>
+                        <div class="form-control border-1">IT Department</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2">Vacation Days Earned:</label>
+                        <div class="form-control border-1">14</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2">Total Number of Days Requested:</label>
+                        <div class="form-control border-1">5</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2">Vacation Dates Requested:</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="form-control border-1 w-50">2025-05-01</div>
+                            <span>through</span>
+                            <div class="form-control border-1 w-50">2025-05-05</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2">Reason:</label>
+                        <div class="form-control border-1">Family Vacation</div>
+                    </div>
+                </div>
+
+                <div class=" mb-3">
+                    <label class="mb-2">Signature of Employee:</label>
+                    <div class="form-control border-1">John Doe</div>
+                    <small class="text-muted">Signed on 2025-04-24</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="mb-2">Approval:</label>
+                    <div class="form-control border-1">Approved by HR Manager</div>
+                    <small class="text-muted">Signed on 2025-04-25</small>
+                </div>
+            </div>
+
+            <!-- Footer Note -->
+            <div class="mt-4 text-muted mb-3" style="font-size: 12px;">
+                <strong>Employee Note:</strong> Please be sure to clearly communicate your company’s policy regarding accrued vacation days to your employer.
+            </div>
+        </div>
+
+        <!-- Footer Include -->
+        <div class="row text-center mt-4  mb-3">
+            <div class="copyright" style="width: 100%; font-size: 5px;">
+                {% include 'dashboard/footer.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Styling -->
+<style>
+    #form-new {
+        border-radius: 10px; border: 1px solid #dee2e6;
+    }
+@media print {
+    .form-control {
+        border: 0.5px solid #000000;
+    }
+    #form-new {
+        border: 0.5px solid #000000;
+    }
+}
+</style>
+
+{% include 'employees/leave-add-model.html' %}
+{% endblock content %}

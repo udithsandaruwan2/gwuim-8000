@@ -143,6 +143,8 @@ def profile(request, pk):  # Changed view function name
         if form.is_valid():
             form.save()
             messages.success(request, 'Profile updated successfully')
+    
+        return redirect('profile', pk=pk)  # Redirect to the same profile page
 
     try:
         user_profile = Profile.objects.get(uid=pk)  # Avoid shadowing the function name

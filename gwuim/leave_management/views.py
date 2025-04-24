@@ -26,7 +26,7 @@ def leaveRequests(request):
     )
 
     # Queries with pagination
-    requests_queryset, search_query = searchRequests(request)  # Search leave requests
+    requests_queryset, search_query, from_date, to_date = searchRequests(request)  # Search leave requests
     custom_range, requests_paginated = paginateRequests(request, requests_queryset, 10)  # Paginate results
     departments = Department.objects.all()  # Get all departments
 
@@ -37,7 +37,9 @@ def leaveRequests(request):
         'search_query': search_query,  # Include search query for filtering
         'custom_range': custom_range,  # Include custom pagination range
         'profile': profile,  # Include user profile for user-specific info
-        'departments': departments  # Include all departments for filtering
+        'departments': departments,  # Include all departments for filtering
+        'from_date': from_date,  # Include from date for filtering
+        'to_date': to_date,  # Include to date for filtering
     }
     
     return render(request, 'leave_management/leave_requests.html', context)
@@ -56,7 +58,6 @@ def leaveRequestsSupervisor(request):
         performed_by=profile,
         details="User accessed the leave requests page."
     )
-
     # Queries with pagination
     requests_queryset, search_query = searchRequestsSupervisor(request)  # Search leave requests
     custom_range, requests_paginated = paginateRequests(request, requests_queryset, 10)  # Paginate results
@@ -187,3 +188,16 @@ def addLeaveRequestByEmployee(request):
 #     }
 
 #     return render(request, 'dashboard/delete-confirmation.html', context)
+
+@login_required(login_url='login')
+def leaveRequestDetailsForm(request, pk):
+    page = 'leave_request_details'
+    page_title = 'Leave Request Details'
+    leave_request = get_object_or_404(LeaveRequest, uid=pk)  # Ensure request exists
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'leave_request': leave_request,  # Pass object to template for display
+    }
+    return render(request, 'leave_management/leave-form.html', context)

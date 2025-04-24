@@ -59,19 +59,21 @@ def update_employee_leave_balance_on_request(sender, instance, **kwargs):
 @receiver(post_save, sender=Employee)
 def create_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(
-            employee=instance,
-            role=UserRole.objects.get(role_name='employee'),
-            full_name=instance.full_name,
-            email=instance.email,
-            username=f"{instance.employee_code}" if instance.employee_code else f"{instance.uid}"
-        )
+            Profile.objects.create(
+                employee=instance,
+                role=UserRole.objects.get(role_name='employee'),
+                full_name=instance.full_name,
+                email=instance.email,
+                username=f"{instance.employee_code}" if instance.employee_code else "NoneCode",
+                username_alt_uid=f"{instance.uid}",
+            )
+                    
 
 @receiver(post_save, sender=Employee)
 def update_profile_from_employees(sender, instance, created, **kwargs):
     if not created:
         # Ensure the employee object exists before updating
-        profile = instance.employee_profile
+        profile = Profile.objects.filter(employee=instance).first()
         if not profile:
             return
         profile.full_name = instance.full_name
