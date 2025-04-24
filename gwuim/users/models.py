@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+from departments.models import Department
 
 class UserRole(models.Model):
     role_name = models.CharField(max_length=20, unique=True, blank=False)
@@ -17,10 +18,13 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", null=True, blank=True)
     employee = models.OneToOneField('employees.Employee', on_delete=models.CASCADE, related_name="employee_profile", null=True, blank=True)
     full_name = models.CharField(max_length=50, null=True, blank=True)
-    username = models.CharField(max_length=20, unique=True)
+    username = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    username_alt_uid = models.CharField(max_length=200, unique=True, null=True, blank=True)
     profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True, default='profile_images/default_user.png')
     email = models.EmailField(null=True, blank=True)
     role = models.ForeignKey(UserRole, on_delete=models.CASCADE, null=True, blank=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
+
     # Common fields
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)

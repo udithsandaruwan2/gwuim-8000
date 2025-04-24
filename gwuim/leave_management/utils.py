@@ -26,6 +26,7 @@ def searchRequestsSupervisor(request):
         Q(employee__department__name__icontains=search_query) |  # Corrected lookup for department's name
         Q(request_type__icontains=search_query),  # Correct lookup for request_type
         status='pending',  # Filter only pending requests
+        employee__department=request.user.profile.department  # Filter by the user's department
         
     )
     

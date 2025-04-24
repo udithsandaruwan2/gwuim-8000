@@ -58,7 +58,6 @@ def leaveRequestsSupervisor(request):
         performed_by=profile,
         details="User accessed the leave requests page."
     )
-
     # Queries with pagination
     requests_queryset, search_query = searchRequestsSupervisor(request)  # Search leave requests
     custom_range, requests_paginated = paginateRequests(request, requests_queryset, 10)  # Paginate results
