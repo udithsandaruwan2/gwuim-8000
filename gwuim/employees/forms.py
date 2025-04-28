@@ -6,6 +6,7 @@ class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
         fields = [
+            'employee_code',
             'full_name', #
             'email', #
             'gender', #
@@ -18,6 +19,7 @@ class EmployeeForm(forms.ModelForm):
             'address'
         ]
         widgets = {
+            'employee_code': forms.TextInput(attrs={'class': 'form-control', 'id': 'employeeCode'}),
             'full_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'employeeName'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'id': 'employeeEmail'}),
             'gender': forms.Select(choices=Employee.GENDER_CHOICES, attrs={'class': 'form-control', 'id': 'employeeGender'}),
@@ -26,7 +28,7 @@ class EmployeeForm(forms.ModelForm):
             'date_of_joining': forms.DateInput(attrs={'class': 'form-control', 'id': 'employeeStartDate', 'type': 'date'}),
             'date_of_leaving': forms.DateInput(attrs={'class': 'form-control', 'id': 'employeeEndDate', 'type': 'date'}),
             'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'id': 'employeeBirthDate', 'type': 'date'}),
-            'nic': forms.EmailInput(attrs={'class': 'form-control', 'id': 'employeeEmail'}),
+            'nic': forms.TextInput(attrs={'class': 'form-control', 'id': 'employeeEmail'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'id': 'employeeAddress', 'rows': 3}),
         }
         contact_number = forms.CharField(
@@ -57,7 +59,6 @@ class LeaveTypeForm(forms.ModelForm):
         }),
         required=False  # Set this to False if code is optional
     )
-    
     name = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control mt-2 edit-input',  # Add the classes here

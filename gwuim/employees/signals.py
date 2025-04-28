@@ -59,38 +59,36 @@ def update_employee_leave_balance_on_request(sender, instance, **kwargs):
 @receiver(post_save, sender=Employee)
 def create_profile(sender, instance, created, **kwargs):
     if created:
-            Profile.objects.create(
-                employee=instance,
-                role=UserRole.objects.get(role_name='employee'),
-                full_name=instance.full_name,
-                email=instance.email,
-                username=f"{instance.employee_code}" if instance.employee_code else "NoneCode",
-                username_alt_uid=f"{instance.uid}",
-            )
-                    
+        # Only create Profile if the Employee does NOT already have a linked Profile
+        if hasattr(instance, 'profile') and instance.profile:
+            return
+        
+        Profile.objects.create(
+            employee=instance,
+            role=UserRole.objects.filter(role_name='employee').first(),
+            full_name=instance.full_name,
+            email=instance.email,
+            username=f"{instance.employee_code}" if instance.employee_code else None,
+            username_alt_uid=f"{instance.uid}",
+        )
+
+
+
 
 @receiver(post_save, sender=Employee)
 def update_profile_from_employees(sender, instance, created, **kwargs):
-    if not created:
-        # Ensure the employee object exists before updating
+    profile = Profile.objects.filter(employee=instance)
+    if not created and profile:
         profile = Profile.objects.filter(employee=instance).first()
-        if not profile:
-            return
+        if getattr(instance, '_disable_signal', False):
+            return  # skip if signal is disabled
+        
         profile.full_name = instance.full_name
         profile.email = instance.email
-        profile.username = instance.employee_code
+        profile.username=f"{instance.employee_code}" if instance.employee_code else None,
+        profile.username_alt_uid=f"{instance.uid}",
+
+        # Disable Profile signal temporarily
+        profile._disable_signal = True
         profile.save()
-
-@receiver(post_save, sender=Profile)
-def update_employee_from_profile(sender, instance, created, **kwargs):
-    if not created and instance.employee:
-        # Ensure the employee object exists before updating
-        instance.employee.full_name = instance.full_name
-        instance.employee.email = instance.email
-        instance.employee.employee_code = instance.username
-        instance.employee.save()
-
-@receiver(post_delete, sender=Profile)
-def delete_employee_with_profile(sender, instance, **kwargs):
-    if instance.employee:
-        instance.employee.delete()
+        del profile._disable_signal

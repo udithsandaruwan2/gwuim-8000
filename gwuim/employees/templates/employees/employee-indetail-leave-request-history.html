@@ -33,7 +33,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th class="text-center">No.</th>
+                        <th class="text-center"> No.</th>
                         <th class="text-center">Leave Types</th>
                         <th class="text-center">Request Type</th>
                         <th class="text-center">Start Date</th>
@@ -41,12 +41,17 @@
                         <th class="text-center">Reason</th>
                         <th class="text-center">Status</th>
                         <th class="text-center">Total Days</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
                     {% for request in leave_requests %}
                     <tr>
-                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td class="text-center">
+                            <a style="color: #932626; text-decoration: none;" href="{% url 'leave_form' request.uid %}" target="_blank">
+                          {{ forloop.counter }} 
+                        </a>
+                    </td>
                         <td class="text-center">{{ request.leave_type }}</td>
                         <td class="text-center">{{ request.request_type }}</td>
                         <td class="text-center">{{ request.start_date }}</td>
@@ -60,6 +65,8 @@
                         </td>
                         <td class="text-center">{{ request.status }}</td>
                         <td class="text-center">{{ request.total_days }}</td>
+                        
+
                     </tr>
                     {% empty %}
                     <tr>

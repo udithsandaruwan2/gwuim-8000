@@ -85,7 +85,6 @@ def employeeIndetail(request, pk):
 
     try:
         profile = request.user.profile
-        print(profile)
     except:
         profile = None
 
@@ -133,10 +132,9 @@ def employeeIndetail(request, pk):
                     performed_by=request.user.profile,
                     details=f"Leave request added for employee {employee.full_name} ({employee.employee_code})"
                 )
-                messages.success(request, 'Leave request submitted successfully.')
             else:
                 messages.error(request, f'Insufficient leave balance in {leave_type}.')
-            
+
         return redirect('employee-indetail', pk=pk)
 
     context = {
@@ -152,6 +150,7 @@ def employeeIndetail(request, pk):
     }
 
     return render(request, 'employees/employee-indetail.html', context)
+
 
 
 @login_required(login_url='login')
