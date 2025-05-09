@@ -48,15 +48,15 @@ def csv_reader(file_path):
             employee, created = Employee.objects.get_or_create(
                 employee_code=employee_code,
                 defaults={
-                    'full_name': row_data['Full Name'],
-                    'email': row_data.get('Email'),
-                    'contact_number': row_data.get('Contact Number'),
-                    'date_of_birth': row_data.get('Date of Birth'),
+                    'full_name': row_data['Full Name'] if row_data.get('Full Name') else None,
+                    'email': row_data.get('Email') if row_data.get('Email') else None,
+                    'contact_number': row_data.get('Contact Number') if row_data.get('Contact Number') else None,
+                    'date_of_birth': row_data.get('Date of Birth') if row_data.get('Date of Birth') else None,
                     'gender': row_data.get('Gender').lower() if row_data.get('Gender') else None,
-                    'address': row_data.get('Address'),
-                    'date_of_joining': row_data.get('Date of Joining'),
-                    'position': row_data.get('Position'),
-                    'department': department
+                    'address': row_data.get('Address') if row_data.get('Address') else None,
+                    'date_of_joining': row_data.get('Date of Joining') if row_data.get('Date of Joining') else None,
+                    'position': row_data.get('Position') if row_data.get('Position') else None,
+                    'department': department if department else None,
                 }
             )
 
