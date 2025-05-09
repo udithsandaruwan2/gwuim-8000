@@ -10,6 +10,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.contrib import messages
 from users.models import Profile
+import requests
 
 @login_required(login_url='login')
 def employee(request, pk):
@@ -76,6 +77,47 @@ def employees(request):
         'profile': profile
     }
     return render(request, 'employees/employees.html', context)
+
+
+API_BASE_URL = 'http://localhost:8001/api/'
+
+@login_required(login_url='login')
+def employeeIndetailFromAttendance(request, pk):
+    page = 'employees_leave_from_attendance'
+    page_title = 'Employee Details'
+
+    try:
+        profile = request.user.profile
+    except AttributeError:
+        profile = None
+
+    current_year = timezone.now().year
+    employee = get_object_or_404(Employee, uid=pk)
+    leave_days = []
+
+    try:
+        response = requests.get(
+            f'{API_BASE_URL}employees/{employee.employee_code}/{current_year}/', 
+            timeout=5
+        )
+        response.raise_for_status()
+        leave_days = response.json()
+    except requests.exceptions.RequestException as e:
+        messages.error(request, f'Error fetching employee data: {e}')
+
+    print(leave_days)
+
+    context = {
+        'page': page,
+        'page_title': page_title,
+        'pk': pk,
+        'current_year': current_year,
+        'employee': employee,
+        'profile': profile,
+        'leave_days': leave_days
+    }
+
+    return render(request, 'employees/employee-indetail.html', context)
 
 
 @login_required(login_url='login')

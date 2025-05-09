@@ -12,6 +12,9 @@
                 <img src="{% static 'theme_dashboard/assets/images/logos/logo.png' %}" width="190" alt="Company Logo" />
             </div>
             <div class="col-4 text-end">
+
+                {% if page != 'employees_leave_from_attendance' %}
+
                 <!-- Visible on Web Page -->
                 <button class="btn me-2 toggle-btn" data-bs-toggle="modal" data-bs-target="#addLeaveModal">
                     <i class="fas fa-plus"></i> Add Leave
@@ -20,6 +23,8 @@
                     <i class="fas fa-undo"></i> Return Leave
                 </button>
 
+                {% endif %}
+ 
                 <!-- Report Download Button -->
                 <!-- <button class="btn toggle-btn" id="downloadBtn">
                     <i class="fas fa-download"></i> Download Report
@@ -59,32 +64,44 @@
                     </tr>
                 </thead>
                 <tbody>
+
+                {% if page == 'employees_leave_from_attendance' %}
+
+                <tr>
+                    <td>Absent</td>
+
+                    {% for days in leave_days %}
+                    <td>{{ days|floatformat:0 }}</td>
+                    {% endfor %}
+                </tr>
+
+                {% else %}
+
                 {% for data in leaves_data %}
                 <tr>
                     <td>{{ data.leave_type_name }}</td>
                     {% for days in data.leave_days_array %}
                     <td>{{ days|floatformat:0 }}</td>
                     {% endfor %}
-
+                
                 </tr>
                 {% endfor %}
+
+                {% endif %}
+           
                 </tbody>
-
-
-
-
-
-
-
 
             </table>
 
         </div>
+
+        {% if page != 'employees_leave_from_attendance' %}
         <div class="text-end">
             <a href="{% url 'leave_requests_history' employee.uid %}" class="btn toggle-btn" id="downloadBtn">
                 <i class="fas fa-book"></i> View History
             </a>
         </div>
+
 
         <div class="table-responsive mt-4">
             <table class="table table-bordered">
@@ -115,6 +132,8 @@
             </table>
         
         </div>
+
+        {% endif %}
         
         
     </div>
@@ -123,13 +142,7 @@
 
 </div>
 <div class="row " style="align-items: center; text-align: center;">
-    <div class="copyright" style="
-                    position: fixed;
-                    bottom: 1px;
-                    width: 100%;
-                        font-size: 5px;
-            
-                ">
+    <div class="copyright" >
         {% include 'dashboard/footer.html' %}
     </div>
 </div>
