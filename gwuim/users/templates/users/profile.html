@@ -60,7 +60,14 @@
                 <h5 class="card-title">Employee ID</h5>
                 <p class="card-text text-muted mb-4">#{{ profile.employee.employee_code }} </p>
                 <div class="row">
-                    <div class="col-md-12 mb-4">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">{{ form.employee_code.label_tag }}</label>
+                        <div class="form-group">
+                            {{ form.employee_code }}
+                        </div>
+                    
+                    </div>
+                    <div class="col-md-8 mb-4">
                         <label class="form-label">{{ form.full_name.label_tag }}</label>
                         <div class="form-group">
                             {{ form.full_name }}

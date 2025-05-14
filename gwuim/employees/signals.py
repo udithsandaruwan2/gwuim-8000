@@ -69,6 +69,7 @@ def create_profile(sender, instance, created, **kwargs):
             full_name=instance.full_name,
             email=instance.email,
             username=f"{instance.employee_code}" if instance.employee_code else None,
+            department=instance.department,
             username_alt_uid=f"{instance.uid}",
         )
 
@@ -82,11 +83,10 @@ def update_profile_from_employees(sender, instance, created, **kwargs):
         profile = Profile.objects.filter(employee=instance).first()
         if getattr(instance, '_disable_signal', False):
             return  # skip if signal is disabled
-        
         profile.full_name = instance.full_name
         profile.email = instance.email
-        profile.username=f"{instance.employee_code}" if instance.employee_code else None,
         profile.username_alt_uid=f"{instance.uid}",
+        profile.department = instance.department
 
         # Disable Profile signal temporarily
         profile._disable_signal = True
