@@ -36,7 +36,7 @@ def update_employee_from_profile(sender, instance, created, **kwargs):
         # Normal save
         instance.employee.full_name = instance.full_name
         instance.employee.email = instance.email
-        instance.employee.employee_code = instance.username
+        instance.employee.department = instance.department
         
         # Disable Employee signal temporarily
         instance.employee._disable_signal = True
