@@ -25,6 +25,7 @@ class Employee(models.Model):
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     leave_balance = models.JSONField(default=dict, blank=True, null=True)
     nic = models.CharField(max_length=20, null=True, blank=True)
+    is_teacard_holder = models.BooleanField(default=False, null=True, blank=True)
     # Common fields
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
