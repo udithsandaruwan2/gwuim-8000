@@ -16,7 +16,8 @@ class EmployeeForm(forms.ModelForm):
             'date_of_leaving',
             'date_of_birth',#
             'nic',
-            'address'
+            'address',
+            'is_teacard_holder'
         ]
         widgets = {
             'employee_code': forms.TextInput(attrs={'class': 'form-control', 'id': 'employeeCode'}),
@@ -30,6 +31,7 @@ class EmployeeForm(forms.ModelForm):
             'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'id': 'employeeBirthDate', 'type': 'date'}),
             'nic': forms.TextInput(attrs={'class': 'form-control', 'id': 'employeeEmail'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'id': 'employeeAddress', 'rows': 3}),
+            'is_teacard_holder': forms.CheckboxInput(attrs={'class': 'form-check-input', 'id': 'employeeTeacardHolder'}),
         }
         contact_number = forms.CharField(
             max_length=200,
