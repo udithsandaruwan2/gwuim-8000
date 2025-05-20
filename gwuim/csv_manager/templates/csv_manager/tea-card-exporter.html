@@ -1,0 +1,115 @@
+{% extends 'dashboard/main.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_filters %} <!-- Load the custom filters -->
+
+{% block content %}
+
+{% include 'dashboard/sidebar.html' %}
+
+<!-- Main wrapper -->
+<div class="body-wrapper">
+
+    {% include 'dashboard/header.html' %}
+
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-9">
+                <h5 class="mt-2">Tea Card Sheet Exporter</h5>
+            </div>
+            <div class="col-3 text-end">
+                <!-- <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                    <i class="fas fa-plus"></i> New Employee
+                </button> -->
+            </div>
+        </div>
+
+        <!-- Form for selecting Employee ID and Month -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="month">Select Year</label>
+                                <select class="form-control" id="year" name="year" required>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="month">Select Month</label>
+                                <select class="form-control" id="month" name="month" required>
+                                    <option value="">Choose Month</option>
+                                    <option value="01">January</option>
+                                    <option value="02">February</option>
+                                    <option value="03">March</option>
+                                    <option value="04">April</option>
+                                    <option value="05">May</option>
+                                    <option value="06">June</option>
+                                    <option value="07">July</option>
+                                    <option value="08">August</option>
+                                    <option value="09">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-6">
+                        <button type="button" class="btn toggle-btn" onclick="exportAttendancePDF()">
+                            <i class="ti ti-coffee"></i> Export tea card sheet
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <style>
+        .toggle-btn {
+                        background-color: #932626;
+                        color: #ffffff;
+                        border-color: #932626;
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .toggle-btn:hover {
+                        background-color: #ffffff;
+                        color: #932626;
+                        border-color: #932626;
+                    }
+
+    </style>
+
+    {% include 'csv_manager/import-model.html' %}
+
+    <div id="data-container"></div>
+</div>
+
+<script>
+    function exportAttendancePDF() {
+        const month = document.getElementById('month').value;
+        const year = document.getElementById('year').value;
+
+        if (!month || !year) {
+            alert("Please fill in all fields before exporting.");
+            return;
+        }
+
+        // Open the export URL with parameters in a new tab
+        const url = `{% url 'tea_card_sheet' %}?year=${year}&month=${month}`;
+        window.open(url, '_blank');
+    }
+</script>
+
+
+{% endblock content %}

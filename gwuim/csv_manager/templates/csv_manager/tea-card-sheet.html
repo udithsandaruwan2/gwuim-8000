@@ -1,0 +1,252 @@
+{% extends 'dashboard/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="body-wrapper" style="margin: 0; padding: 0;">
+    <div class="container-fluid">
+
+        <!-- Header Section -->
+        <div class="row mb-4 text-center">
+            <div class="col-12">
+                <img src="{% static 'theme_dashboard/assets/images/logos/logo.png' %}" class="logo" width="230"
+                    alt="Company Logo" />
+                <h4 class="mt-2">Tea Card Attendance Sheet</h4>
+                <p class="details"><strong>Month:</strong> {{ year }}-{{ month }}</p>
+            </div>
+        </div>
+
+        <!-- Split Table Section -->
+        <div class="row">
+            {% if left_table and not right_table %}
+            <div class="col-md-6 mx-auto float-none single-table">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Employee ID</th>
+                                <th class="text-center">Employee Name</th>
+                                <th class="text-center">No. of Days Attended</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in left_table %}
+                            <tr>
+                                <td class="text-center">{{ employee.id }}</td>
+                                <td class="text-center">{{ employee.name }}</td>
+                                <td class="text-center">{{ employee.attendance_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% elif right_table and not left_table %}
+            <div class="col-md-6 mx-auto float-none single-table">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Employee ID</th>
+                                <th class="text-center">Employee Name</th>
+                                <th class="text-center">No. of Days Attended</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in right_table %}
+                            <tr>
+                                <td class="text-center">{{ employee.id }}</td>
+                                <td class="text-center">{{ employee.name }}</td>
+                                <td class="text-center">{{ employee.attendance_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% else %}
+            {% if left_table %}
+            <div class="col-md-6 two-table">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Employee ID</th>
+                                <th class="text-center">Employee Name</th>
+                                <th class="text-center">No. of Days Attended</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in left_table %}
+                            <tr>
+                                <td class="text-center">{{ employee.id }}</td>
+                                <td class="text-center">{{ employee.name }}</td>
+                                <td class="text-center">{{ employee.attendance_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if right_table %}
+            <div class="col-md-6 two-table">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Employee ID</th>
+                                <th class="text-center">Employee Name</th>
+                                <th class="text-center">No. of Days Attended</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in right_table %}
+                            <tr>
+                                <td class="text-center">{{ employee.id }}</td>
+                                <td class="text-center">{{ employee.name }}</td>
+                                <td class="text-center">{{ employee.attendance_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- Footer Signature Section -->
+        <div class="sign-section mt-5">
+            <div class="sign-box">Leave Clark</div>
+            <div class="sign-box">Supervisor</div>
+        </div>
+
+        <!-- Footer -->
+        <div class="row mt-4 text-center">
+            <div class="copyright" style="font-size: 5px; width: 100%;">
+                <p class="mb-0 fs-2">&copy; {% now "Y" %} GWUIM. All rights reserved.</p>
+                <p class="mb-0 fs-2">Design and Developed by <a style="color: #932626;"
+                        href="https://udithsandaruwan.me/" target="_blank"
+                        class="pe-1 text-decoration-underline">udithsandaruwan.me</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Style -->
+<style>
+    h4 {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .table {
+            border-radius: 10px;
+            overflow: hidden;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+    
+        .table th,
+        .table td {
+            border: 1px solid #dee2e6;
+        }
+    
+        .table thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+    
+        .table thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+    
+        .table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+    
+        .table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+    .sign-section {
+        margin-top: 50px;
+        display: flex;
+        justify-content: space-around;
+        font-size: 12px;
+    }
+
+    .sign-box {
+        width: 40%;
+        border-top: 1px solid #000;
+        text-align: center;
+        padding-top: 5px;
+    }
+
+    .single-table {
+        float: none !important;
+        margin: 0 auto;
+    }
+
+    @media print {
+        @page {
+            margin: 1.5cm;
+        }
+
+        .table th,
+        .table td {
+            font-size: 10px;
+            padding: 4px;
+        }
+
+        .logo {
+            width: 180px;
+        }
+
+        h4 {
+            font-size: 12px;
+        }
+
+        .details {
+            font-size: 10px;
+        }
+
+        .sign-box {
+            font-size: 10px;
+        }
+
+        /* Print layout for dual tables */
+        .two-table {
+            display: inline-block;
+            width: 49%;
+            vertical-align: top;
+        }
+
+        .single-table {
+            display: block;
+            float: none !important;
+            margin: 0 auto;
+            width: 60%;
+        }
+
+        .row {
+            display: block !important;
+        }
+
+        .container-fluid {
+            width: 100%;
+        }
+        .table th,
+        .table td {
+            border: 1px solid #000000;
+        }
+    }
+</style>
+{% endblock content %}

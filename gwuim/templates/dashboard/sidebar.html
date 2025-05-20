@@ -234,6 +234,27 @@
                 
                 {% endif %}
 
+                {% if page == 'tea_card_sheet' %}
+                <li class="sidebar-item  active selected ">
+                    <a class="sidebar-link" href="{% url 'tea_card_exporter' %}" aria-expanded="false" style="background-color: #932626;">
+                        <span>
+                            <i class="ti ti-coffee"></i>
+                        </span>
+                        <span class="hide-menu">Tea Card</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="{% url 'tea_card_exporter' %}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-coffee"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">Tea Card</span>
+                    </a>
+                </li>
+                
+                {% endif %}
+
 
 {% endif %}
 
