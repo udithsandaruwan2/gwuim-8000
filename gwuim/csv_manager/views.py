@@ -125,8 +125,8 @@ def teaCardSheet(request):
             messages.error(request, f'Error fetching data for {employee_name} ({employee_code}): {e}')
 
     attendance_data = sorted(attendance_data, key=lambda x: x['id'])
-    left_table = attendance_data[:35]
-    right_table = attendance_data[35:]
+    left_table = attendance_data[:43]
+    right_table = attendance_data[43:]
 
 
     context = {
