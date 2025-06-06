@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<!-- <div class="body-wrapper" style="margin: 0; padding: 0;margin-top:-10px;"> -->
+<div id="mainwrap1" class="body-wrapper" style="margin: 0; padding: 0;">
     <div class="container-fluid">
 
         <!-- Header Section -->
@@ -141,7 +141,14 @@
             </div>
         </div>
     </div>
-<!-- </div> -->
+</div>
+
+<script>
+    window.addEventListener('beforeprint', function () {
+        document.getElementById('mainwrap1').removeAttribute('style');
+        document.getElementById('mainwrap1').removeAttribute('class');
+    });
+</script>
 
 <!-- Style -->
 <style>
