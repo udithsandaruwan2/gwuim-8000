@@ -10,7 +10,7 @@ class EmployeeForm(forms.ModelForm):
             'full_name', #
             'email', #
             'gender', #
-            'position', 
+            'designation', 
             'department', 
             'date_of_joining',
             'date_of_leaving',
@@ -24,7 +24,7 @@ class EmployeeForm(forms.ModelForm):
             'full_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'employeeName'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'id': 'employeeEmail'}),
             'gender': forms.Select(choices=Employee.GENDER_CHOICES, attrs={'class': 'form-control', 'id': 'employeeGender'}),
-            'position': forms.TextInput(attrs={'class': 'form-control', 'id': 'employeePosition'}),
+            'designation': forms.Select(attrs={'class': 'form-control', 'id': 'employeeDesignation'}),
             'department': forms.Select(attrs={'class': 'form-control', 'id': 'employeeDepartment'}),
             'date_of_joining': forms.DateInput(attrs={'class': 'form-control', 'id': 'employeeStartDate', 'type': 'date'}),
             'date_of_leaving': forms.DateInput(attrs={'class': 'form-control', 'id': 'employeeEndDate', 'type': 'date'}),
