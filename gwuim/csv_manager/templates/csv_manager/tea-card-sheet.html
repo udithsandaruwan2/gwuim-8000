@@ -143,15 +143,35 @@
     </div>
 </div>
 
-<!-- <script>
+<script>
+    // Store original class and style
+    let originalClass = "";
+    let originalStyle = "";
+
     window.addEventListener('beforeprint', function () {
-        document.getElementById('mainwrap1').removeAttribute('style');
-        document.getElementById('mainwrap1').removeAttribute('class');
+        const el = document.getElementById('mainwrap1');
+        if (el) {
+            originalClass = el.className;
+            originalStyle = el.getAttribute('style') || "";
+
+            el.removeAttribute('style');
+            el.removeAttribute('class');
+        }
     });
-</script> -->
+
+    window.addEventListener('afterprint', function () {
+        const el = document.getElementById('mainwrap1');
+        if (el) {
+            el.setAttribute('class', originalClass);
+            el.setAttribute('style', originalStyle);
+        }
+    });
+</script>
+
 
 <!-- Style -->
 <style>
+
     h4 {
         font-size: 16px;
         margin-bottom: 5px;
@@ -205,13 +225,12 @@
 
     @media print {
         @page {
-            margin: 1.5cm;
+            margin: 1cm;
         }
 
         .table th,
         .table td {
             font-size: 10px;
-            font-weight: bold;
             padding: 4px;
         }
 
