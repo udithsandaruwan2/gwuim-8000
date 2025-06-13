@@ -146,6 +146,9 @@ class Title(models.Model):
     title = models.CharField(max_length=100, unique=True, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     level = models.IntegerField(help_text="Seniority level. Lower = higher rank (e.g., 1 = Dean)", null=True, blank=True)
+    short_leave_count = models.IntegerField(default=2, help_text="Number of short leaves allowed per month", null=True, blank=True)
+    late_count = models.IntegerField(default=5, help_text="Number of late arrivals allowed per month", null=True, blank=True)
+    coverable_late_count = models.IntegerField(default=3, help_text="Number of coverable late arrivals allowed per month", null=True, blank=True)
     # Common fields
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
