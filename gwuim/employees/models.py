@@ -141,7 +141,8 @@ class MonthlyLeaveSummary(models.Model):
     def __str__(self):
         return f"{self.employee.full_name} - {self.year}-{self.month} : {self.total_days} days"
 
-class Designation(models.Model):
+class Title(models.Model):
+    code = models.CharField(max_length=10, null=True, blank=True)
     title = models.CharField(max_length=100, unique=True, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     level = models.IntegerField(help_text="Seniority level. Lower = higher rank (e.g., 1 = Dean)", null=True, blank=True)
@@ -151,3 +152,16 @@ class Designation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.title
+    
+class Designation(models.Model):
+    code = models.CharField(max_length=10, null=True, blank=True)
+    name = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+    title = models.ForeignKey(Title, on_delete=models.SET_NULL, null=True, blank=True)
+    # Common fields
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
