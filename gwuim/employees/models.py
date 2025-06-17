@@ -22,6 +22,7 @@ class Employee(models.Model):
     date_of_joining = models.DateField(null=True, blank=True)
     date_of_leaving = models.DateField(null=True, blank=True)
     designation = models.ForeignKey('Designation', on_delete=models.SET_NULL, null=True, blank=True, related_name='employees')
+    title_uid = models.CharField(max_length=100, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     leave_balance = models.JSONField(default=dict, blank=True, null=True)
     nic = models.CharField(max_length=20, null=True, blank=True)
@@ -30,9 +31,17 @@ class Employee(models.Model):
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        """Override save method to ensure employee_code is unique."""
+        if self.designation:
+            self.title_uid = self.designation.title.uid
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return f"{self.full_name} ({self.employee_code})"
+    
+
 
 class LeaveType(models.Model):
     code = models.CharField(max_length=10, null=True, blank=True)
@@ -146,6 +155,9 @@ class Title(models.Model):
     title = models.CharField(max_length=100, unique=True, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     level = models.IntegerField(help_text="Seniority level. Lower = higher rank (e.g., 1 = Dean)", null=True, blank=True)
+    short_leave_count = models.IntegerField(default=2, help_text="Number of short leaves allowed per month", null=True, blank=True)
+    late_count = models.IntegerField(default=5, help_text="Number of late arrivals allowed per month", null=True, blank=True)
+    coverable_late_count = models.IntegerField(default=3, help_text="Number of coverable late arrivals allowed per month", null=True, blank=True)
     # Common fields
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -12,7 +12,7 @@ def searchEmployees(request):
         Q(employee_code__icontains=search_query) |
         Q(full_name__icontains=search_query) |
         Q(email__icontains=search_query) |
-        Q(designation__title__icontains=search_query) |
+        Q(designation__name__icontains=search_query) |
         Q(department__name__icontains=search_query) 
     )
     return employees, search_query
