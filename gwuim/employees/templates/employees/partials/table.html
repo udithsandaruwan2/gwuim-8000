@@ -1,0 +1,54 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th> {{month}} </th>
+            <th>Late</th>
+            <th>Late Covered</th>
+            <th>Short Leave</th>
+            <th>Half Day</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="width: fit-content;"> Volume </td>
+
+            <td style="width: fit-content;">
+                {% if leave_data.late_count %}
+                    {{ leave_data.late_count }} / 5
+                {% elif leave_data.late_count == 0 %}
+                    {{ leave_data.late_count }} / 5
+                {% else %}
+                    No data
+                {% endif %}
+            </td>
+            <td style="width: fit-content;">
+                {% if leave_data.late_count_covered %}
+                    {{ leave_data.late_count_covered }} / 3
+                {% elif leave_data.late_count_covered == 0 %}
+                    {{ leave_data.late_count_covered }} / 3
+                {% else %}
+                    No data
+                {% endif %}
+            </td>
+            <td style="width: fit-content;">
+                {% if leave_data.short_leave_balance %}
+                    {{ leave_data.short_leave_balance }} / 2
+                {% elif leave_data.short_leave_balance == 0 %}
+                    {{ leave_data.short_leave_balance }} / 2
+                {% else %}
+                    No data
+                {% endif %}
+            </td>
+            <td style="width: fit-content;">
+                {% if leave_data.half_leave_count %}
+                    {{ leave_data.half_leave_count }}
+                {% elif leave_data.half_leave_count == 0 %}
+                    {{ leave_data.half_leave_count }}
+                {% else %}
+                    No data
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>

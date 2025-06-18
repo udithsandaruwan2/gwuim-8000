@@ -95,7 +95,7 @@
 
         </div>
 
-        {% if page != 'employees_leave_from_attendance' %}
+    {% if page != 'employees_leave_from_attendance' %}
         <div class="text-end">
             <a href="{% url 'leave_requests_history' employee.uid %}" class="btn toggle-btn" id="downloadBtn">
                 <i class="fas fa-book"></i> View History
@@ -132,8 +132,227 @@
             </table>
         
         </div>
+    {% else %}
 
-        {% endif %}
+
+
+
+
+
+
+    <div class="text-end mt-5 mb-3">
+        <div class="col-12">
+            
+            
+            <div class="radio-container">
+                <div class="radio-group" id="radioGroup">
+                    <div class="background-slide" id="slider"></div>
+
+                <!-- ✅ 1. Trigger on page load using hidden div -->
+                <div id="initial-load" hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 1 %}"
+                    hx-target="#leave_data" hx-swap="innerHTML" hx-trigger="load">
+                </div>
+                
+                <!-- ✅ 2. Enable click interaction afterward -->
+                <input type="radio" name="btnradio" id="btnradio1" class="radio-input" value="1"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 1 %}" hx-target="#leave_data"
+                    hx-swap="innerHTML">
+
+                    <label class="radio-label" for="btnradio1">January</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio2" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 2 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="February">
+                    <label class="radio-label" for="btnradio2">February</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio3" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 3 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="March">
+                    <label class="radio-label" for="btnradio3">March</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio4" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 4 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="April">
+                    <label class="radio-label" for="btnradio4">April</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio5" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 5 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="May">
+                    <label class="radio-label" for="btnradio5">May</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio6" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 6 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="June">
+                    <label class="radio-label" for="btnradio6">June</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio7" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 7 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="July">
+                    <label class="radio-label" for="btnradio7">July</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio8" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 8 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="August">
+                    <label class="radio-label" for="btnradio8">August</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio9" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 9 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="September">
+                    <label class="radio-label" for="btnradio9">September</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio10" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 10 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="October">
+                    <label class="radio-label" for="btnradio10">October</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio11" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 11 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="November">
+                    <label class="radio-label" for="btnradio11">November</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio12" class="radio-input"
+                    hx-get="{% url 'get_other_leave_data' employee.employee_code current_year 12 %}" hx-target="#leave_data"
+                        hx-swap="innerHTML"  value="December">
+                    <label class="radio-label" for="btnradio12">December</label>
+                </div>
+            </div>
+              
+            
+
+
+
+              
+
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const radios = document.querySelectorAll('input[name="btnradio"]');
+            const slider = document.getElementById('slider');
+            const radioGroup = document.getElementById('radioGroup');
+            const initialLoadDiv = document.getElementById('initial-load');
+
+            function moveSlider() {
+                const checkedRadio = document.querySelector('input[name="btnradio"]:checked');
+                if (!checkedRadio) return;
+
+                const label = checkedRadio.nextElementSibling;
+                if (!label || !slider || !radioGroup) return;
+
+                const groupRect = radioGroup.getBoundingClientRect();
+                const labelRect = label.getBoundingClientRect();
+
+                slider.style.width = `${labelRect.width}px`;
+                slider.style.transform = `translateX(${labelRect.left - groupRect.left}px)`;
+            }
+
+            // Move slider on load and resize
+            window.addEventListener('load', moveSlider);
+            window.addEventListener('resize', moveSlider);
+
+            // Move slider and toggle checked class on radio change
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    radios.forEach(r => r.classList.remove('checked'));
+                    radio.classList.add('checked');
+                    moveSlider();
+                });
+            });
+
+            // Apply checked class after HTMX initial load
+            if (initialLoadDiv) {
+                initialLoadDiv.addEventListener('htmx:afterRequest', function () {
+                    const firstRadio = document.getElementById('btnradio1');
+                    if (firstRadio) {
+                        firstRadio.classList.add('checked');
+                        firstRadio.checked = true;
+                        moveSlider();
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <style>
+        .radio-container {
+            background-color: #ffffff;
+            padding: 0.4rem 0.4rem;
+            border-radius: 3rem;
+            box-shadow: 0 8px 24px rgba(63, 63, 63, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .radio-group {
+            position: relative;
+            display: flex;
+            gap: 0.5rem;
+        }
+    
+        .radio-input {
+            display: none;
+        }
+    
+        .radio-label {
+            position: relative;
+            padding: 0.4rem 1rem;
+            border: 2px solid transparent;
+            border-radius: 999px;
+            color: #932626;
+            font-weight: 500;
+            cursor: pointer;
+            z-index: 1;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+    
+        .radio-input:checked+.radio-label {
+            color: rgb(255, 255, 255);
+        }
+    
+        .radio-input:not(:checked)+.radio-label:hover {
+            background-color: #ffffff;
+        }
+    
+        .radio-label:active {
+            transform: scale(0.96);
+        }
+    
+        .background-slide {
+            position: absolute;
+            height: 100%;
+            width: auto;
+            background-color: #932626;
+            border-radius: 999px;
+            z-index: 0;
+            transition: all 0.3s ease;
+        }
+    </style>
+
+
+    
+    
+    <div class="table-responsive mt-4" id="leave_data">
+        <!-- table.html will render here -->
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {% endif %}
         
         
     </div>
@@ -191,7 +410,7 @@
         border-bottom-right-radius: 10px;
     }
 
-    .table td {
+    .table th, .table td {
         text-align: center;
     }
 

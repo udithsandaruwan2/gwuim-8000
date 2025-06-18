@@ -11,4 +11,6 @@ urlpatterns = [
     path('leave-types/<str:pk>/delete', views.deleteLeaveTypeConfirmation, name='delete_leave_type'),
     path('leave-requests-history/<str:pk>', views.employeeLeaveHistory, name='leave_requests_history'),
     path('employee/<str:pk>/view', views.employee, name='view_employee'),
+
+    path('get-other-leave-data/<int:_id>/<int:_year>/<int:_month>/', views.get_other_leave_data, name='get_other_leave_data'),
 ]
