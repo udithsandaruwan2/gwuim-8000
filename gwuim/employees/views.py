@@ -5,7 +5,7 @@ from .utils import searchEmployees, paginateEmployees, calculate_total_days, arr
 from audit_logs.utils import create_audit_log
 from .forms import EmployeeForm, LeaveTypeForm
 from django.utils import timezone
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.contrib import messages
@@ -97,10 +97,6 @@ def employeeIndetailFromAttendance(request, pk):
     leave_days = []
 
     try:
-        response = requests.get(
-            f'{API_BASE_URL}employees/{employee.employee_code}/{current_year}/', 
-            timeout=5
-        )
         response = requests.get(
             f'{API_BASE_URL}employees/{employee.employee_code}/{current_year}/', 
             timeout=5
@@ -390,3 +386,43 @@ def deleteLeaveTypeConfirmation(request, pk):
     }
 
     return render(request, 'dashboard/delete-confirmation.html', context)
+
+def get_other_leave_data(request, _id, _year, _month):
+    employee_id = _id
+    month = _month
+    year = _year
+    print(f"Fetching other leave data for employee ID: {employee_id}, Year: {year}, Month: {month}")
+    
+    # Call the external API (optional: handle errors here)
+    response = requests.get(
+        f'{API_BASE_URL}employees/{employee_id}/{year}/{month}/other-leaves/', 
+        timeout=5
+    )
+    
+    # Dummy example: you can pass fetched JSON data to the template if needed
+    leave_data = response.json() if response.status_code == 200 else {}
+    if leave_data:
+        leave_data = leave_data[0]
+        late_count = leave_data['late_count']
+        late_count_covered = leave_data['late_count_covered']
+        short_leave_balance = leave_data['short_leave_balance']
+        half_leave_count = leave_data['half_leave_count']
+        print(f"Late count for employee {employee_id} in {year}-{month}: {late_count}")
+    else:
+        late_count = 0
+        late_count_covered = 0
+        short_leave_balance = 0
+        half_leave_count = 0
+        print(f"No leave data found for employee {employee_id} in {year}-{month}")
+
+    context = {
+        'employee_id': employee_id,
+        'year': year,
+        'month': month,
+        'leave_data': leave_data,  # if you need dynamic values in template
+        'late_count': late_count,
+        'late_count_covered': late_count_covered,
+        'short_leave_balance': short_leave_balance,
+        'half_leave_count': half_leave_count,
+    }
+    return render(request, 'employees/partials/table.html', context)
