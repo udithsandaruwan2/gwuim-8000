@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Animated Radio Group</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    
+        .radio-container {
+            background-color: #ffffff;
+            padding: 0.4rem 0.4rem;
+            border: 0.8px solid #932626;
+            border-radius: 3rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .radio-group {
+            position: relative;
+            display: flex;
+            gap: 0.5rem;
+        }
+    
+        .radio-input {
+            display: none;
+        }
+    
+        .radio-label {
+            position: relative;
+            padding: 0.4rem 1rem;
+            border: 2px solid transparent;
+            border-radius: 999px;
+            color: #932626;
+            font-weight: 500;
+            cursor: pointer;
+            z-index: 1;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+    
+        .radio-input:checked+.radio-label {
+            color: rgb(255, 255, 255);
+        }
+    
+        .radio-input:not(:checked)+.radio-label:hover {
+            background-color: #ffffff;
+        }
+    
+        .radio-label:active {
+            transform: scale(0.96);
+        }
+    
+        .background-slide {
+            position: absolute;
+            height: 100%;
+            width: auto;
+            background-color: #932626;
+            border-radius: 999px;
+            z-index: 0;
+            transition: all 0.3s ease;
+        }
+    </style>
+      
+</head>
+
+<body>
+    <div class="radio-container">
+        <div class="radio-group" id="radioGroup">
+            <div class="background-slide" id="slider"></div>
+
+            <input type="radio" name="btnradio" id="btnradio1" class="radio-input" value="Radio 1" checked>
+            <label class="radio-label" for="btnradio1">Radio 1</label>
+
+            <input type="radio" name="btnradio" id="btnradio2" class="radio-input" value="Radio 2">
+            <label class="radio-label" for="btnradio2">Radio 2</label>
+
+            <input type="radio" name="btnradio" id="btnradio3" class="radio-input" value="Radio 3">
+            <label class="radio-label" for="btnradio3">Radio 3</label>
+        </div>
+    </div>
+
+    <script>
+        const radios = document.querySelectorAll('input[name="btnradio"]');
+        const labels = document.querySelectorAll('.radio-label');
+        const slider = document.getElementById('slider');
+
+        function moveSlider() {
+            const checkedRadio = document.querySelector('input[name="btnradio"]:checked');
+            const label = checkedRadio.nextElementSibling;
+            const groupRect = document.getElementById('radioGroup').getBoundingClientRect();
+            const labelRect = label.getBoundingClientRect();
+
+            slider.style.width = `${labelRect.width}px`;
+            slider.style.transform = `translateX(${labelRect.left - groupRect.left}px)`;
+        }
+
+        // Initial slider position
+        window.addEventListener('load', moveSlider);
+        window.addEventListener('resize', moveSlider);
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                moveSlider();
+            });
+        });
+    </script>
+</body>
+
+</html>

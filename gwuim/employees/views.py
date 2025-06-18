@@ -11,6 +11,7 @@ from weasyprint import HTML
 from django.contrib import messages
 from users.models import Profile
 import requests
+from gwuim.settings import API_BASE_URL
 
 @login_required(login_url='login')
 def employee(request, pk):
@@ -79,7 +80,7 @@ def employees(request):
     return render(request, 'employees/employees.html', context)
 
 
-API_BASE_URL = 'http://localhost:8001/api/'
+
 
 @login_required(login_url='login')
 def employeeIndetailFromAttendance(request, pk):
@@ -100,12 +101,16 @@ def employeeIndetailFromAttendance(request, pk):
             f'{API_BASE_URL}employees/{employee.employee_code}/{current_year}/', 
             timeout=5
         )
+        response = requests.get(
+            f'{API_BASE_URL}employees/{employee.employee_code}/{current_year}/', 
+            timeout=5
+        )
         response.raise_for_status()
         leave_days = response.json()
     except requests.exceptions.RequestException as e:
         messages.error(request, f'Error fetching employee data: {e}')
 
-    print(leave_days)
+    # print(leave_days)
 
     context = {
         'page': page,

@@ -34,7 +34,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://37dc-192-248-27-18.ngrok-free.app"
 ]
 
-
+API_BASE_URL = 'http://127.0.0.1:8001/api/'
 
 # Application definition
 

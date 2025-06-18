@@ -95,7 +95,7 @@
 
         </div>
 
-        {% if page != 'employees_leave_from_attendance' %}
+    {% if page != 'employees_leave_from_attendance' %}
         <div class="text-end">
             <a href="{% url 'leave_requests_history' employee.uid %}" class="btn toggle-btn" id="downloadBtn">
                 <i class="fas fa-book"></i> View History
@@ -132,8 +132,196 @@
             </table>
         
         </div>
+    {% else %}
 
-        {% endif %}
+
+
+
+
+
+
+    <div class="text-end mt-5 mb-3">
+        <div class="col-12">
+            
+            
+            <div class="radio-container">
+                <div class="radio-group" id="radioGroup">
+                    <div class="background-slide" id="slider"></div>
+            
+                    <input type="radio" name="btnradio" id="btnradio1" class="radio-input" value="January" checked>
+                    <label class="radio-label" for="btnradio1">January</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio2" class="radio-input" value="February">
+                    <label class="radio-label" for="btnradio2">February</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio3" class="radio-input" value="March">
+                    <label class="radio-label" for="btnradio3">March</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio4" class="radio-input" value="April">
+                    <label class="radio-label" for="btnradio4">April</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio5" class="radio-input" value="May">
+                    <label class="radio-label" for="btnradio5">May</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio6" class="radio-input" value="June">
+                    <label class="radio-label" for="btnradio6">June</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio7" class="radio-input" value="July">
+                    <label class="radio-label" for="btnradio7">July</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio8" class="radio-input" value="August">
+                    <label class="radio-label" for="btnradio8">August</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio9" class="radio-input" value="September">
+                    <label class="radio-label" for="btnradio9">September</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio10" class="radio-input" value="October">
+                    <label class="radio-label" for="btnradio10">October</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio11" class="radio-input" value="November">
+                    <label class="radio-label" for="btnradio11">November</label>
+            
+                    <input type="radio" name="btnradio" id="btnradio12" class="radio-input" value="December">
+                    <label class="radio-label" for="btnradio12">December</label>
+                </div>
+            </div>
+              
+            
+
+
+
+              
+
+        </div>
+    </div>
+    <script>
+        const radios = document.querySelectorAll('input[name="btnradio"]');
+        const labels = document.querySelectorAll('.radio-label');
+        const slider = document.getElementById('slider');
+
+        function moveSlider() {
+            const checkedRadio = document.querySelector('input[name="btnradio"]:checked');
+            const label = checkedRadio.nextElementSibling;
+            const groupRect = document.getElementById('radioGroup').getBoundingClientRect();
+            const labelRect = label.getBoundingClientRect();
+
+            slider.style.width = `${labelRect.width}px`;
+            slider.style.transform = `translateX(${labelRect.left - groupRect.left}px)`;
+        }
+
+        // Initial slider position
+        window.addEventListener('load', moveSlider);
+        window.addEventListener('resize', moveSlider);
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                moveSlider();
+            });
+        });
+    </script>
+    <style>
+        .radio-container {
+            background-color: #ffffff;
+            padding: 0.4rem 0.4rem;
+            border-radius: 3rem;
+            box-shadow: 0 8px 24px rgba(63, 63, 63, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .radio-group {
+            position: relative;
+            display: flex;
+            gap: 0.5rem;
+        }
+    
+        .radio-input {
+            display: none;
+        }
+    
+        .radio-label {
+            position: relative;
+            padding: 0.4rem 1rem;
+            border: 2px solid transparent;
+            border-radius: 999px;
+            color: #932626;
+            font-weight: 500;
+            cursor: pointer;
+            z-index: 1;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+    
+        .radio-input:checked+.radio-label {
+            color: rgb(255, 255, 255);
+        }
+    
+        .radio-input:not(:checked)+.radio-label:hover {
+            background-color: #ffffff;
+        }
+    
+        .radio-label:active {
+            transform: scale(0.96);
+        }
+    
+        .background-slide {
+            position: absolute;
+            height: 100%;
+            width: auto;
+            background-color: #932626;
+            border-radius: 999px;
+            z-index: 0;
+            transition: all 0.3s ease;
+        }
+    </style>
+
+
+    
+    
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Late</th>
+                    <th>Late Covered</th>
+                    <th>Short Leave</th>
+                    <th>Half Day</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: fit-content;">Volume</td>
+                
+                </tr>
+            </tbody>
+
+            
+              
+    
+    
+    
+        </table>
+    
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {% endif %}
         
         
     </div>
