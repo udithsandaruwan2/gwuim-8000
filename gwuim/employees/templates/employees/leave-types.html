@@ -64,6 +64,10 @@
                         </div>
                     </form>
                 </div>
+                {% empty %}
+                <div class="alert alert-warning text-center" role="alert">
+                    No leave types found.
+                </div>
                 {% endfor %}
             </div>
         </div>
