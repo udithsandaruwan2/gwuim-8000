@@ -137,9 +137,28 @@
                 </li>
                 
                 {% endif %}
-{% endif %}
-                
-                
+                {% if page == 'titles' %}
+                <li class="sidebar-item  active selected ">
+                    <a class="sidebar-link" href="{% url 'titles' %}" aria-expanded="false" style="background-color: #932626;">
+                        <span>
+                            <i class="ti ti-id-badge"></i> 
+                        </span>
+                        <span class="hide-menu">Titles</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item sidebar-item-n">
+                    <a class="sidebar-link sidebar-link-n" href="{% url 'titles' %}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-id-badge"></i>
+                        </span>
+                        <span class="hide-menu hide-menu-n">Titles</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% endif %}
+
+
                 {% if profile.role.role_name == 'admin' %}
                 {% if page == 'departments' %}
                 <li class="nav-small-cap">
