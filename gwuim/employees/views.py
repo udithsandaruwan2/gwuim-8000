@@ -11,22 +11,52 @@ from weasyprint import HTML
 from django.contrib import messages
 from users.models import Profile
 import requests
+# import json
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Title, Designation
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from audit_logs.utils import create_audit_log
 from gwuim.settings import API_BASE_URL
+from audit_logs.utils import create_audit_log
+
 
 @login_required(login_url='login')
 def employee(request, pk):
 
     try:
+        create_audit_log(
+            action_performed="Accessed Employee",
+            performed_by=request.user.profile,
+            details=f"Accessed employee with UID: {pk}"
+        )
         employee = Employee.objects.get(uid=pk)
     except:
         employee = None
+        create_audit_log(
+            action_performed="Employee Not Found",
+            performed_by=request.user.profile,
+            details=f"Attempted to access employee with UID: {pk}, but employee does not exist."
+        )
         messages.error(request, 'Employee not found.')
         return redirect('employees')
 
     try:
+        create_audit_log(
+            action_performed="Accessed Employee Profile",
+            performed_by=request.user.profile,
+            details=f"Accessed profile for employee {employee.full_name} (UID: {pk})"
+        )
         profile = Profile.objects.get(employee=employee)
     except:
         profile = None
+        create_audit_log(
+            action_performed="Profile Not Found",
+            performed_by=request.user.profile,
+            details=f"Attempted to access profile for employee {employee.full_name} (UID: {pk}), but profile does not exist."
+        )
         messages.error(request, 'Profile not found.')
         return redirect('employees')
 
@@ -62,9 +92,19 @@ def employees(request):
                     performed_by=request.user.profile,
                     details=f"Added new employee with data: {employee_form.cleaned_data}"
                 )
+                create_audit_log(
+                    action_performed="Employee Added",
+                    performed_by=request.user.profile,
+                    details=f"Employee {employee_form.cleaned_data['full_name']} ({employee_form.cleaned_data['employee_code']}) added successfully."
+                )
                 messages.success(request, 'Employee added successfully.')
                 return redirect('employees')
             else:   
+                create_audit_log(
+                    action_performed="Error Adding Employee",
+                    performed_by=request.user.profile,
+                    details=f"Error adding employee with data: {employee_form.errors}"
+                )
                 messages.error(request, 'Error adding employee. Please check the form.')
                 return redirect('employees')
 
@@ -102,8 +142,18 @@ def employeeIndetailFromAttendance(request, pk):
             timeout=5
         )
         response.raise_for_status()
+        create_audit_log(
+            action_performed="Fetched Employee Data",
+            performed_by=request.user.profile,
+            details=f"Fetched leave data for employee {employee.full_name} (UID: {pk})"
+        )
         leave_days = response.json()
     except requests.exceptions.RequestException as e:
+        create_audit_log(
+            action_performed="Error Fetching Employee Data",
+            performed_by=request.user.profile,
+            details=f"Error fetching data for employee {employee.full_name} (UID: {pk}): {str(e)}"
+        )
         messages.error(request, f'Error fetching employee data: {e}')
 
     # print(leave_days)
@@ -426,49 +476,6 @@ def get_other_leave_data(request, _id, _year, _month):
         'half_leave_count': half_leave_count,
     }
     return render(request, 'employees/partials/table.html', context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# import json
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Title, Designation
-# from django.http import JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from audit_logs.utils import create_audit_log
 
 @login_required(login_url='login')
 def titles(request):
