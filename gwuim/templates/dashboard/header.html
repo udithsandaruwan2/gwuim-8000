@@ -52,9 +52,9 @@
                 margin: 0 5px;
             }
         </style>
-      
-        
-     {% if page != 'leave_types' and page != 'dashboard' and page != 'csv_manager' and page != 'departments' %}
+
+
+     {% if page != 'leave_types' and page != 'dashboard' and page != 'csv_manager' and page != 'departments' and page != 'titles' %}
 
             <form id="searchForm" class="form" method="GET">
                 <div class="search-container">
@@ -87,9 +87,7 @@
                         <div class="message-body">
                             <a class="d-flex align-items-center gap-2 dropdown-item">
                                 <i class="ti ti-user fs-6"></i>
-                                <p class="mb-0 fs-3"> {{ profile.username }} </p>
-                            </a>
-                            <style>
+                                <p cla 
                                 #btn-logout{
                                     color: #932626;
                                 }

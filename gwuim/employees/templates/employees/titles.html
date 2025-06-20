@@ -18,18 +18,18 @@
             <div class="col-12">
                 <div class="row mb-4 align-items-center"> 
                     <div class="col-md-6">
-                        <h5 class="fw-semibold">Faculties and Departments</h5>
+                        <h5 class="fw-semibold">Titles and Designations</h5>
                     </div>
                     <div class="col-md-6 d-flex justify-content-end gap-2">
-                        <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addFacultyModal">
-                            <i class="fas fa-plus"></i> New Faculty
+                        <!-- <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addTitleModal">
+                            <i class="fas fa-plus"></i> New Title
                         </button>
                         <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
-                            <i class="fas fa-plus"></i> New Department
+                            <i class="fas fa-plus"></i> New Designation
                         </button>
                         <button class="btn toggle-btn" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal">
-                            <i class="fas fa-trash"></i> Delete Faculty
-                        </button>
+                            <i class="fas fa-trash"></i> Delete Title
+                        </button> -->
                     </div>
                 </div>
 
@@ -62,37 +62,37 @@
                     }
                 </style>
 
-                {% for faculty in faculties %}
+                {% for title in titles %}
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6">
-                                <h5 class="card-title">{{ faculty.name }}</h5>
+                                <h5 class="card-title">{{ title.title }}</h5>
                             </div>
                             <div class="col-md-6 text-end">
-                                <button class="btn toggle-btn edit-btn" id="edit-{{ faculty.uid }}"
-                                    data-faculty="{{ faculty.uid }}" style="opacity: 0;">
+                                <button class="btn toggle-btn edit-btn" id="edit-{{ title.uid }}"
+                                    data-title="{{ title.uid }}" style="opacity: 0;">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
                             </div>
                         </div>
 
-                        <button class="btn toggle-btn" id="toggle-{{ faculty.uid }}"
-                            data-target="dept-{{ faculty.uid }}">See Departments</button>
-                        <ul class="list-group mt-3 toggle-content" id="dept-{{ faculty.uid }}">
-                            {% if faculty_departments|get_item:faculty.uid %}
-                            {% for department in faculty_departments|get_item:faculty.uid %}
+                        <button class="btn toggle-btn" id="toggle-{{ title.uid }}"
+                            data-target="dept-{{ title.uid }}">See Designations</button>
+                        <ul class="list-group mt-3 toggle-content" id="dept-{{ title.uid }}">
+                            {% if title_designations|get_item:title.uid %}
+                            {% for designation in title_designations|get_item:title.uid %}
                             <li class="list-group-item d-flex justify-content-between align-items-center"
-                                data-department-uid="{{ department.uid }}">
-                                {{ department.name }}
-                                <a href="{% url 'delete_department' department.uid %}" class="btn toggle-btn delete-btn"
-                                    data-faculty="{{ faculty.uid }}" style="opacity: 1;">
+                                data-designation-uid="{{ designation.uid }}">
+                                {{ designation.name }}
+                                <!-- <a href="" class="btn toggle-btn delete-btn"
+                                    data-title="{{ title.uid }}" style="opacity: 1;">
                                     <i class="fas fa-trash"></i> Delete
-                                </a>
+                                </a> -->
                             </li>
                             {% endfor %}
                             {% else %}
-                            <li class="list-group-item">Departments have not been listed yet.</li>
+                            <li class="list-group-item">Designations have not been listed yet.</li>
                             {% endif %}
                         </ul>
 
@@ -100,7 +100,7 @@
                 </div>
                 {% empty %}
                 <div class="alert alert-warning text-center" role="alert">
-                    No departments found.
+                    No designations found.
                 </div>
                 {% endfor %}
 
@@ -109,9 +109,7 @@
     </div>
 
     {% include 'dashboard/footer.html' %}
-    {% include 'departments/faculty-add-model.html' %}
-    {% include 'departments/department-add-model.html' %}
-    {% include 'departments/faculty-delete-model.html' %}
+
     <div id="data-container"></div>
 </div>
 

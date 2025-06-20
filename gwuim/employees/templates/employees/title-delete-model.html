@@ -1,0 +1,40 @@
+<!-- Delete Department Modal -->
+<div class="modal fade" id="deleteDepartmentModal" tabindex="-1" aria-labelledby="addFacultyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 7px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFacultyLabel">Add New Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="facultyUid" class="form-label">Faculty Name</label>
+                    <select class="form-select" id="facultyUid" name="facultyUid" onchange="updateDeleteUrl()">
+                        {% for faculty in faculties %}
+                        <option value="{{ faculty.uid }}">{{ faculty.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <a href="#" id="deleteFacultyBtn" class="btn toggle-btn">Delete Faculty</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateDeleteUrl() {
+        let facultyUid = document.getElementById("facultyUid").value;
+        let deleteBtn = document.getElementById("deleteFacultyBtn");
+
+        // Ensure the base URL is correctly set in Django
+        let baseUrl = "{% url 'delete_faculty' 0 %}";
+        deleteBtn.href = baseUrl.replace('0', facultyUid);
+    }
+
+    // Set the initial delete URL when the modal is opened
+    document.addEventListener("DOMContentLoaded", function () {
+        updateDeleteUrl(); // Initialize with the first faculty in the list
+    });
+</script>

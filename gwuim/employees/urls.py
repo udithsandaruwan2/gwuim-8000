@@ -13,4 +13,6 @@ urlpatterns = [
     path('employee/<str:pk>/view', views.employee, name='view_employee'),
 
     path('get-other-leave-data/<int:_id>/<int:_year>/<int:_month>/', views.get_other_leave_data, name='get_other_leave_data'),
+
+    path('titles/', views.titles, name='titles'),
 ]
